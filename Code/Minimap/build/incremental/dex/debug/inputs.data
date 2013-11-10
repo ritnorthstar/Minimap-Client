@@ -1,15 +1,19 @@
 # incremental data. DO NOT EDIT.
 # format is <lastModified> <length> <SHA-1> <path>
 # Encoding is UTF-8
-1380823984372 412 84693c23de3f54cd58ea63612c52e61ba3422cfe C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$layout.class
-1380823984366 470 29d7392a818938ab56851220aea863f0e0ba4031 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$dimen.class
-1380823984375 481 451891c5579c6d3a9b3483b42a866eade0cf9eb5 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$string.class
-1380823984383 472 accd1337d402d70f400dc1a61b85eac82c5e39f8 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\BuildConfig.class
-1369432936000 490914 3fe75433da602500cc71fcc1c46e5550291dd45d C:\Program Files (x86)\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-v4\13.0.0\support-v4-13.0.0.jar
-1380823984364 349 9e390fb97c92dc67b2eb14c03e4b0c5137e5b731 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$attr.class
-1380823984368 416 b0ec741bbc2536d30b214eeae34d73a5db97ba67 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$drawable.class
-1380823984377 440 83ea5dff5d33fbe6d9adc5f477faff2a6aa92f32 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$style.class
-1380823984359 823 6813cf0bc30123421945bca894dd7d7f604fe879 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\MainActivity.class
-1380823984379 707 5eea00dc854a4777aef204d9190271d2ef80f159 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R.class
-1380823984373 397 2d1d15d32474e56c6515bc18f0ef290412f2ed61 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$menu.class
-1380823984370 402 dd6c63a623a75d255930263ac2d7f232f8ffb012 C:\Users\Benjin\AndroidStudioProjects\MinimapProject\Minimap\build\classes\debug\com\northstar\minimap\R$id.class
+1384050354228 470 29d7392a818938ab56851220aea863f0e0ba4031 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$dimen.class
+1384050354164 605 a37fdccb5708805a6b84c0cdcb46e9bc22f84e35 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\Communicator.class
+1384050354222 932 ec4472648900d2858dffebb34f48f8d5f2774d8f D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\MapActivity$PlaceholderFragment.class
+1384050354231 532 421b7caf1ae5c0f02553f1dca1c76d6c17ea765d D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$layout.class
+1384050354227 349 9e390fb97c92dc67b2eb14c03e4b0c5137e5b731 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$attr.class
+1384050354235 472 accd1337d402d70f400dc1a61b85eac82c5e39f8 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\BuildConfig.class
+1384050354178 421 d1c372e8f96bb3b52c3d2b98055f416e7c3a5650 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\Globals.class
+1384050354229 416 3448280b7267bf11baef64392f34e18b5badba37 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$drawable.class
+1384050354232 463 028cb151f916ca1e4801de2018a30af199e877c3 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$menu.class
+1384030613309 490914 3fe75433da602500cc71fcc1c46e5550291dd45d C:\Program Files (x86)\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-v4\13.0.0\support-v4-13.0.0.jar
+1384050354206 2845 9da7ee34767902b7ea947e64b8f6d3deac1c7099 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\MainActivity.class
+1384050354233 440 3c1b1bd5727dc44de72f439e7010671e3ca556a0 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$style.class
+1384050354232 822 2e3aa046ef4140671dbc6e488dad2f0dd6bf4482 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$string.class
+1384050354234 707 c96a15be4fe5f9d8d1de08de2af1b628e30a5416 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R.class
+1384050354230 634 535c7196a4d3223a82d649a2701a8d688fc8931f D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$id.class
+1384050354224 2007 f0c919ee9400eaaf6c151d1751323f9f11a8468d D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\MapActivity.class
