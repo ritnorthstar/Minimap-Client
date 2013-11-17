@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Code.iml" filepath="$PROJECT_DIR$/Code.iml" />
       <module fileurl="file://$PROJECT_DIR$/Minimap/Minimap.iml" filepath="$PROJECT_DIR$/Minimap/Minimap.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MinimapProject.iml" filepath="$PROJECT_DIR$/MinimapProject.iml" />
     </modules>
   </component>
 </project>

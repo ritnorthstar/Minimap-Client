@@ -1,19 +1,22 @@
 # incremental data. DO NOT EDIT.
 # format is <lastModified> <length> <SHA-1> <path>
 # Encoding is UTF-8
-1384050354228 470 29d7392a818938ab56851220aea863f0e0ba4031 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$dimen.class
-1384050354164 605 a37fdccb5708805a6b84c0cdcb46e9bc22f84e35 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\Communicator.class
-1384050354222 932 ec4472648900d2858dffebb34f48f8d5f2774d8f D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\MapActivity$PlaceholderFragment.class
-1384050354231 532 421b7caf1ae5c0f02553f1dca1c76d6c17ea765d D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$layout.class
-1384050354227 349 9e390fb97c92dc67b2eb14c03e4b0c5137e5b731 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$attr.class
-1384050354235 472 accd1337d402d70f400dc1a61b85eac82c5e39f8 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\BuildConfig.class
-1384050354178 421 d1c372e8f96bb3b52c3d2b98055f416e7c3a5650 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\Globals.class
-1384050354229 416 3448280b7267bf11baef64392f34e18b5badba37 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$drawable.class
-1384050354232 463 028cb151f916ca1e4801de2018a30af199e877c3 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$menu.class
-1384030613309 490914 3fe75433da602500cc71fcc1c46e5550291dd45d C:\Program Files (x86)\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-v4\13.0.0\support-v4-13.0.0.jar
-1384050354206 2845 9da7ee34767902b7ea947e64b8f6d3deac1c7099 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\MainActivity.class
-1384050354233 440 3c1b1bd5727dc44de72f439e7010671e3ca556a0 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$style.class
-1384050354232 822 2e3aa046ef4140671dbc6e488dad2f0dd6bf4482 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$string.class
-1384050354234 707 c96a15be4fe5f9d8d1de08de2af1b628e30a5416 D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R.class
-1384050354230 634 535c7196a4d3223a82d649a2701a8d688fc8931f D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\R$id.class
-1384050354224 2007 f0c919ee9400eaaf6c151d1751323f9f11a8468d D:\Profile\Development\GitHub\Minimap\Code\Client\Code\Minimap\build\classes\debug\com\northstar\minimap\MapActivity.class
+1384716786000 463 30840b5327fda8634ae39aae77f538473da2be92 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$menu.class
+1384716786000 421 d1c372e8f96bb3b52c3d2b98055f416e7c3a5650 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/Globals.class
+1384716786000 576 349c8f57f2b1d1a836860336765ed77b6936af90 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$layout.class
+1384716786000 5509 0ef63b716df30e46c6682a953b1e620bc1e69383 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/MainActivity.class
+1384716786000 2007 8ee4ee202ec5a4a2ec39600118d85a7c24ad07e3 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/MapActivity.class
+1384716786000 605 a37fdccb5708805a6b84c0cdcb46e9bc22f84e35 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/Communicator.class
+1384716786000 706 16bb3ac66f6ba1a0ef3ec6732c1000d9670f2693 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$id.class
+1384716786000 1762 92e00d0e4c61c7ad51834b536e8b6a0035791c2a /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/MainActivity$DrawerItemClickListener.class
+1384716786000 470 45a8d248ceb7eb28d848526ba3c0e81e3bc83a3a /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$dimen.class
+1384716787000 893 1e1559cd21bb0feba2f8039575a84f6aaab2e6c0 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$string.class
+1384716786000 401 2dc0d6d299177fffa759fb78d897dff1dafcdd72 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$array.class
+1384716786000 349 8fc5cd9de6ab88d081bbafa93824396da01afe7e /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$attr.class
+1384228631000 490914 3fe75433da602500cc71fcc1c46e5550291dd45d /Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-v4/13.0.0/support-v4-13.0.0.jar
+1384716786000 486 d08fe54304ca596993e9d388f0ec29fecc23a613 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$drawable.class
+1384716787000 472 accd1337d402d70f400dc1a61b85eac82c5e39f8 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/BuildConfig.class
+1384716787000 440 c898991fe0005cc068c465ae562e72dd36b4ac3c /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R$style.class
+1384716786000 932 ccf40e710aa2b01b2a95a2b3fa224f35d7cd8c33 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/MapActivity$PlaceholderFragment.class
+1384716787000 758 36a020237b15b64ab3f888c26238c21e715fe008 /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/R.class
+1384716786000 231 e62973d902352833e7aa4b4a3a6c1fc2c1695a0b /Users/Chris/AndroidStudioProjects/Minimap-Client/Code/Minimap/build/classes/debug/com/northstar/minimap/MainActivity$1.class

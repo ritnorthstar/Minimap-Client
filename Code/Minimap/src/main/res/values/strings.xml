@@ -13,4 +13,15 @@
     <string name="enter_ip_error_text"></string>
     <string name="enter_ip_prompt_text">Enter the server\'s IP address:</string>
 
+    <string-array name="items">
+        <item>Item 1</item>
+        <item>Item 2</item>
+        <item>Item 3</item>
+        <item>Item 4</item>
+        <item>Item 5</item>
+        <item>Item 6</item>
+    </string-array>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
