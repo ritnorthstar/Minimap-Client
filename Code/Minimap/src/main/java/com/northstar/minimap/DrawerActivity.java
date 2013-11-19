@@ -35,18 +35,10 @@ public class DrawerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        initDrawers();
+    }
 
-        leftDrawerItems = getResources().getStringArray(R.array.left_drawer_items);
-        rightDrawerItems = getResources().getStringArray(R.array.right_drawer_items);
-
-        leftDrawerListView = (ListView) findViewById(R.id.left_drawer);
-        leftDrawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_listview_item, leftDrawerItems));
-
-        rightDrawerListView = (ListView) findViewById(R.id.right_drawer);
-        rightDrawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_listview_item, rightDrawerItems));
-
+    private void initDrawers() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -54,10 +46,19 @@ public class DrawerActivity extends Activity {
                 R.string.drawer_close);
 
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        leftDrawerItems = getResources().getStringArray(R.array.left_drawer_items);
+        leftDrawerListView = (ListView) findViewById(R.id.left_drawer);
+        leftDrawerListView.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_listview_item, leftDrawerItems));
         leftDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
+
+        rightDrawerItems = getResources().getStringArray(R.array.right_drawer_items);
+        rightDrawerListView = (ListView) findViewById(R.id.right_drawer);
+        rightDrawerListView.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_listview_item, rightDrawerItems));
         rightDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
     }
 
@@ -77,15 +78,21 @@ public class DrawerActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            if (drawerLayout != null) {
+                drawerLayout.closeDrawer(Gravity.RIGHT);
+            }
+
             return true;
         }
 
         switch (item.getItemId()) {
             case R.id.action_open_right_drawer:
-                if(!drawerLayout.isDrawerOpen(Gravity.RIGHT))
+                if (!drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
                     drawerLayout.openDrawer(Gravity.RIGHT);
-                else
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
+                }
 
                 return true;
 

@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
             ipErrorMessage = e.getMessage();
 
             TextView errorText = (TextView) findViewById(R.id.ip_error_text_view);
-            errorText.setText("\"" + serverIP + e.getMessage());
+            errorText.setText("\"" + serverIP +"\" isn't a valid IP address.\nIt should be something like \"192.168.1.1\"");
             errorText.setTextColor(Color.RED);
             ipTextbox.setText("");
         }
