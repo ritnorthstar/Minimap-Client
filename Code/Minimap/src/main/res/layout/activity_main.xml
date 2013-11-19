@@ -1,89 +1,56 @@
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
 
-    <LinearLayout
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context=".MainActivity"
-        android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/minimap_title"
+        android:id="@+id/title_text_view" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/minimap_title"
-            android:id="@+id/title_text_view" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/minimap_subtitle"
+        android:id="@+id/subtitle_text_view" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/minimap_subtitle"
-            android:id="@+id/subtitle_text_view" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/enter_ip_prompt_text"
+        android:id="@+id/ip_prompt_text_view" />
+    <EditText
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:id="@+id/server_ip"
+        android:hint="@string/server_ip_hint"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/enter_ip_prompt_text"
-            android:id="@+id/ip_prompt_text_view" />
-        <EditText
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:id="@+id/server_ip"
-            android:hint="@string/server_ip_hint"/>
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/button_server_ip_go"
+        android:onClick="submitIP"
+        android:layout_gravity="center_horizontal"/>
 
-        <Button
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/button_server_ip_go"
-            android:onClick="submitIP"
-            android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="200px"
+        android:layout_gravity="center"
+        android:layout_marginTop="80px"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/enter_ip_error_text"
+        android:id="@+id/ip_error_text_view" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="200px"
-            android:layout_gravity="center"
-            android:layout_marginTop="80px"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/enter_ip_error_text"
-            android:id="@+id/ip_error_text_view" />
-
-    </LinearLayout>
-
-    <!-- The navigation drawer -->
-    <ListView android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:choiceMode="singleChoice"
-        android:divider="#666"
-        android:dividerHeight="1dp"
-        android:background="#333"
-        android:paddingLeft="15sp"
-        android:paddingRight="15sp"
-        />
-
-    <ListView android:id="@+id/right_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:choiceMode="singleChoice"
-        android:divider="#666"
-        android:dividerHeight="1dp"
-        android:background="#333"
-        android:paddingLeft="15sp"
-        android:paddingRight="15sp"
-        />
-
-</android.support.v4.widget.DrawerLayout>
+</LinearLayout>

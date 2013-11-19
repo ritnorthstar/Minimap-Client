@@ -30,3 +30,4 @@ proguard/
 .idea/
 
 Code/Minimap/build
+Code/.idea/workspace.xml

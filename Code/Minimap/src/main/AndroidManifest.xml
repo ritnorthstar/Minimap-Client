@@ -29,12 +29,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.northstar.minimap.MapActivity"
+            android:name="com.northstar.minimap.DrawerActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName="com.northstar.minimap.MainActivity" >
+            android:parentActivityName="com.northstar.minimap.DrawerActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.northstar.minimap.MainActivity" />
+                android:value="com.northstar.minimap.DrawerActivity" />
         </activity>
 
         <uses-permission android:name="android.permission.INTERNET"/>
