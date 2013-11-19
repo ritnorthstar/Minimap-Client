@@ -31,3 +31,7 @@ proguard/
 
 Code/Minimap/build
 Code/.idea/workspace.xml
+Code/.gradle/1.8/taskArtifacts/fileHashes.bin
+Code/.gradle/1.8/taskArtifacts/fileSnapshots.bin
+Code/.gradle/1.8/taskArtifacts/outputFileStates.bin
+Code/.gradle/1.8/taskArtifacts/taskArtifacts.bin
