@@ -8,7 +8,6 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 
 import java.awt.image.*;
-
 import java.io.File;
 import java.io.IOException;
 
