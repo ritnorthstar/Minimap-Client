@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment android:name="com.northstar.minimap.MapFragment"
-              android:id="@+id/viewer"
-              android:layout_weight="2"
-              android:layout_width="0dp"
-              android:layout_height="match_parent" />
+    <ListView android:id="@+id/rssi_list"
+              android:layout_width="fill_parent"
+              android:layout_height="200dp"
+              android:dividerHeight="1dp"
+              android:paddingLeft="15sp"
+              android:paddingRight="15sp"
+        />
 
     <!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"
