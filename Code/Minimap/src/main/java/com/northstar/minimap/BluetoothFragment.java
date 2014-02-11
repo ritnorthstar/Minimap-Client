@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,8 @@ public class BluetoothFragment extends Fragment {
     private static final long SCAN_PERIOD = 10000;
 
     private boolean scanning = false;
+    private double propagationConstant = 3.0;
+    private int rssiAtOneMeter = -75;
     private int scans = 0;
 
     public static final String TAG = "RNM-BF";
@@ -99,9 +102,14 @@ public class BluetoothFragment extends Fragment {
                                 }
                                 rssiMap.put(address, rssi);
                                 rssiList.clear();
+
                                 for (String key: rssiMap.keySet()) {
-                                    rssiList.add(key + ": " + rssiMap.get(key));
+                                    int rssi = rssiMap.get(key);
+                                    double distance = rssiToDistance(rssi);
+                                    String distanceString = getFormattedDistance(distance);
+                                    rssiList.add(key + ": " + distanceString);
                                 }
+
                                 rssiAdapter.notifyDataSetChanged();
                             }
                         });
@@ -112,6 +120,14 @@ public class BluetoothFragment extends Fragment {
             scanning = true;
             scanLeDevice();
         }
+    }
+
+    private String getFormattedDistance(double distance) {
+        return (new DecimalFormat("#.##").format(distance) + " m");
+    }
+
+    private double rssiToDistance(int rssi) {
+        return Math.pow(10, (rssiAtOneMeter - rssi) / (10.0 * propagationConstant));
     }
 
     private void scanLeDevice() {
