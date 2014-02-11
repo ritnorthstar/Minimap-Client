@@ -110,28 +110,23 @@ public class BluetoothFragment extends Fragment {
 
         if (!scanning) {
             scanning = true;
-            scanLeDevice(true);
+            scanLeDevice();
         }
     }
 
-    private void scanLeDevice(final boolean enable) {
-        activity.runOnUiThread(new Runnable() {
+    private void scanLeDevice() {
+        // Stops scanning after a pre-defined scan period.
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Stops scanning after a pre-defined scan period.
-                handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                    bluetoothAdapter.stopLeScan(leScanCallback);
-                    scanLeDevice(true);
-                    }
-                }, SCAN_PERIOD);
-
-                bluetoothAdapter.startLeScan(leScanCallback);
-                Log.d(TAG, "Start scan: " + scans);
-                scans++;
+            bluetoothAdapter.stopLeScan(leScanCallback);
+            scanLeDevice();
             }
-        });
+        }, SCAN_PERIOD);
+
+        bluetoothAdapter.startLeScan(leScanCallback);
+        Log.d(TAG, "Start scan: " + scans);
+        scans++;
     }
 }
