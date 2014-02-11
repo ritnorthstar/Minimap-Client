@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -28,10 +29,12 @@ import java.util.Map;
  */
 public class BluetoothFragment extends Fragment {
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final long SCAN_PERIOD = 2000;
+    private static final long SCAN_PERIOD = 10000;
 
     private boolean scanning = false;
     private int scans = 0;
+
+    public static final String TAG = "RNM-BF";
 
     private Activity activity;
     private BluetoothAdapter bluetoothAdapter;
@@ -45,7 +48,7 @@ public class BluetoothFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RelativeLayout layout = (RelativeLayout) inflater.inflate(
+        LinearLayout layout = (LinearLayout) inflater.inflate(
                 R.layout.fragment_bluetooth, container, false);
         listView = (ListView) layout.findViewById(R.id.rssi_list);
         initBluetooth();
@@ -56,6 +59,7 @@ public class BluetoothFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.d(TAG, "Attached");
         this.activity = activity;
         initBluetooth();
     }
@@ -77,14 +81,15 @@ public class BluetoothFragment extends Fragment {
         rssiList = new ArrayList<String>();
         final ArrayAdapter<String> rssiAdapter =
                 new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList);
-        listView.setAdapter(new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList));
+        listView.setAdapter(rssiAdapter);
+        rssiList.add("RSSI LIST");
 
         leScanCallback =
                 new BluetoothAdapter.LeScanCallback() {
                     @Override
                     public void onLeScan(final BluetoothDevice device, final int rssi,
                                          byte[] scanRecord) {
-                        rssiList.add("ah HA ha");
+                        Log.d(TAG, "RSSI: " + rssi);
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -103,29 +108,30 @@ public class BluetoothFragment extends Fragment {
                     }
                 };
 
-        scanLeDevice(true);
+        if (!scanning) {
+            scanning = true;
+            scanLeDevice(true);
+        }
     }
 
     private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            // Stops scanning after a pre-defined scan period.
-            handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    scanning = false;
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Stops scanning after a pre-defined scan period.
+                handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
                     bluetoothAdapter.stopLeScan(leScanCallback);
                     scanLeDevice(true);
-                }
-            }, SCAN_PERIOD);
+                    }
+                }, SCAN_PERIOD);
 
-            scanning = true;
-            bluetoothAdapter.startLeScan(leScanCallback);
-            scans++;
-        } else {
-            scanning = false;
-            bluetoothAdapter.stopLeScan(leScanCallback);
-            scanLeDevice(true);
-        }
+                bluetoothAdapter.startLeScan(leScanCallback);
+                Log.d(TAG, "Start scan: " + scans);
+                scans++;
+            }
+        });
     }
 }
