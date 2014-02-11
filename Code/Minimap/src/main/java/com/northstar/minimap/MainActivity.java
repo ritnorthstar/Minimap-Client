@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-
+import com.northstar.minimap.Globals;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,13 +46,14 @@ public class MainActivity extends Activity {
     }
 
     public void submitIP(View view) {
+        Globals state = (Globals)getApplicationContext();
         Intent mapIntent = new Intent(this, DrawerActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         String ipErrorMessage = "no error!";
+        state.log(serverIP);
 
         try {
-            Globals state = (Globals)getApplicationContext();
             state.comm.setServerIP(InetAddress.getByName(serverIP));
             mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
             startActivity(mapIntent);

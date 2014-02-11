@@ -141,23 +141,26 @@ public class DrawerActivity extends FragmentActivity {
     private ListView listView;
 
     private void initBluetooth() {
-        bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
+
+        listView = (ListView) findViewById(R.id.rssi_list);
+        rssiList = new ArrayList<String>();
+        final ArrayAdapter<String> rssiAdapter = new ArrayAdapter<String>(this, R.layout.list_rssi, rssiList);
+        listView.setAdapter(new ArrayAdapter<String>(this, R.layout.list_rssi, rssiList));
 
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            Globals.log("Bluetooth not available");
+
+            rssiList.add("Bluetooth not available");
+            rssiAdapter.notifyDataSetChanged();
+
+            return;
         }
 
-        listView = (ListView) findViewById(R.id.rssi_list);
-        rssiList = new ArrayList<String>();
-        final ArrayAdapter<String> rssiAdapter =
-                new ArrayAdapter<String>(this, R.layout.list_rssi, rssiList);
-        listView.setAdapter(new ArrayAdapter<String>(this, R.layout.list_rssi, rssiList));
-
-        leScanCallback =
-                new BluetoothAdapter.LeScanCallback() {
+        leScanCallback = new BluetoothAdapter.LeScanCallback() {
                     @Override
                     public void onLeScan(final BluetoothDevice device, final int rssi,
                                          byte[] scanRecord) {
