@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class MainActivity extends Activity {
         state.log(serverIP);
 
         try {
-            state.comm.setServerIP(InetAddress.getByName(serverIP));
+            state.comm.setServerIP(new URL("http://10.0.2.2:9000/api/Maps/1"));//serverIP));
             mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
             startActivity(mapIntent);
         } catch(Exception e) {

@@ -44,6 +44,14 @@ public class DrawerActivity extends FragmentActivity {
 
         initBluetooth();
         initDrawers();
+
+        requestJson();
+    }
+
+    private void requestJson()
+    {
+        Globals state = (Globals)getApplicationContext();
+        state.comm.getMapsJson();
     }
 
     private void initDrawers() {
@@ -140,7 +148,7 @@ public class DrawerActivity extends FragmentActivity {
     private List<String> rssiList;
     private ListView listView;
 
-    private void initBluetooth() {
+    private boolean initBluetooth() {
         bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
 
@@ -157,7 +165,7 @@ public class DrawerActivity extends FragmentActivity {
             rssiList.add("Bluetooth not available");
             rssiAdapter.notifyDataSetChanged();
 
-            return;
+            return false;
         }
 
         leScanCallback = new BluetoothAdapter.LeScanCallback() {
@@ -184,6 +192,7 @@ public class DrawerActivity extends FragmentActivity {
                 };
 
         scanLeDevice(true);
+        return true;
     }
 
     private void scanLeDevice(final boolean enable) {
