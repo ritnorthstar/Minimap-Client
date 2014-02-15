@@ -11,17 +11,17 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-    <fragment android:name="com.northstar.minimap.BluetoothFragment"
-              android:id="@+id/bluetooth_fragment"
-              android:layout_weight="1"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              tools:layout="@layout/fragment_bluetooth"/>
-
+        <fragment android:name="com.northstar.minimap.BluetoothFragment"
+                  android:id="@+id/bluetooth_fragment"
+                  android:layout_weight="1"
+                  android:layout_width="match_parent"
+                  android:layout_height="fill_parent"
+                  tools:layout="@layout/fragment_bluetooth"/>
 
         <TextView android:id="@+id/json_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_weight="1"
             />
         </LinearLayout>
     

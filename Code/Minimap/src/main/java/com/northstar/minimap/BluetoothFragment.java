@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,13 +68,12 @@ public class BluetoothFragment extends Fragment {
         initBluetooth();
     }
 
-    private void initBluetooth() {
+    private boolean initBluetooth() {
         if (activity == null || listView == null) {
-            return;
+            return false;
         }
 
-        bluetoothManager =
-                (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
+        bluetoothManager = (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
 
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
@@ -81,10 +81,19 @@ public class BluetoothFragment extends Fragment {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
+
+
         rssiList = new ArrayList<String>();
-        final ArrayAdapter<String> rssiAdapter =
-                new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList);
+        final ArrayAdapter<String> rssiAdapter = new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList);
         listView.setAdapter(rssiAdapter);
+
+        if (bluetoothAdapter.getDefaultAdapter() == null){
+            rssiList.add("No bluetooth available");
+            Globals.log("no bluetooth");
+            rssiAdapter.notifyDataSetChanged();
+            return false;
+        }
+
         rssiList.add("RSSI LIST");
 
         leScanCallback =
@@ -120,6 +129,8 @@ public class BluetoothFragment extends Fragment {
             scanning = true;
             scanLeDevice();
         }
+
+        return true;
     }
 
     private String getFormattedDistance(double distance) {

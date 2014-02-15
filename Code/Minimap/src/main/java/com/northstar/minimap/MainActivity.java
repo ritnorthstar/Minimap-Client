@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
-        ipTextbox.setText("0.0.0.0");
+        ipTextbox.setText("10.0.2.2:9000");
     }
 
     @Override
@@ -51,11 +51,14 @@ public class MainActivity extends Activity {
         Intent mapIntent = new Intent(this, DrawerActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
+        if(!serverIP.startsWith("http://")){
+            serverIP = "http://" + serverIP;
+        }
         String ipErrorMessage = "no error!";
         state.log(serverIP);
 
         try {
-            state.comm.setServerIP(new URL("http://10.0.2.2:9000/api/Maps/1"));//serverIP));
+            state.comm.setServerIP(new URL(serverIP));
             mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
             startActivity(mapIntent);
         } catch(Exception e) {
@@ -63,7 +66,7 @@ public class MainActivity extends Activity {
             ipErrorMessage = e.getMessage();
 
             TextView errorText = (TextView) findViewById(R.id.ip_error_text_view);
-            errorText.setText("\"" + serverIP +"\" isn't a valid IP address.\nIt should be something like \"192.168.1.1\"");
+            errorText.setText("\"" + serverIP +"\" isn't a valid IP address.\nIt should be something like \"10.0.2.2:9000\"");
             errorText.setTextColor(Color.RED);
             ipTextbox.setText("");
         }

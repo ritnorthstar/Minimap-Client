@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -22,6 +23,7 @@ import java.net.URL;
  */
 public class Communicator {
     private URL serverIpAddress = null;
+    public String mapJson = "";
 
     public void setServerIP(URL address)
     {
@@ -34,19 +36,20 @@ public class Communicator {
         return serverIpAddress;
     }
 
-    public String getMapsJson()
+    public void getMapsJson(CallbackListener l)
     {
         Globals.log(">> getting maps json from " + serverIpAddress.toString());
-        String output = "";
-
-        new GetMapsJsonTask().execute(serverIpAddress);
-
-        return output;
+        try { new GetMapsJsonTask(l).execute(new URL(serverIpAddress, "/api/Maps")); }
+        catch (MalformedURLException e) {}
     }
 
     private class GetMapsJsonTask extends AsyncTask<URL, Void, String>
     {
-        private HttpURLConnection connection = null;
+        private CallbackListener listener;
+
+        public GetMapsJsonTask(CallbackListener l){
+            this.listener = l;
+        }
 
         protected String doInBackground(URL... url)
         {
@@ -56,6 +59,8 @@ public class Communicator {
         protected void onPostExecute(String json)
         {
             Globals.log("Json response (oPE): " + json);
+            mapJson = json;
+            listener.mapJsonCallback();
         }
     }
 
