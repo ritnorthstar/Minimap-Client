@@ -42,7 +42,6 @@ public class DrawerActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
 
-        initBluetooth();
         initDrawers();
 
         requestJson();
@@ -133,88 +132,12 @@ public class DrawerActivity extends FragmentActivity {
             drawerLayout.closeDrawer(rightDrawerListView);
         }
     }
-
-    private static final int REQUEST_ENABLE_BT = 1;
-    private static final long SCAN_PERIOD = 10000;
-
-    private boolean scanning = false;
-    private int scans = 0;
-
-    private BluetoothAdapter bluetoothAdapter;
-    private BluetoothAdapter.LeScanCallback leScanCallback;
-    private BluetoothManager bluetoothManager;
-    private Handler handler;
-    private Map<String, Integer> rssiMap = new HashMap<String, Integer>();
-    private List<String> rssiList;
-    private ListView listView;
-
-    private boolean initBluetooth() {
-        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        bluetoothAdapter = bluetoothManager.getAdapter();
-
         listView = (ListView) findViewById(R.id.rssi_list);
         rssiList = new ArrayList<String>();
         final ArrayAdapter<String> rssiAdapter = new ArrayAdapter<String>(this, R.layout.list_rssi, rssiList);
         listView.setAdapter(new ArrayAdapter<String>(this, R.layout.list_rssi, rssiList));
 
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            Globals.log("Bluetooth not available");
-
-            rssiList.add("Bluetooth not available");
-            rssiAdapter.notifyDataSetChanged();
-
-            return false;
-        }
 
         leScanCallback = new BluetoothAdapter.LeScanCallback() {
-                    @Override
-                    public void onLeScan(final BluetoothDevice device, final int rssi,
-                                         byte[] scanRecord) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String address = device.getAddress();
-                                if (rssiMap.containsKey(address)) {
-                                    rssiMap.remove(address);
-                                }
-                                rssiMap.put(address, rssi);
-                                rssiList.clear();
-
-                                for (String key: rssiMap.keySet()) {
-                                    rssiList.add(key + ": " + rssiMap.get(key));
-                                }
-                                rssiAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                };
-
-        scanLeDevice(true);
         return true;
-    }
-
-    private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            // Stops scanning after a pre-defined scan period.
-            handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    scanning = false;
-                    bluetoothAdapter.stopLeScan(leScanCallback);
-                    scanLeDevice(true);
-                }
-            }, SCAN_PERIOD);
-
-            scanning = true;
-            bluetoothAdapter.startLeScan(leScanCallback);
-            scans++;
-        } else {
-            scanning = false;
-            bluetoothAdapter.stopLeScan(leScanCallback);
-            scanLeDevice(true);
-        }
-    }
 }

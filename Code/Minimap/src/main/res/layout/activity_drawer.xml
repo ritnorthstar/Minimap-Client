@@ -1,27 +1,23 @@
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <!--<ListView android:id="@+id/rssi_list"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="200dp"-->
-            <!--android:dividerHeight="1dp"-->
-            <!--android:paddingLeft="15sp"-->
-            <!--android:paddingRight="15sp" />-->
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <ListView android:id="@+id/rssi_list"
-            android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:dividerHeight="1dp"
-            android:paddingLeft="15sp"
-            android:paddingRight="15sp"/>
+    <fragment android:name="com.northstar.minimap.BluetoothFragment"
+              android:id="@+id/bluetooth_fragment"
+              android:layout_weight="1"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:layout="@layout/fragment_bluetooth"/>
+
 
         <TextView android:id="@+id/json_view"
             android:layout_width="fill_parent"

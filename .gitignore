@@ -33,3 +33,4 @@ Code/Minimap/build
 Code/.idea/workspace.xml
 *.bin
 *.lock
+*.gradle
