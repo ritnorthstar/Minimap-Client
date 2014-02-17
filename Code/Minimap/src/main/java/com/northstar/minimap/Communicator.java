@@ -25,8 +25,7 @@ public class Communicator {
     private URL serverIpAddress = null;
     public String mapJson = "";
 
-    public void setServerIP(URL address)
-    {
+    public void setServerIP(URL address) {
         serverIpAddress = address;
         Globals.log("Address set to '" + address.toString() + "'");
     }
@@ -36,35 +35,32 @@ public class Communicator {
         return serverIpAddress;
     }
 
-    public void getMapsJson(CallbackListener l)
-    {
+    public void getMapsJson(CallbackListener l) {
         Globals.log(">> getting maps json from " + serverIpAddress.toString());
-        try { new GetMapsJsonTask(l).execute(new URL(serverIpAddress, "/api/Maps")); }
-        catch (MalformedURLException e) {}
+        try {
+            new GetMapsJsonTask(l).execute(new URL(serverIpAddress, "/api/Maps"));
+        } catch (MalformedURLException e) {}
     }
 
-    private class GetMapsJsonTask extends AsyncTask<URL, Void, String>
-    {
+    private class GetMapsJsonTask extends AsyncTask<URL, Void, String> {
         private CallbackListener listener;
 
         public GetMapsJsonTask(CallbackListener l){
             this.listener = l;
         }
 
-        protected String doInBackground(URL... url)
-        {
+        protected String doInBackground(URL... url) {
             return GET(url[0]);
         }
 
-        protected void onPostExecute(String json)
-        {
+        protected void onPostExecute(String json) {
             Globals.log("Json response (oPE): " + json);
             mapJson = json;
             listener.mapJsonCallback();
         }
     }
 
-    public String GET(URL url){
+    public String GET(URL url) {
         InputStream inputStream = null;
         String result = "";
         try {
@@ -72,10 +68,11 @@ public class Communicator {
             HttpResponse httpResponse = httpclient.execute(new HttpGet(url.toString()));
             inputStream = httpResponse.getEntity().getContent();
 
-            if(inputStream != null)
+            if (inputStream != null) {
                 result = readStream(inputStream);
-            else
+            } else {
                 result = "Did not work!";
+            }
 
         } catch (Exception e) {
             Globals.log(e.getLocalizedMessage());
@@ -84,15 +81,15 @@ public class Communicator {
         return result;
     }
 
-    private String readStream(InputStream in) throws IOException
-    {
+    private String readStream(InputStream in) throws IOException {
         Globals.log("entering readStream");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String line = reader.readLine();
         String output = line;
 
-        while((line = reader.readLine()) != null)
+        while ((line = reader.readLine()) != null) {
             output += line;
+        }
 
         return output;
     }
