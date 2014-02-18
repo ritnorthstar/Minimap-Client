@@ -84,10 +84,11 @@ public class BluetoothFragment extends Fragment {
 
 
         rssiList = new ArrayList<String>();
-        final ArrayAdapter<String> rssiAdapter = new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList);
+        final ArrayAdapter<String> rssiAdapter =
+                new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList);
         listView.setAdapter(rssiAdapter);
 
-        if (bluetoothAdapter.getDefaultAdapter() == null){
+        if (bluetoothAdapter.getDefaultAdapter() == null) {
             rssiList.add("No bluetooth available");
             Globals.log("no bluetooth");
             rssiAdapter.notifyDataSetChanged();

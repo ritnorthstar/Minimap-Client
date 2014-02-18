@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
         Intent mapIntent = new Intent(this, DrawerActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
-        if(!serverIP.startsWith("http://")){
+        if (!serverIP.startsWith("http://")) {
             serverIP = "http://" + serverIP;
         }
         String ipErrorMessage = "no error!";
