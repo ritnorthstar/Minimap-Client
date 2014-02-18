@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DrawerActivity extends FragmentActivity {
+public class DrawerActivity extends FragmentActivity implements CallbackListener {
 
 
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -43,6 +43,20 @@ public class DrawerActivity extends FragmentActivity {
         setContentView(R.layout.activity_drawer);
 
         initDrawers();
+        requestJson();
+    }
+
+    private void requestJson() {
+        Globals state = (Globals)getApplicationContext();
+        state.comm.getMapsJson(this);
+    }
+
+    public void mapJsonCallback() {
+        TextView jsonDisplay = (TextView) findViewById(R.id.json_view);
+        Globals.log("> In callback");
+        Globals state = (Globals)getApplicationContext();
+        Globals.log(">" + state.comm.mapJson);
+        jsonDisplay.setText(state.comm.mapJson);
     }
 
     private void initDrawers() {
