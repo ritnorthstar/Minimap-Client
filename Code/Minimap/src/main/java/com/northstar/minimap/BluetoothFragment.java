@@ -39,6 +39,8 @@ public class BluetoothFragment extends Fragment {
     private int scans = 0;
 
     public static final String TAG = "RNM-BF";
+    
+    private ArrayAdapter<String> rssiAdapter;
 
     private Activity activity;
     private BluetoothAdapter bluetoothAdapter;
@@ -84,8 +86,7 @@ public class BluetoothFragment extends Fragment {
 
 
         rssiList = new ArrayList<String>();
-        final ArrayAdapter<String> rssiAdapter =
-                new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList);
+        rssiAdapter = new ArrayAdapter<String>(activity, R.layout.list_rssi, rssiList);
         listView.setAdapter(rssiAdapter);
 
         if (bluetoothAdapter.getDefaultAdapter() == null) {
@@ -97,7 +98,21 @@ public class BluetoothFragment extends Fragment {
 
         rssiList.add("RSSI LIST");
 
-        leScanCallback =
+        //Moved to the createLeScanCallback;
+
+        if (!scanning) {
+            scanning = true;
+            scanLeDevice();
+        }
+
+        return true;
+    }
+    
+    private void createLeScanCallback(){
+    	//Clear the Map so we don't list previously found devices we're no longer connecting to
+    	rssiMap.clear();
+    	
+    	leScanCallback =
                 new BluetoothAdapter.LeScanCallback() {
                     @Override
                     public void onLeScan(final BluetoothDevice device, final int rssi,
@@ -125,13 +140,7 @@ public class BluetoothFragment extends Fragment {
                         });
                     }
                 };
-
-        if (!scanning) {
-            scanning = true;
-            scanLeDevice();
-        }
-
-        return true;
+    	
     }
 
     private String getFormattedDistance(double distance) {
@@ -143,13 +152,18 @@ public class BluetoothFragment extends Fragment {
     }
 
     private void scanLeDevice() {
+    	//Create a new LeScanCallback for every scan
+    	createLeScanCallback();
+    	
         // Stops scanning after a pre-defined scan period.
         handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-            bluetoothAdapter.stopLeScan(leScanCallback);
-            scanLeDevice();
+            	bluetoothAdapter.stopLeScan(leScanCallback);
+            	if(scanning){
+            		scanLeDevice();
+            	}
             }
         }, SCAN_PERIOD);
 
