@@ -40,8 +40,6 @@ public class BluetoothFragment extends Fragment {
     private boolean scanning = false;
     private int scans = 0;
 
-    public static final String TAG = "RNM-BF";
-
     private Activity activity;
     private ArrayAdapter<String> beaconAdapter;
     private BluetoothAdapter bluetoothAdapter;
@@ -68,7 +66,6 @@ public class BluetoothFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.d(TAG, "Attached");
         this.activity = activity;
         initBluetooth();
     }
@@ -99,8 +96,6 @@ public class BluetoothFragment extends Fragment {
 
         beaconList.add("BEACON LIST");
 
-        //Moved to the createLeScanCallback;
-
         if (!scanning) {
             scanning = true;
             scanLeDevice();
@@ -117,7 +112,7 @@ public class BluetoothFragment extends Fragment {
                     @Override
                     public void onLeScan(final BluetoothDevice device, final int rssi,
                                          byte[] scanRecord) {
-                        Log.d(TAG, "RSSI: " + rssi);
+                        Globals.log("RSSI: " + rssi);
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -149,7 +144,7 @@ public class BluetoothFragment extends Fragment {
 
 
     private void scanLeDevice() {
-    	//Create a new LeScanCallback for every scan
+    	// Create a new LeScanCallback for every scan.
     	createLeScanCallback();
     	
         // Stops scanning after a pre-defined scan period.
@@ -167,7 +162,7 @@ public class BluetoothFragment extends Fragment {
         }, SCAN_PERIOD);
 
         bluetoothAdapter.startLeScan(leScanCallback);
-        Log.d(TAG, "Start scan: " + scans);
+        Globals.log("Start scan: " + scans);
         scans++;
     }
 }
