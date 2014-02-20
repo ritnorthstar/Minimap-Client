@@ -43,6 +43,7 @@ public class BluetoothFragment extends Fragment {
     public static final String TAG = "RNM-BF";
 
     private Activity activity;
+    private ArrayAdapter<String> beaconAdapter;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothAdapter.LeScanCallback leScanCallback;
     private BluetoothManager bluetoothManager;
@@ -85,11 +86,8 @@ public class BluetoothFragment extends Fragment {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-
-
         beaconList = new ArrayList<String>();
-        final ArrayAdapter<String> beaconAdapter =
-                new ArrayAdapter<String>(activity, R.layout.list_beacon, beaconList);
+        beaconAdapter = new ArrayAdapter<String>(activity, R.layout.list_beacon, beaconList);
         beaconListView.setAdapter(beaconAdapter);
 
         if (bluetoothAdapter.getDefaultAdapter() == null) {
@@ -101,7 +99,20 @@ public class BluetoothFragment extends Fragment {
 
         beaconList.add("BEACON LIST");
 
-        leScanCallback =
+        //Moved to the createLeScanCallback;
+
+        if (!scanning) {
+            scanning = true;
+            scanLeDevice();
+        }
+
+        return true;
+    }
+    
+    private void createLeScanCallback() {
+        // TODO: Remove unconnected beacons from beacon list after a certain period of time.
+
+    	leScanCallback =
                 new BluetoothAdapter.LeScanCallback() {
                     @Override
                     public void onLeScan(final BluetoothDevice device, final int rssi,
@@ -134,17 +145,13 @@ public class BluetoothFragment extends Fragment {
                         });
                     }
                 };
-
-        if (!scanning) {
-            scanning = true;
-            scanLeDevice();
-        }
-
-        return true;
     }
 
 
     private void scanLeDevice() {
+    	//Create a new LeScanCallback for every scan
+    	createLeScanCallback();
+    	
         // Stops scanning after a pre-defined scan period.
         handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -152,6 +159,10 @@ public class BluetoothFragment extends Fragment {
             public void run() {
                 bluetoothAdapter.stopLeScan(leScanCallback);
                 scanLeDevice();
+            	bluetoothAdapter.stopLeScan(leScanCallback);
+            	if (scanning) {
+            		scanLeDevice();
+            	}
             }
         }, SCAN_PERIOD);
 
