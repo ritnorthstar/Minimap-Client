@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
-    public static final double PROPAGATION_CONSTANT = 1.1;
+    public static final double PROPAGATION_CONSTANT = 1.5;
     public static final int RSSI_AT_ONE_METER = -75;
     public static final int SMOOTHING_RANGE = 5;
 
@@ -55,7 +55,7 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
     }
 
     public String getFormattedDistance() {
-        return (new DecimalFormat("#.##").format(computeDistance()) + " m");
+        return (new DecimalFormat("#.##").format(computeDistance()) + " m (" + Integer.toString(signalStrength) + ")");
     }
 
     private double rssiToDistance(int rssi) {

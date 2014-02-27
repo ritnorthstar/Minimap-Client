@@ -7,26 +7,26 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.northstar.minimap.beacon.BluetoothBeacon;
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +35,12 @@ import java.util.Map;
  */
 public class BluetoothFragment extends Fragment {
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final long SCAN_PERIOD = 10000;
+    private static final long SCAN_PERIOD = 3000;
+
+    private static final double BEACON_DISTANCE = 21.95;
+    private static final String RIGHT_BEACON_ID = "FE:CC:38:AA:BE:B5";
+    private static final String LEFT_BEACON_ID = "E4:3E:A0:63:BC:C6";
+    public static final int SMOOTHING_RANGE = 2;
 
     private boolean scanning = false;
     private int scans = 0;
@@ -48,7 +53,16 @@ public class BluetoothFragment extends Fragment {
     private Handler handler;
     private List<String> beaconList;
     private ListView beaconListView;
+    private ProgressBar positionProgressBar;
+    private TextView positionTextView;
     private Map<String, IBeacon> beaconMap;
+
+    private Map<String, PointF> beaconLocations;
+
+    private LinkedList<Double> previousPositions;
+
+    private StickNFindBluetoothBeacon leftBeacon;
+    private StickNFindBluetoothBeacon rightBeacon;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,9 +70,17 @@ public class BluetoothFragment extends Fragment {
         LinearLayout layout = (LinearLayout) inflater.inflate(
                 R.layout.fragment_bluetooth, container, false);
         beaconListView = (ListView) layout.findViewById(R.id.beacon_list);
+        positionTextView = (TextView) layout.findViewById(R.id.positionTextView);
+        positionProgressBar = (ProgressBar) layout.findViewById(R.id.positionProgressBar);
+        previousPositions = new LinkedList<Double>();
         initBluetooth();
 
         beaconMap = new HashMap<String, IBeacon>();
+
+        beaconLocations = new HashMap<String, PointF>();
+        beaconLocations.put("FE:CC:38:AA:BE:B5", new PointF(0.0f, 0.0f));
+        beaconLocations.put("FD:65:28:71:80:C0", new PointF(1.5f, 0.0f));
+        beaconLocations.put("E4:3E:A0:63:BC:C6", new PointF(0.0f, 3.7f));
 
         return layout;
     }
@@ -103,6 +125,66 @@ public class BluetoothFragment extends Fragment {
 
         return true;
     }
+
+    private void updatePosition() {
+//        if (leftBeacon == null || rightBeacon == null) {
+//            return;
+//        }
+//
+//        double leftPosition = Math.min(20, leftBeacon.computeDistance());
+//        double rightPosition = BEACON_DISTANCE - Math.min(20, rightBeacon.computeDistance());
+//        double uncertainty = rightPosition - leftPosition;
+//        double position = ((leftPosition + rightPosition) / 2.0) / BEACON_DISTANCE * 100;
+//
+//        double smoothedPosition = 0.0;
+//
+//        if (previousPositions.size() == SMOOTHING_RANGE) {
+//            previousPositions.removeFirst();
+//        }
+//
+//        previousPositions.addLast(position);
+//
+//        for (double previousPosition: previousPositions) {
+//            smoothedPosition += previousPosition;
+//        }
+//
+//        smoothedPosition /= previousPositions.size();
+//
+//        int zone = (int)(smoothedPosition / 25);
+//
+//        String uncertaintyString = new DecimalFormat("#.##").format(uncertainty);
+//        String text = Integer.toString(zone) + " (" + Integer.toString((int) smoothedPosition) + "%) [" + uncertaintyString + "]";
+
+        String text = Boolean.toString(beaconMap.size() == 3);
+
+        if (beaconMap.size() == 3) {
+            double d = 1.5;
+            double i = 0.0;
+            double j = 5.0;
+
+            double r1 = beaconMap.get("FE:CC:38:AA:BE:B5").computeDistance();
+            double r2 = beaconMap.get("FD:65:28:71:80:C0").computeDistance();
+            double r3 = beaconMap.get("E4:3E:A0:63:BC:C6").computeDistance();
+
+            double sr1 = Math.pow(r1, 2);
+            double sr2 = Math.pow(r2, 2);
+            double sr3 = Math.pow(r3, 2);
+            double sd = Math.pow(d, 2);
+            double si = Math.pow(i, 2);
+            double sj = Math.pow(j, 2);
+
+            double x = (sr1 - sr2 + sd) / (2 * d);
+            double y = ((sr1 - sr3 + si + sj) / (2 * j)) - ((i / j) * x);
+
+            String xString = new DecimalFormat("#.##").format(x);
+            String yString = new DecimalFormat("#.##").format(y);
+
+            text = "(" + xString + ", " + yString + ")";
+        }
+
+        positionTextView.setText(text);
+        //positionProgressBar.setProgress((int) smoothedPosition);
+    }
     
     private void createLeScanCallback() {
         // TODO: Remove unconnected beacons from beacon list after a certain period of time.
@@ -122,6 +204,14 @@ public class BluetoothFragment extends Fragment {
                                 if (!beaconMap.containsKey(address)) {
                                     beaconMap.put(address,
                                             new StickNFindBluetoothBeacon(device, null, null));
+
+                                    if (address.equals(LEFT_BEACON_ID)) {
+                                        leftBeacon = (StickNFindBluetoothBeacon) beaconMap.get(address);
+                                    }
+
+                                    if (address.equals(RIGHT_BEACON_ID)) {
+                                        rightBeacon = (StickNFindBluetoothBeacon) beaconMap.get(address);
+                                    }
                                 }
 
                                 // Update beacon's signal strength.
@@ -136,6 +226,7 @@ public class BluetoothFragment extends Fragment {
                                 }
 
                                 beaconAdapter.notifyDataSetChanged();
+                                updatePosition();
                             }
                         });
                     }
