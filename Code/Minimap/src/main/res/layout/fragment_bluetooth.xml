@@ -6,7 +6,7 @@
                 tools:context=".MapActivity$PlaceholderFragment"
                 android:orientation="vertical">
 
-    <ListView android:id="@+id/rssi_list"
+    <ListView android:id="@+id/beacon_list"
               android:layout_width="fill_parent"
               android:layout_height="200dp"
               android:dividerHeight="1dp"

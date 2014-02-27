@@ -36,4 +36,10 @@ public interface IBeacon {
      */
     public Double computeDistance();
 
+    public String getFormattedDistance();
+
+    /**
+     * Set the beacon's signal strength.
+     */
+    public void setSignalStrength(int signalStrength);
 }

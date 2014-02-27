@@ -6,12 +6,16 @@ package com.northstar.minimap.beacon;
 import com.northstar.minimap.Position;
 import android.bluetooth.BluetoothDevice;
 
+import java.text.DecimalFormat;
+
 /**
  * Class to create a wrapper around a bluetooth device.
  * Adds our own ID and the position on the map, and handles
  * all functions relating to accessing the device.
  */
 public abstract class BluetoothBeacon implements IBeacon {
+
+    protected int signalStrength;
 
     private String ID;
     private Position pos;
@@ -49,8 +53,11 @@ public abstract class BluetoothBeacon implements IBeacon {
      * bluetooth beacon
      * @return The distance to the beacon
      */
-    public Double computeDistance(){
+    public Double computeDistance() {
         return 0.0;
     }
 
+    public void setSignalStrength(int signalStrength) {
+        this.signalStrength = signalStrength;
+    }
 }
