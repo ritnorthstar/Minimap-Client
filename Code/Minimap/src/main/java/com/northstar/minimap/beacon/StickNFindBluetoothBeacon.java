@@ -7,42 +7,58 @@ import com.northstar.minimap.Position;
 import android.bluetooth.BluetoothDevice;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
-    private static double propagationConstant = 1.8;//2.007;
+    private static double propagationConstant = 2.007;
     private static double rssiAtOneMeter = -68.6;
-    private double previousAverageRssi = 0;
-
-    public static HashMap<String, Integer> beaconMap;
 
     public static final int SMOOTHING_RANGE = 5;
+    public static final int MAX_SMOOTHING_DEVIATION = 7;
+
+    public static Map<Integer, String> beaconIdMap;
+
+    private double previousAverageRssi = 0;
 
     private LinkedList<Double> previousRssis;
 
-    public StickNFindBluetoothBeacon(BluetoothDevice device, String beaconID, Position location) {
-        super(device, beaconID, location);
+    public StickNFindBluetoothBeacon(BluetoothDevice device, String beaconID, Position position) {
+        super(device, beaconID, position);
 
         previousRssis = new LinkedList<Double>();
-
-        beaconMap = new HashMap<String, Integer>();
-        beaconMap.put("FD:65:28:71:80:C0", 1);
-        beaconMap.put("FE:CC:38:AA:BE:B5", 2);
-        beaconMap.put("E4:3E:A0:63:BC:C6", 3);
-        beaconMap.put("E3:BF:2E:56:BF:B9", 4);
     }
 
+    public static void initBeaconIdMap() {
+        beaconIdMap = new HashMap<Integer, String>();
+        beaconIdMap.put(1, "FD:65:28:71:80:C0");
+        beaconIdMap.put(2, "FE:CC:38:AA:BE:B5");
+        beaconIdMap.put(3, "E4:3E:A0:63:BC:C6");
+        beaconIdMap.put(4, "E3:BF:2E:56:BF:B9");
+        beaconIdMap = Collections.unmodifiableMap(beaconIdMap);
+    }
+
+    /**
+     * Method to use our own algorithm to compute distance to a
+     * bluetooth beacon
+     */
     @Override
-    public int getSignalStrength() {
-        return signalStrength;
+    public Double computeDistance() {
+        return Math.pow(10, (rssiAtOneMeter - (getAverageRssi())) / (10.0 * propagationConstant));
+    }
+
+    public static Double computeDistance(double rssi) {
+        return Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
     }
 
     public double getAverageRssi() {
         double smoothRssi = 0;
 
-        if (previousRssis.size() == SMOOTHING_RANGE && Math.abs(signalStrength - previousAverageRssi) > 7) {
+        if (previousRssis.size() == SMOOTHING_RANGE &&
+                Math.abs(signalStrength - previousAverageRssi) > MAX_SMOOTHING_DEVIATION) {
             return previousAverageRssi;
         }
 
@@ -60,13 +76,14 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         return previousAverageRssi;
     }
 
-    /**
-     * Method to use our own algorithm to compute distance to a
-     * bluetooth beacon
-     */
-    @Override
-    public Double computeDistance() {
-        return rssiToDistance(getAverageRssi());
+    public static int getBeaconNumber(String id) {
+        for (int number: beaconIdMap.keySet()) {
+            if (beaconIdMap.get(number).equals(id)) {
+                return number;
+            }
+        }
+
+        return -1;
     }
 
     public String getFormattedDistance() {
@@ -75,16 +92,17 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         return (distanceString + " m (" + rssiString + ")");
     }
 
-    public static double rssiToDistance(double rssi) {
-        return Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
-    }
-
     public static double getPropagationConstant() {
         return propagationConstant;
     }
 
     public static double getRssiAtOneMeter() {
         return rssiAtOneMeter;
+    }
+
+    @Override
+    public int getSignalStrength() {
+        return signalStrength;
     }
 
     public static void setPropagationConstant(double propagationConstant) {

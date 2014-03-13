@@ -21,7 +21,7 @@ public interface IBeacon {
      * Method to get the position of the beacon
      * @return The beacons position
      */
-    public Position getPos();
+    public Position getPosition();
 
     /**
      * Method to obtain the signal strength of a beacon.

@@ -8,19 +8,19 @@ package com.northstar.minimap;
  */
 public class Position {
 
-    private float x;
-    private float y;
+    private double x;
+    private double y;
 
-    public Position(float x, float y){
+    public Position(double x, double y){
         this.x = x;
         this.y = y;
     }
 
-    public float getX(){
+    public double getX(){
         return x;
     }
 
-    public float getY(){
+    public double getY(){
         return y;
     }
 
