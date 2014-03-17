@@ -18,13 +18,13 @@ public abstract class BluetoothBeacon implements IBeacon {
     protected int signalStrength;
 
     private String ID;
-    private Position pos;
+    private Position position;
     private BluetoothDevice beacon;
 
-    public BluetoothBeacon(BluetoothDevice device, String beaconID, Position location){
+    public BluetoothBeacon(BluetoothDevice device, String beaconID, Position position) {
         beacon = device;
         ID = beaconID;
-        pos = location;
+        this.position = position;
     }
 
     /**
@@ -35,8 +35,8 @@ public abstract class BluetoothBeacon implements IBeacon {
         return ID;
     }
 
-    public Position getPos(){
-        return pos;
+    public Position getPosition(){
+        return position;
     }
 
     /**
