@@ -1,26 +1,26 @@
 //John Paul Mardelli
 //Last updated November 2nd, 2013
 
-package com.northstar.minimap;
+package com.northstar.minimap.map;
 
 /**
  * Class to represent positions on the map.
  */
 public class Position {
 
-    private float x;
-    private float y;
+    private int x;
+    private int y;
 
-    public Position(float x, float y){
+    public Position(int x, int y){
         this.x = x;
         this.y = y;
     }
 
-    public float getX(){
+    public int getX(){
         return x;
     }
 
-    public float getY(){
+    public int getY(){
         return y;
     }
 

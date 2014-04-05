@@ -3,20 +3,40 @@
 
 package com.northstar.minimap.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.itinerary.ItineraryPoint;
 
 public class Map {
 
-    private IBeacon IBeacon[];
-    private ItineraryPoint currentItin;
-
-    public void setDestination(ItineraryPoint destination){
-        currentItin = destination;
+    private List<IBeacon> beacons = new ArrayList<IBeacon>();
+    private List<Table> tables = new ArrayList<Table>();
+    private String mapID;
+    
+    public void setMapID(String id){
+    	mapID = id;
     }
-
-    public void drawItinerary(){
-
+    
+    public String getMapID(){
+    	return mapID;
+    }
+    
+    public void addBeacon(IBeacon beacon){
+    	beacons.add(beacon);
+    }
+    
+    public List<IBeacon> getBeacons(){
+    	return beacons;
+    }
+    
+    public void addTable(Table table){
+    	tables.add(table);
+    }
+    
+    public List<Table> getTables(){
+    	return tables;
     }
 
 }

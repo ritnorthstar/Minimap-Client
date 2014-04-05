@@ -3,7 +3,7 @@
 
 package com.northstar.minimap.beacon;
 
-import com.northstar.minimap.Position;
+import com.northstar.minimap.map.Position;
 
 /**
  * Interface that all implementations of beacons will use, regardless of technology. Used so our
@@ -22,18 +22,5 @@ public interface IBeacon {
      * @return The beacons position
      */
     public Position getPos();
-
-    /**
-     * Method to obtain the signal strength of a beacon.
-     * @return A double representing the beacons signal strength.
-     */
-    public int getSignalStrength();
-
-    /**
-     * Method to compute distance based on the necessary method for the
-     * given technology
-     * @return The distance from the beacon, in (don't know the measurement).
-     */
-    public Double computeDistance();
 
 }

@@ -38,12 +38,19 @@
         android:hint="@string/server_ip_hint"/>
 
     <Button
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/button_server_ip_go"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:onClick="submitIP"
-        android:layout_gravity="center_horizontal"/>
-
+        android:text="@string/button_server_ip_go" />
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="goToMap"
+        android:text="@string/button_map_go" />
+    
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="200px"

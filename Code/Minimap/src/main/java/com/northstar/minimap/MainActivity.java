@@ -71,4 +71,9 @@ public class MainActivity extends Activity {
             ipTextbox.setText("");
         }
     }
+    
+    public void goToMap(View view) {
+    	Intent mapIntent = new Intent(this, MapActivity.class);
+    	startActivity(mapIntent);
+    }
 }

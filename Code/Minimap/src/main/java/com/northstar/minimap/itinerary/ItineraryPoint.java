@@ -3,7 +3,7 @@
 
 package com.northstar.minimap.itinerary;
 
-import com.northstar.minimap.Position;
+import com.northstar.minimap.map.Position;
 
 public class ItineraryPoint {
 

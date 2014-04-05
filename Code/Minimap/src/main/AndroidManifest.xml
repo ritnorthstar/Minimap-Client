@@ -8,10 +8,23 @@
         android:minSdkVersion="18"
         android:targetSdkVersion="18" />
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <!-- The following two permissions are not required to use
+         Google Maps Android API v2, but are recommended. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
     <application
@@ -24,7 +37,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDWNwITEd8SUeP8sAfKHwGMVcz_hnV6QNk"/>
+            android:value="AIzaSyCcUf0n0973TOEKO9jrNqwseDklWWzzbos"/>
         <activity
             android:name="com.northstar.minimap.MainActivity"
             android:label="@string/app_name" >
@@ -42,25 +55,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.northstar.minimap.DrawerActivity" />
         </activity>
-
-        <uses-permission android:name="android.permission.INTERNET"/>
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-        <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-        <!-- The following two permissions are not required to use
-             Google Maps Android API v2, but are recommended. -->
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
-        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
-        <uses-feature
-            android:glEsVersion="0x00020000"
-            android:required="true"/>
-
-        <uses-permission android:name="android.permission.BLUETOOTH"/>
-        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-        <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+        <activity
+            android:name="com.northstar.minimap.MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName="com.northstar.minimap.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.northstar.minimap.MapActivity" />
+        </activity>
 
     </application>
 
