@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.9.+'
     }
 }
 apply plugin: 'android'
@@ -16,11 +16,12 @@ dependencies {
     compile 'com.android.support:support-v4:13.0.+'
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.google.android.gms:play-services:4.0.30'
+    compile files('libs/Jama-1.0.3.jar')
 }
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.1.1"
+    buildToolsVersion "19.0.0"
 
     defaultConfig {
         minSdkVersion 18

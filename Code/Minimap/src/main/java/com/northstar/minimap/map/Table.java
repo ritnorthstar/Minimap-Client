@@ -1,5 +1,7 @@
 package com.northstar.minimap.map;
 
+import com.northstar.minimap.Position;
+
 public class Table {
 	
 	private int widthSubdivisions;
@@ -43,7 +45,7 @@ public class Table {
 	 * Method to obtain the Position of the table
 	 * @return A Position object containing the x,y coordinates of the top left position of the table
 	 */
-	public Position getPos(){
+	public Position getPosition(){
 		return pos;
 	}
 	

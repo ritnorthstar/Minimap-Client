@@ -165,7 +165,7 @@ public class CustomMapFragment extends Fragment{
     		MarkerOptions beaconMarkerOptions = new MarkerOptions();
     		
     		//Set the position of the marker
-    		LatLng markerLoc = proj.fromScreenLocation(new Point(beacon.getPos().getX(), beacon.getPos().getY()));
+    		LatLng markerLoc = proj.fromScreenLocation(new Point((int)beacon.getPosition().getX(), (int)beacon.getPosition().getY()));
     		beaconMarkerOptions = beaconMarkerOptions.position(markerLoc);
     		
     		//Set the title of the marker
@@ -186,12 +186,10 @@ public class CustomMapFragment extends Fragment{
     }
     
     private void storeBoundBoxes(Table table){
-    	LatLng neCorner = proj.fromScreenLocation(new Point(table.getPos().getX() + table.getWidth(),
-    								 						table.getPos().getY()));
-    	Log.i("JP", "North Latitude: Pixels - " + table.getPos().getY() + " LatLng - " + neCorner.latitude);
-    	LatLng swCorner = proj.fromScreenLocation(new Point(table.getPos().getX(),
-    								 						table.getPos().getY() + table.getHeight()));
-    	Log.i("JP", "South Latitude: Pixels - " + (table.getPos().getY() + table.getHeight()) + " LatLng - " + swCorner.latitude);
+    	LatLng neCorner = proj.fromScreenLocation(new Point((int)table.getPosition().getX() + table.getWidth(),
+    								 						(int)table.getPosition().getY()));
+    	LatLng swCorner = proj.fromScreenLocation(new Point((int)table.getPosition().getX(),
+    								 						(int)table.getPosition().getY() + table.getHeight()));
     	LatLngBounds bound = new LatLngBounds(swCorner, neCorner);
     	boundBoxes.add(bound);
     }
@@ -206,13 +204,13 @@ public class CustomMapFragment extends Fragment{
     			
     			PolygonOptions tableSquare = new PolygonOptions();
     			
-    			double leftX = (table.getPos().getX() + 
+    			double leftX = (table.getPosition().getX() + 
     							widthInc * wSub);
-    			double rightX = (table.getPos().getX() + 
+    			double rightX = (table.getPosition().getX() + 
 								 widthInc * (wSub + 1));
-    			double topY = (table.getPos().getY() + 
+    			double topY = (table.getPosition().getY() + 
 							   heightInc * hSub);
-    			double bottomY = (table.getPos().getY() + 
+    			double bottomY = (table.getPosition().getY() + 
 						   		  heightInc * (hSub + 1));
     			
     			
