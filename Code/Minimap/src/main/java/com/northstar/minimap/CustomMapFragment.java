@@ -79,15 +79,13 @@ public class CustomMapFragment extends Fragment implements UserPositionListener 
 
         googleMap.setLocationSource(locSource);
 
-        //Make reference to parent for listener
-        parentAct = (MapActivity)this.getActivity();
-
         //customTP = new CustomTileProvider(filename, height, width);
         //overlayTOps = new TileOverlayOptions()
         //overlayTOps.tileProvider(customTP);
         //googleMap.addTileOverlay(overlayTOps);
 
-        googleMap.setLocationSource(locSource);
+        //Make reference to parent for listener
+        parentAct = (MapActivity)this.getActivity();
         
         //Set up Global Layout listener to get projection at right time
         OnGlobalLayoutListener ready = new OnGlobalLayoutListener() {
