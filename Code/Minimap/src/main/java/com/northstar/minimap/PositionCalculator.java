@@ -84,31 +84,26 @@ public class PositionCalculator {
      * @return
      */
     public Position multilaterate(List<IBeacon> beacons) {
-        // TODO: Abstract out to more than four beacons.
-
-        IBeacon b1 = beacons.get(0);
-        IBeacon b2 = beacons.get(1);
-        IBeacon b3 = beacons.get(2);
-        IBeacon b4 = beacons.get(3);
-
-        Position p1 = b1.getPosition();
-        Position p2 = b2.getPosition();
-        Position p3 = b3.getPosition();
-        Position p4 = b4.getPosition();
-
-        double r1 = b1.computeDistance();
-        double r2 = b2.computeDistance();
-        double r3 = b3.computeDistance();
-        double r4 = b4.computeDistance();
-
         // Known x and y positions of beacons.  Estimated distances between user and beacons.
-        double xi[] = new double[] { p1.getX(), p2.getX(), p3.getX(), p4.getX() };
-        double yi[] = new double[] { p1.getY(), p2.getY(), p3.getY(), p4.getY() };
-        double ri[] = new double[] { r1, r2, r3, r4 };
+        double bx[] = new double[beacons.size()];
+        double by[] = new double[beacons.size()];
+        double br[] = new double[beacons.size()];
 
         // Estimated x and y position of user.
-        double x = (xi[0] + xi[1] + xi[2] + xi[3]) / 4;
-        double y = (yi[0] + yi[1] + yi[2] + yi[3]) / 4;
+        double x = 0;
+        double y = 0;
+
+        for (int i = 0; i < beacons.size(); i++) {
+            bx[i] = beacons.get(i).getPosition().getX();
+            by[i] = beacons.get(i).getPosition().getY();
+            br[i] = beacons.get(i).computeDistance();
+
+            x += bx[i];
+            y += by[i];
+        }
+
+        x /= beacons.size();
+        y /= beacons.size();
 
         // The algorithm is repeated n=GAUSS_NEWTON_ITERATIONS times
         for (int k = 0; k < GAUSS_NEWTON_ITERATIONS; k++) {
@@ -120,24 +115,24 @@ public class PositionCalculator {
             double j5 = 0.0;
 
             // Calculate elements of transposed Jacobian matrices needed.
-            for (int i = 0; i < 4; i++) {
-                double f = minFn(x, y, xi[i], yi[i], ri[i]);
-                j0 += Math.pow(x - xi[i], 2) / Math.pow(f + ri[i], 2);
-                j1 += ((x - xi[i]) * (y - yi[i])) / Math.pow(f + ri[i], 2);
-                j2 += ((x - xi[i]) * (y - yi[i])) / Math.pow(f + ri[i], 2);
-                j3 += Math.pow(y - yi[i], 2) / Math.pow(f + ri[i], 2);
+            for (int i = 0; i < beacons.size(); i++) {
+                double f = minFn(x, y, bx[i], by[i], br[i]);
+                j0 += Math.pow(x - bx[i], 2) / Math.pow(f + br[i], 2);
+                j1 += ((x - bx[i]) * (y - by[i])) / Math.pow(f + br[i], 2);
+                j2 += ((x - bx[i]) * (y - by[i])) / Math.pow(f + br[i], 2);
+                j3 += Math.pow(y - by[i], 2) / Math.pow(f + br[i], 2);
 
-                j4 += ((x - xi[i]) * f) / (f + ri[i]);
-                j5 += ((y - yi[i]) * f) / (f + ri[i]);
+                j4 += ((x - bx[i]) * f) / (f + br[i]);
+                j5 += ((y - by[i]) * f) / (f + br[i]);
             }
 
             // Form transposed Jacobian matrices.
-            Matrix J1 = new Matrix(new double[][]{{j0, j1}, {j2, j3}});
-            Matrix J2 = new Matrix(new double[][]{{j4}, {j5}});
+            Matrix jacobian1 = new Matrix(new double[][]{{j0, j1}, {j2, j3}});
+            Matrix jacobian2 = new Matrix(new double[][]{{j4}, {j5}});
             Matrix B = new Matrix(new double[][]{{x}, {y}});
 
             // Perform Gauss-Newton calculation and set refined x and y value estimations.
-            Matrix Bk = B.minus(J1.inverse().times(J2));
+            Matrix Bk = B.minus(jacobian1.inverse().times(jacobian2));
             x = Bk.get(0, 0);
             y = Bk.get(1, 0);
         }
