@@ -3,6 +3,8 @@
 
 package com.northstar.minimap;
 
+import android.graphics.Point;
+
 /**
  * Class to represent positions on the map.
  */
@@ -24,4 +26,7 @@ public class Position {
         return y;
     }
 
+    public Point toPoint() {
+        return new Point((int) Math.round(x), (int) Math.round(y));
+    }
 }

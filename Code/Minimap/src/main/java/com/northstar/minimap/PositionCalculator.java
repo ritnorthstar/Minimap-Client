@@ -5,6 +5,7 @@ import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import Jama.Matrix;
@@ -17,6 +18,9 @@ public class PositionCalculator {
     public static final double MAX_POSITION_DELTA = 1.0;
     public static final int GAUSS_NEWTON_ITERATIONS = 10;
     public static final int SMOOTHING_RANGE = 5;
+
+    public static final double GRID_HEIGHT = 3.0;
+    public static final double GRID_WIDTH = 3.0;
 
     private double prevAvgX;
     private double prevAvgY;
@@ -79,13 +83,13 @@ public class PositionCalculator {
      * @param beacons
      * @return
      */
-    public Position multilaterate(IBeacon[] beacons) {
+    public Position multilaterate(List<IBeacon> beacons) {
         // TODO: Abstract out to more than four beacons.
 
-        IBeacon b1 = beacons[0];
-        IBeacon b2 = beacons[1];
-        IBeacon b3 = beacons[2];
-        IBeacon b4 = beacons[3];
+        IBeacon b1 = beacons.get(0);
+        IBeacon b2 = beacons.get(1);
+        IBeacon b3 = beacons.get(2);
+        IBeacon b4 = beacons.get(3);
 
         Position p1 = b1.getPosition();
         Position p2 = b2.getPosition();

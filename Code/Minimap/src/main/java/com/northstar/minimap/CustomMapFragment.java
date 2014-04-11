@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -38,7 +39,7 @@ import com.northstar.minimap.map.Table;
 /**
  * Code gotten from: http://www.matt-reid.co.uk/blog_post.php?id=93
  */
-public class CustomMapFragment extends Fragment{
+public class CustomMapFragment extends Fragment implements UserPositionListener {
 
 	// Google and Android objects
     private MapView mapView;
@@ -49,19 +50,25 @@ public class CustomMapFragment extends Fragment{
     private MapActivity parentAct;
     private Map map;
     private List<LatLngBounds> boundBoxes = new ArrayList<LatLngBounds>();
+    private LatLngBounds mapBounds;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-    	
+
+        //Make reference to parent for listener
+        parentAct = (MapActivity)this.getActivity();
+        locSource = new BluetoothLELocationSource();
     	
         // inflate and return the layout
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();//needed to get the map to display immediately
-        
-        MapsInitializer.initialize(this.getActivity());
+
+        try {
+            MapsInitializer.initialize(this.getActivity());
+        } catch (GooglePlayServicesNotAvailableException e) {}
         
         googleMap = mapView.getMap();
         
@@ -73,16 +80,15 @@ public class CustomMapFragment extends Fragment{
         
         //Set up location stuff
         googleMap.setMyLocationEnabled(true);
-        locSource = new BluetoothLELocationSource();
+
         googleMap.setLocationSource(locSource);
 
         //customTP = new CustomTileProvider(filename, height, width);
         //overlayTOps = new TileOverlayOptions()
         //overlayTOps.tileProvider(customTP);
         //googleMap.addTileOverlay(overlayTOps);
-        
-        //Make reference to parent for listener
-        parentAct = (MapActivity)this.getActivity();
+
+        googleMap.setLocationSource(locSource);
         
         //Set up Global Layout listener to get projection at right time
         OnGlobalLayoutListener ready = new OnGlobalLayoutListener() {
@@ -132,6 +138,19 @@ public class CustomMapFragment extends Fragment{
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
+    @Override
+    public void onUserPositionChanged(Position userPosition) {
+        Position userMapPosition = MapActivity.toMapPosition(userPosition);
+        Log.d("BT-POSITION", userMapPosition.getX() + " " + userMapPosition.getY());
+
+        LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
+        Location userLocation = new Location("");
+        userLocation.setLatitude(userLatLng.latitude);
+        userLocation.setLongitude(userLatLng.longitude);
+        userLocation.setAccuracy(100);
+        locSource.setLocation(userLocation);
+    }
     
     private void setProjection() {
     	proj = googleMap.getProjection();
@@ -153,6 +172,13 @@ public class CustomMapFragment extends Fragment{
         location.setLongitude(coordinate.longitude);
         location.setAccuracy(100);
     	locSource.setLocation(location);
+
+        LatLng neCorner = proj.fromScreenLocation(MapActivity.MAP_NE_CORNER.toPoint());
+        LatLng swCorner = proj.fromScreenLocation(MapActivity.MAP_SW_CORNER.toPoint());
+
+        //mapBounds = new LatLngBounds(swCorner, neCorner);
+        //locSource.addBoundaries(mapBounds);
+        parentAct.setUserPositionListener(this);
     }
     
     private void drawBeaconMarkers(){

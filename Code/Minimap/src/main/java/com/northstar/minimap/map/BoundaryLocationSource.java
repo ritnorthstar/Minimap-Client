@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,7 +37,7 @@ public abstract class BoundaryLocationSource implements LocationSource{
 	public void addBoundaries(LatLngBounds boundary){
     	boundaries.add(boundary);
     }
-	
+
 	public LatLngBounds setLocation(Location loc){
 		if (locListener != null) {
 			for(int i = 0; i < boundaries.size(); i++){
@@ -48,6 +49,7 @@ public abstract class BoundaryLocationSource implements LocationSource{
 					return bound;
 				}
 			}
+            Log.d("BT-LOC", loc.getLatitude() + " " + loc.getLongitude());
 			locListener.onLocationChanged(loc);
 		}
 		return null;
@@ -58,7 +60,7 @@ public abstract class BoundaryLocationSource implements LocationSource{
 		
 		this.map = map;
 	}
-	
+
 	public void onPause() {
         mPaused = true;
     }
