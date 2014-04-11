@@ -49,7 +49,6 @@ public abstract class BoundaryLocationSource implements LocationSource{
 					return bound;
 				}
 			}
-            Log.d("BT-LOC", loc.getLatitude() + " " + loc.getLongitude());
 			locListener.onLocationChanged(loc);
 		}
 		return null;

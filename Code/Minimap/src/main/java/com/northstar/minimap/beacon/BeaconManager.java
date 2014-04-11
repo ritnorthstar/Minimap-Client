@@ -1,4 +1,4 @@
-package com.northstar.minimap;
+package com.northstar.minimap.beacon;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -7,13 +7,12 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 
-import com.northstar.minimap.beacon.IBeacon;
-import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
+import com.northstar.minimap.bluetooth.LeScanCallbackProvider;
+import com.northstar.minimap.Position;
+import com.northstar.minimap.PositionCalculator;
+import com.northstar.minimap.map.UserPositionListener;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,7 +146,6 @@ public class BeaconManager implements LeScanCallbackProvider {
 
                 // Update beacon's signal strength.
                 beaconMap.get(number).setSignalStrength(rssi);
-                Log.d("BT-SCAN", number + " " + rssi + " " + beaconMap.size());
 
                 updateUserPosition();
             }

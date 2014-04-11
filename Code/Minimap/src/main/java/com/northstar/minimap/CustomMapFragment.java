@@ -11,13 +11,11 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,12 +27,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.map.BluetoothLELocationSource;
 import com.northstar.minimap.map.BoundaryLocationSource;
 import com.northstar.minimap.map.Map;
 import com.northstar.minimap.map.Table;
+import com.northstar.minimap.map.UserPositionListener;
 
 /**
  * Code gotten from: http://www.matt-reid.co.uk/blog_post.php?id=93
@@ -56,8 +54,6 @@ public class CustomMapFragment extends Fragment implements UserPositionListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //Make reference to parent for listener
-        parentAct = (MapActivity)this.getActivity();
         locSource = new BluetoothLELocationSource();
     	
         // inflate and return the layout
@@ -82,6 +78,9 @@ public class CustomMapFragment extends Fragment implements UserPositionListener 
         googleMap.setMyLocationEnabled(true);
 
         googleMap.setLocationSource(locSource);
+
+        //Make reference to parent for listener
+        parentAct = (MapActivity)this.getActivity();
 
         //customTP = new CustomTileProvider(filename, height, width);
         //overlayTOps = new TileOverlayOptions()
@@ -142,8 +141,6 @@ public class CustomMapFragment extends Fragment implements UserPositionListener 
     @Override
     public void onUserPositionChanged(Position userPosition) {
         Position userMapPosition = MapActivity.toMapPosition(userPosition);
-        Log.d("BT-POSITION", userMapPosition.getX() + " " + userMapPosition.getY());
-
         LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
         Location userLocation = new Location("");
         userLocation.setLatitude(userLatLng.latitude);
@@ -173,11 +170,6 @@ public class CustomMapFragment extends Fragment implements UserPositionListener 
         location.setAccuracy(100);
     	locSource.setLocation(location);
 
-        LatLng neCorner = proj.fromScreenLocation(MapActivity.MAP_NE_CORNER.toPoint());
-        LatLng swCorner = proj.fromScreenLocation(MapActivity.MAP_SW_CORNER.toPoint());
-
-        //mapBounds = new LatLngBounds(swCorner, neCorner);
-        //locSource.addBoundaries(mapBounds);
         parentAct.setUserPositionListener(this);
     }
     

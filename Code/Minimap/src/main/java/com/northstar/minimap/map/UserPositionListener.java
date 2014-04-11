@@ -1,4 +1,6 @@
-package com.northstar.minimap;
+package com.northstar.minimap.map;
+
+import com.northstar.minimap.Position;
 
 /**
  * Created by Chris on 4/11/14.

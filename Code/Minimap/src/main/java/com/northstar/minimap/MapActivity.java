@@ -1,16 +1,12 @@
 package com.northstar.minimap;
 
+import com.northstar.minimap.beacon.BeaconManager;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
-import com.northstar.minimap.beacon.IBeacon;
-import com.northstar.minimap.map.BluetoothLELocationSource;
-import com.northstar.minimap.map.BoundaryLocationSource;
 import com.northstar.minimap.map.Map;
-import com.northstar.minimap.map.Table;
+import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 
 public class MapActivity extends Activity {
 

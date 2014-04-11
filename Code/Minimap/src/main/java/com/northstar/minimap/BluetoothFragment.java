@@ -30,12 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BluetoothFragment extends Fragment {
-
-
-
-    private boolean scanning = false;
-    private int scans = 0;
-
     private Activity activity;
     private ArrayAdapter<String> beaconAdapter;
     private Button calibrateButton;
@@ -55,12 +49,6 @@ public class BluetoothFragment extends Fragment {
                 R.layout.fragment_bluetooth, container, false);
         beaconListView = (ListView) layout.findViewById(R.id.beacon_list);
         positionTextView = (TextView) layout.findViewById(R.id.positionTextView);
-//        calibrateButton = (Button) layout.findViewById(R.id.calibrateButton);
-//        calibrateButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                calibrate();
-//            }
-//        });
 
         beaconList = new ArrayList<String>();
         beaconAdapter = new ArrayAdapter<String>(activity, R.layout.list_beacon, beaconList);
