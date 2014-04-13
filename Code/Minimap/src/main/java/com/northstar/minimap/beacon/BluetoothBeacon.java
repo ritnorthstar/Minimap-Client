@@ -15,15 +15,17 @@ import java.text.DecimalFormat;
 */
 public abstract class BluetoothBeacon implements IBeacon {
 
+    protected int number;
     protected int signalStrength;
 
-    private String ID;
-    private Position position;
+    protected String id;
+    protected Position position;
     private BluetoothDevice beacon;
 
-    public BluetoothBeacon(BluetoothDevice device, String beaconID, Position position) {
+    public BluetoothBeacon(BluetoothDevice device, int number, String id, Position position) {
         beacon = device;
-        ID = beaconID;
+        this.id = id;
+        this.number = number;
         this.position = position;
     }
 
@@ -31,8 +33,8 @@ public abstract class BluetoothBeacon implements IBeacon {
      * Method to obtain the ID of a beacon.
      * @return A string representing a beacon's unique ID.
      */
-    public String getID(){
-        return ID;
+    public String getId(){
+        return id;
     }
 
     public Position getPosition(){

@@ -24,9 +24,10 @@ import java.util.Map;
 public class BeaconManager implements LeScanCallbackProvider {
 
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final long SCAN_PERIOD = 4000;
+    private static final long SCAN_PERIOD = 6000;
 
     private Activity activity;
+    private BeaconListener beaconListener;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothAdapter.LeScanCallback leScanCallback;
     private BluetoothManager bluetoothManager;
@@ -141,11 +142,17 @@ public class BeaconManager implements LeScanCallbackProvider {
                 if (!beaconMap.containsKey(number)) {
                     beaconMap.put(number,
                             new StickNFindBluetoothBeacon(
-                                    device, address, beaconLocations.get(number)));
+                                    device, number, address, beaconLocations.get(number)));
                 }
 
                 // Update beacon's signal strength.
-                beaconMap.get(number).setSignalStrength(rssi);
+                IBeacon beacon = beaconMap.get(number);
+                beacon.setSignalStrength(rssi);
+                ((StickNFindBluetoothBeacon) beacon).meanShift();
+
+                if (beaconListener != null) {
+                    beaconListener.onBeaconDistanceChanged(beacon, beacon.computeDistance());
+                }
 
                 updateUserPosition();
             }
@@ -167,6 +174,11 @@ public class BeaconManager implements LeScanCallbackProvider {
         }, SCAN_PERIOD);
 
         bluetoothAdapter.startLeScan(leScanCallback);
+    }
+
+
+    public void setBeaconListener(BeaconListener beaconListener) {
+        this.beaconListener = beaconListener;
     }
 
     public void setUserPositionListener(UserPositionListener userPositionListener) {

@@ -3,6 +3,7 @@
 
 package com.northstar.minimap.beacon;
 
+import com.google.android.gms.maps.model.Circle;
 import com.northstar.minimap.Position;
 
 /**
@@ -15,7 +16,7 @@ public interface IBeacon {
      * Method to obtain the ID of a beacon.
      * @return A string representing a beacon's unique ID.
      */
-    public String getID();
+    public String getId();
 
     /**
      * Method to get the position of the beacon
@@ -42,4 +43,8 @@ public interface IBeacon {
      * Set the beacon's signal strength.
      */
     public void setSignalStrength(int signalStrength);
+
+    public void setCircle(Circle circle);
+
+    public Circle getCircle();
 }
