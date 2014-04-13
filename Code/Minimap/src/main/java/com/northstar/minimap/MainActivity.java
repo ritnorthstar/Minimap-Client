@@ -38,7 +38,6 @@ public class MainActivity extends Activity {
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
 
         ipTextbox.setText("10.0.2.2:9000");
-        submitIP(null);
     }
 
     @Override

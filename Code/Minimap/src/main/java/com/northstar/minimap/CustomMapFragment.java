@@ -11,14 +11,13 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -28,17 +27,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.map.BluetoothLELocationSource;
 import com.northstar.minimap.map.BoundaryLocationSource;
 import com.northstar.minimap.map.Map;
 import com.northstar.minimap.map.Table;
+import com.northstar.minimap.map.UserPositionListener;
 
 /**
  * Code gotten from: http://www.matt-reid.co.uk/blog_post.php?id=93
  */
-public class CustomMapFragment extends Fragment{
+public class CustomMapFragment extends Fragment implements UserPositionListener {
 
 	// Google and Android objects
     private MapView mapView;
@@ -49,19 +48,23 @@ public class CustomMapFragment extends Fragment{
     private MapActivity parentAct;
     private Map map;
     private List<LatLngBounds> boundBoxes = new ArrayList<LatLngBounds>();
+    private LatLngBounds mapBounds;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-    	
+
+        locSource = new BluetoothLELocationSource();
     	
         // inflate and return the layout
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();//needed to get the map to display immediately
-        
-        MapsInitializer.initialize(this.getActivity());
+
+        try {
+            MapsInitializer.initialize(this.getActivity());
+        } catch (GooglePlayServicesNotAvailableException e) {}
         
         googleMap = mapView.getMap();
         
@@ -73,14 +76,14 @@ public class CustomMapFragment extends Fragment{
         
         //Set up location stuff
         googleMap.setMyLocationEnabled(true);
-        locSource = new BluetoothLELocationSource();
+
         googleMap.setLocationSource(locSource);
 
         //customTP = new CustomTileProvider(filename, height, width);
         //overlayTOps = new TileOverlayOptions()
         //overlayTOps.tileProvider(customTP);
         //googleMap.addTileOverlay(overlayTOps);
-        
+
         //Make reference to parent for listener
         parentAct = (MapActivity)this.getActivity();
         
@@ -132,6 +135,17 @@ public class CustomMapFragment extends Fragment{
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
+    @Override
+    public void onUserPositionChanged(Position userPosition) {
+        Position userMapPosition = MapActivity.toMapPosition(userPosition);
+        LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
+        Location userLocation = new Location("");
+        userLocation.setLatitude(userLatLng.latitude);
+        userLocation.setLongitude(userLatLng.longitude);
+        userLocation.setAccuracy(100);
+        locSource.setLocation(userLocation);
+    }
     
     private void setProjection() {
     	proj = googleMap.getProjection();
@@ -153,6 +167,8 @@ public class CustomMapFragment extends Fragment{
         location.setLongitude(coordinate.longitude);
         location.setAccuracy(100);
     	locSource.setLocation(location);
+
+        parentAct.setUserPositionListener(this);
     }
     
     private void drawBeaconMarkers(){
