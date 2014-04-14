@@ -1,5 +1,8 @@
 package com.northstar.minimap;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.northstar.minimap.beacon.BeaconManager;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
 import com.northstar.minimap.map.Map;
@@ -30,7 +33,31 @@ public class MapActivity extends Activity {
         beaconManager.setUserPositionListener(userPositionListener);
     }
     
+    
+    
     public void processMap(){
+        
+        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+        
+        Globals state = (Globals)getApplicationContext();
+        URL mapURL = null;
+        try {
+			mapURL = new URL(state.comm.getServerIP(), "/api/Maps");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+        
+        String jsonMap = state.comm.GET(mapURL);
+        
+        Map URLMap = new MapBuilder().getMap(jsonMap);
+        
+        mapFrag.setMap(URLMap);
+        
+        //For testing map functionality
+        //mapFrag.setMap(testMap());
+    }
+    
+    private Map testMap(){
     	
     	Map testMap = new Map();
         
@@ -71,9 +98,7 @@ public class MapActivity extends Activity {
         testMap.addBeacon(b3);
         testMap.addBeacon(b4);
         
-        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
-        
-        mapFrag.setMap(testMap);
+        return testMap;
     }
 
     public static Position toMapPosition(Position measuredPosition) {
