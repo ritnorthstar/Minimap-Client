@@ -8,6 +8,7 @@ import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 public class MapActivity extends Activity {
 
@@ -25,6 +26,11 @@ public class MapActivity extends Activity {
         setContentView(R.layout.activity_map);
 
         beaconManager = new BeaconManager(this);
+    }
+
+
+    public void calibrate(Position calibrationPosition) {
+        beaconManager.calibrate(calibrationPosition);
     }
     
     public void processMap(){
@@ -86,5 +92,12 @@ public class MapActivity extends Activity {
         double y = measuredPosition.getY() / PositionCalculator.GRID_HEIGHT * MAP_HEIGHT;
 
         return new Position((int) Math.round(x), (int) Math.round(y));
+    }
+
+    public static Position toMeasuredPosition(Position mapPosition) {
+        double x = mapPosition.getX() / MAP_WIDTH * PositionCalculator.GRID_WIDTH;
+        double y = mapPosition.getY() / MAP_HEIGHT * PositionCalculator.GRID_HEIGHT;
+
+        return new Position(x, y);
     }
 }

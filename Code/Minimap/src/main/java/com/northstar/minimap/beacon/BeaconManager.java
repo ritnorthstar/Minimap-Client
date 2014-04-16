@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 
 import com.northstar.minimap.bluetooth.LeScanCallbackProvider;
 import com.northstar.minimap.Position;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class BeaconManager implements LeScanCallbackProvider {
 
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final long SCAN_PERIOD = 6000;
+    private static final long SCAN_PERIOD = 4000;
 
     private Activity activity;
     private BeaconListener beaconListener;
@@ -88,6 +89,13 @@ public class BeaconManager implements LeScanCallbackProvider {
         this(activity, userPositionListener);
         this.leScanCallbackProvider = leScanCallbackProvider;
         scanLeDevice();
+    }
+
+    public void calibrate(Position calibrationPosition) {
+        for (StickNFindBluetoothBeacon beacon: getSnfBeaconList()) {
+            double d = calibrationPosition.distance(beacon.getPosition());
+            beacon.calibrate(d);
+        }
     }
 
     public BluetoothAdapter.LeScanCallback createLeScanCallback() {

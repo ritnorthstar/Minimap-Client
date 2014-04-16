@@ -84,6 +84,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         googleMap.setMyLocationEnabled(true);
 
         googleMap.setLocationSource(locSource);
+        googleMap.setOnMapLongClickListener(onMapLongClickListener);
 
         //customTP = new CustomTileProvider(filename, height, width);
         //overlayTOps = new TileOverlayOptions()
@@ -274,5 +275,14 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     		}
     	}
     }
+
+    private GoogleMap.OnMapLongClickListener onMapLongClickListener =
+            new GoogleMap.OnMapLongClickListener() {
+        public void onMapLongClick(LatLng point) {
+            Position mapPosition = new Position(proj.toScreenLocation(point));
+            Position measuredPosition = MapActivity.toMeasuredPosition(mapPosition);
+            parentAct.calibrate(measuredPosition);
+        }
+    };
 
 }

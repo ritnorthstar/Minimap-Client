@@ -12,6 +12,8 @@ import com.northstar.minimap.Position;
 */
 public interface IBeacon {
 
+    public int getNumber();
+
     /**
      * Method to obtain the ID of a beacon.
      * @return A string representing a beacon's unique ID.

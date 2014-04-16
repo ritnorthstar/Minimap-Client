@@ -4,8 +4,10 @@
 package com.northstar.minimap.beacon;
 
 import com.google.android.gms.maps.model.Circle;
+import com.northstar.minimap.Globals;
 import com.northstar.minimap.Position;
 import android.bluetooth.BluetoothDevice;
+import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -15,8 +17,8 @@ import java.util.Map;
 
 public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
-    private static double propagationConstant = 2.507;
-    private static double rssiAtOneMeter = -68.6;
+    private double propagationConstant = 2.007;
+    private double rssiAtOneMeter = -68.6;
 
     public static final double MEAN_SHIFT_RSSI_RANGE = 2.0;
     public static final int MEAN_SHIFT_ITERATIONS = 5;
@@ -25,7 +27,6 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
     public static Map<Integer, String> beaconIdMap;
 
-    private double previousAverageRssi = 0;
     private double meanShiftedRssi = 0;
 
     private Circle circle;
@@ -46,6 +47,32 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         beaconIdMap = Collections.unmodifiableMap(beaconIdMap);
     }
 
+    public void calibrate(double expectedDistance) {
+        double min = 0.01;
+        double max = 10.0;
+
+        // Perform a binary search to determine the best value for the propagation constant.
+        while (max - min > 0.0001) {
+            this.setPropagationConstant((min + max) / 2.0);
+
+            if (computeDistance() > expectedDistance) {
+                if (expectedDistance > 1.0) {
+                    min = (min + max) / 2.0;
+                } else {
+                    max = (min + max) / 2.0;
+                }
+            } else {
+                if (expectedDistance > 1.0) {
+                    max = (min + max) / 2.0;
+                } else {
+                    min = (min + max) / 2.0;
+                }
+            }
+        }
+
+        Log.d("BT-CALI", number + " " + expectedDistance + " " + computeDistance() + " " + propagationConstant);
+    }
+
     /**
      * Method to use our own algorithm to compute distance to a
      * bluetooth beacon
@@ -55,7 +82,7 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         return Math.pow(10, (rssiAtOneMeter - meanShiftedRssi) / (10.0 * propagationConstant));
     }
 
-    public static Double computeDistance(double rssi) {
+    public Double computeDistance(double rssi) {
         return Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
     }
 
@@ -81,8 +108,12 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
                 }
             }
 
-            meanShiftedRssi = sigma / count;
+            if (count > 0) {
+                meanShiftedRssi = sigma / count;
+            }
         }
+
+        Log.d("BT-MS", number + " " + meanShiftedRssi);
     }
 
     public int getNumber() {
@@ -105,11 +136,11 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         return (distanceString + " m (" + rssiString + ")");
     }
 
-    public static double getPropagationConstant() {
+    public double getPropagationConstant() {
         return propagationConstant;
     }
 
-    public static double getRssiAtOneMeter() {
+    public double getRssiAtOneMeter() {
         return rssiAtOneMeter;
     }
 
@@ -118,12 +149,12 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         return signalStrength;
     }
 
-    public static void setPropagationConstant(double propagationConstant) {
-        StickNFindBluetoothBeacon.propagationConstant = propagationConstant;
+    public void setPropagationConstant(double propagationConstant) {
+        this.propagationConstant = propagationConstant;
     }
 
-    public static void setRssiAtOneMeter(double rssiAtOneMeter) {
-        StickNFindBluetoothBeacon.rssiAtOneMeter = rssiAtOneMeter;
+    public void setRssiAtOneMeter(double rssiAtOneMeter) {
+        this.rssiAtOneMeter = rssiAtOneMeter;
     }
 
     public void setCircle(Circle circle) {

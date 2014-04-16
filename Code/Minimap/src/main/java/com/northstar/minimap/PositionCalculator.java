@@ -39,32 +39,7 @@ public class PositionCalculator {
      * Determines the RssiAtOneMeter and PropagationConstant values based on the distances
      * to beacons placed at 1m and 5m.
      */
-    public void calibrate(Map<Double, Double> distanceMap) {
-        StickNFindBluetoothBeacon.setRssiAtOneMeter(distanceMap.get(1.0));
 
-        double min = 1.0;
-        double max = 5.0;
-        double expectedDistance = 5.0;
-
-        // Perform a binary search to determine the best value for the propagation constant.
-        while (max - min > 0.01) {
-            StickNFindBluetoothBeacon.setPropagationConstant((min + max) / 2.0);
-
-            double calculatedDistance =
-                    StickNFindBluetoothBeacon.computeDistance(distanceMap.get(expectedDistance));
-
-            if (calculatedDistance > expectedDistance) {
-                min = (min + max) / 2.0;
-            } else {
-                max = (min + max) / 2.0;
-            }
-        }
-
-        Globals.log("CALIBRATION", "RSSI at one meter: " +
-                Double.toString(StickNFindBluetoothBeacon.getRssiAtOneMeter()));
-        Globals.log("CALIBRATION", "Propagation Constant: " +
-                Double.toString(StickNFindBluetoothBeacon.getPropagationConstant()));
-    }
 
     /**
      * The function to minimize in the multilateration calculation (errors in distance).
@@ -164,34 +139,35 @@ public class PositionCalculator {
      * @return An averaged position based on the last n=SMOOTHING_RANGE positions.
      */
     private Position getAveragedPosition(double x, double y) {
-        if (prevX.size() == SMOOTHING_RANGE) {
-            // Do not calculate a new average if the given value's delta is too high (jitter).
-            double delta = Math.sqrt(Math.pow(x - prevAvgX, 2) + Math.pow(y - prevAvgY, 2));
-            if (delta > MAX_POSITION_DELTA) {
-                return new Position(prevAvgX, prevAvgY);
-            }
-
-            prevX.removeLast();
-            prevY.removeLast();
-        }
-
-        double avgX = 0.0;
-        double avgY = 0.0;
-
-        prevX.addFirst(x);
-        prevY.addFirst(y);
-
-        for (int n = 0; n < prevX.size(); n++) {
-            avgX += prevX.get(n);
-            avgY += prevY.get(n);
-        }
-
-        avgX /= prevX.size();
-        avgY /= prevX.size();
-
-        prevAvgX = avgX;
-        prevAvgY = avgY;
-
-        return new Position(avgX, avgY);
+        return new Position(x, y);
+//        if (prevX.size() == SMOOTHING_RANGE) {
+//            // Do not calculate a new average if the given value's delta is too high (jitter).
+//            double delta = Math.sqrt(Math.pow(x - prevAvgX, 2) + Math.pow(y - prevAvgY, 2));
+//            if (delta > MAX_POSITION_DELTA) {
+//                return new Position(prevAvgX, prevAvgY);
+//            }
+//
+//            prevX.removeLast();
+//            prevY.removeLast();
+//        }
+//
+//        double avgX = 0.0;
+//        double avgY = 0.0;
+//
+//        prevX.addFirst(x);
+//        prevY.addFirst(y);
+//
+//        for (int n = 0; n < prevX.size(); n++) {
+//            avgX += prevX.get(n);
+//            avgY += prevY.get(n);
+//        }
+//
+//        avgX /= prevX.size();
+//        avgY /= prevX.size();
+//
+//        prevAvgX = avgX;
+//        prevAvgY = avgY;
+//
+//        return new Position(avgX, avgY);
     }
 }
