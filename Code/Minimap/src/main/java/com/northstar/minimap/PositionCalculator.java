@@ -17,29 +17,14 @@ import Jama.Matrix;
  */
 public class PositionCalculator {
 
-    public static final double MAX_POSITION_DELTA = 1.0;
     public static final int GAUSS_NEWTON_ITERATIONS = 10;
-    public static final int SMOOTHING_RANGE = 5;
 
-    public static final double GRID_HEIGHT = 2.0;
-    public static final double GRID_WIDTH = 2.0;
-
-    private double prevAvgX;
-    private double prevAvgY;
-
-    private LinkedList<Double> prevX;
-    private LinkedList<Double> prevY;
+    public static final double GRID_HEIGHT = 3.0;
+    public static final double GRID_WIDTH = 3.0;
 
     public PositionCalculator() {
-        prevX = new LinkedList<Double>();
-        prevY = new LinkedList<Double>();
+
     }
-
-    /**
-     * Determines the RssiAtOneMeter and PropagationConstant values based on the distances
-     * to beacons placed at 1m and 5m.
-     */
-
 
     /**
      * The function to minimize in the multilateration calculation (errors in distance).
@@ -91,7 +76,7 @@ public class PositionCalculator {
                 x += bx[i];
                 y += by[i];
             } else {
-                Log.d("BT-MAX", ((StickNFindBluetoothBeacon) beacons.get(i)).getNumber() + "");
+                Log.d("BT-MAX", beacons.get(i).getNumber() + "");
             }
         }
 
@@ -132,42 +117,6 @@ public class PositionCalculator {
             y = Bk.get(1, 0);
         }
 
-        return getAveragedPosition(x, y);
-    }
-
-    /**
-     * @return An averaged position based on the last n=SMOOTHING_RANGE positions.
-     */
-    private Position getAveragedPosition(double x, double y) {
         return new Position(x, y);
-//        if (prevX.size() == SMOOTHING_RANGE) {
-//            // Do not calculate a new average if the given value's delta is too high (jitter).
-//            double delta = Math.sqrt(Math.pow(x - prevAvgX, 2) + Math.pow(y - prevAvgY, 2));
-//            if (delta > MAX_POSITION_DELTA) {
-//                return new Position(prevAvgX, prevAvgY);
-//            }
-//
-//            prevX.removeLast();
-//            prevY.removeLast();
-//        }
-//
-//        double avgX = 0.0;
-//        double avgY = 0.0;
-//
-//        prevX.addFirst(x);
-//        prevY.addFirst(y);
-//
-//        for (int n = 0; n < prevX.size(); n++) {
-//            avgX += prevX.get(n);
-//            avgY += prevY.get(n);
-//        }
-//
-//        avgX /= prevX.size();
-//        avgY /= prevX.size();
-//
-//        prevAvgX = avgX;
-//        prevAvgY = avgY;
-//
-//        return new Position(avgX, avgY);
     }
 }

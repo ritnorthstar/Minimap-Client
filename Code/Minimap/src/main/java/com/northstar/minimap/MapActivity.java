@@ -16,8 +16,8 @@ import java.util.List;
 
 public class MapActivity extends Activity {
 
-    public static final int MAP_HEIGHT = 350;
-    public static final int MAP_WIDTH = 300;
+    public static final int MAP_HEIGHT = 600;
+    public static final int MAP_WIDTH = 600;
     public static Position MAP_NE_CORNER = toMapPosition(new Position(MAP_WIDTH, 0));
     public static Position MAP_SW_CORNER = toMapPosition(new Position(0, MAP_HEIGHT));
 

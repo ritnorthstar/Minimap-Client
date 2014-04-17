@@ -203,24 +203,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         parentAct.setUserPositionListener(this);
     }
     
-    private void drawBeaconMarkers(){
-    	
-    	List<IBeacon> beacons = map.getBeacons();
-    	for(int i = 0; i < beacons.size(); i++){
-    		
-    		IBeacon beacon = beacons.get(i);
-    		
-    		MarkerOptions beaconMarkerOptions = new MarkerOptions().icon(
-                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-    		
-    		//Set the position of the marker
-    		LatLng markerLoc = proj.fromScreenLocation(new Point((int)beacon.getPosition().getX(), (int)beacon.getPosition().getY()));
-    		beaconMarkerOptions = beaconMarkerOptions.position(markerLoc);
-    		
-    		//Set the title of the marker
-    		beaconMarkerOptions = beaconMarkerOptions.title(beacon.getId());
-    		
-//    		googleMap.addMarker(beaconMarkerOptions);
+    private void drawBeaconMarkers() {
+    	for (IBeacon beacon: map.getBeacons()) {
+    		LatLng markerLoc = proj.fromScreenLocation(beacon.getPosition().toPoint());
 
             beacon.setCircle(googleMap.addCircle(new CircleOptions()
                     .center(markerLoc)
