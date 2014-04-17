@@ -4,16 +4,20 @@ import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.BeaconManager;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
 import com.northstar.minimap.map.Map;
+import com.northstar.minimap.map.Table;
 import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapActivity extends Activity {
 
-    public static final int MAP_HEIGHT = 600;
-    public static final int MAP_WIDTH = 600;
+    public static final int MAP_HEIGHT = 350;
+    public static final int MAP_WIDTH = 300;
     public static Position MAP_NE_CORNER = toMapPosition(new Position(MAP_WIDTH, 0));
     public static Position MAP_SW_CORNER = toMapPosition(new Position(0, MAP_HEIGHT));
 
@@ -38,18 +42,9 @@ public class MapActivity extends Activity {
     	Map testMap = new Map();
         
         testMap.setMapID("0");
-        
-//        Position posTab1 = new Position(100, 100);
-//        Table table1 = new Table(4, 2, posTab1, 300, 50);
-//
-//        Position posTab2 = new Position(100, 250);
-//        Table table2 = new Table(4, 2, posTab2, 300, 50);
-//
-//        Position posTab3 = new Position(100, 400);
-//        Table table3 = new Table(4, 2, posTab3, 300, 50);
-//
-//        Position posTab4 = new Position(500, 100);
-//        Table table4 = new Table(2, 4, posTab4, 100, 350);
+
+        List<Table> tables = new ArrayList<Table>();
+
 
         Position p1 = toMapPosition(new Position(0.0, 0.0));
         StickNFindBluetoothBeacon b1 = new StickNFindBluetoothBeacon(null, 0, "FD:65:28:71:80:C0", p1);
@@ -63,11 +58,10 @@ public class MapActivity extends Activity {
         Position p4 = toMapPosition(new Position(
                 PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT));
         StickNFindBluetoothBeacon b4 = new StickNFindBluetoothBeacon(null, 3, "E3:BF:2E:56:BF:B9", p4);
-        
-//        testMap.addTable(table1);
-//        testMap.addTable(table2);
-//        testMap.addTable(table3);
-//        testMap.addTable(table4);
+
+        for (Table table: tables) {
+            testMap.addTable(table);
+        }
         
         testMap.addBeacon(b1);
         testMap.addBeacon(b2);

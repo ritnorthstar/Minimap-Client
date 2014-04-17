@@ -23,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -160,7 +161,8 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
             beacon.setCircle(googleMap.addCircle(new CircleOptions()
                     .center(markerLoc)
                     .radius(drawDistance)
-                    .strokeColor(Color.CYAN)));
+                    .strokeColor(Color.rgb(0, 153, 255))
+                    .strokeWidth(5)));
         }
     }
 
@@ -185,9 +187,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     	
     	this.map = map;
     	locSource.setMap(this.map);
-		
-    	drawBeaconMarkers();
+
     	processTables();
+        drawBeaconMarkers();
     	
     	//Temporary location set
     	Location location = new Location("TempProviderWhatever");
@@ -208,7 +210,8 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     		
     		IBeacon beacon = beacons.get(i);
     		
-    		MarkerOptions beaconMarkerOptions = new MarkerOptions();
+    		MarkerOptions beaconMarkerOptions = new MarkerOptions().icon(
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
     		
     		//Set the position of the marker
     		LatLng markerLoc = proj.fromScreenLocation(new Point((int)beacon.getPosition().getX(), (int)beacon.getPosition().getY()));
@@ -217,7 +220,14 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     		//Set the title of the marker
     		beaconMarkerOptions = beaconMarkerOptions.title(beacon.getId());
     		
-    		googleMap.addMarker(beaconMarkerOptions);
+//    		googleMap.addMarker(beaconMarkerOptions);
+
+            beacon.setCircle(googleMap.addCircle(new CircleOptions()
+                    .center(markerLoc)
+                    .radius(20)
+                    .strokeColor(Color.BLACK)
+                    .strokeWidth(2)
+                    .fillColor(Color.rgb(0, 53, 255))));
     	}
     }
     
@@ -267,7 +277,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     			
     			tableSquare = tableSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft);
     			
-    			tableSquare = tableSquare.strokeColor(Color.RED);
+    			tableSquare = tableSquare.strokeColor(Color.BLACK);
     			
     			tableSquare = tableSquare.strokeWidth(4);
     			
