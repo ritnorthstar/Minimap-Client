@@ -3,9 +3,6 @@ package com.northstar.minimap.util;
 import java.util.Collections;
 import java.util.LinkedList;
 
-/**
- * Created by Chris on 4/19/14.
- */
 public class MedianList extends LinkedList<Double> {
     private int range;
 
