@@ -45,6 +45,14 @@ import com.northstar.minimap.map.UserPositionListener;
 public class CustomMapFragment extends Fragment implements BeaconListener, UserPositionListener {
 
     public static final double DRAW_PIXEL_RATIO = 2.333;
+    private boolean beaconCirclesVisible = true;
+
+    public static final int COLOR_BEACON = Color.rgb(0, 153, 255);
+    public static final int COLOR_BEACON_IN_PROXIMITY_ZONE = Color.rgb(255, 165, 0);
+    public static final int COLOR_BEACON_RANGE = Color.rgb(0, 153, 255);
+    public static final int COLOR_BEACON_RANGE_IN_PROXIMITY_ZONE = Color.rgb(255, 214, 153);
+
+    private IBeacon proximityZoneBeacon;
 
 	// Google and Android objects
     private MapView mapView;
@@ -146,36 +154,65 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
     @Override
     public void onBeaconDistanceChanged(IBeacon beacon, double distance) {
-        Point p = (MapActivity.toMapPosition(beacon.getPosition())).toPoint();
-        LatLng markerLoc = proj.fromScreenLocation(p);
-        Log.d("BT-SCAN", ((StickNFindBluetoothBeacon) beacon).getNumber() + " " + distance);
+        drawBeacon(beacon);
+    }
 
-        double pixelDistance = (distance / PositionCalculator.GRID_WIDTH) * MapActivity.MAP_WIDTH;
-        double drawDistance = pixelDistance * DRAW_PIXEL_RATIO;
+    @Override
+    public void onBeaconInProximityZoneChanged(IBeacon beacon, boolean isInProximityZone) {
+        Log.d("BT-PROX", beacon.getNumber() + " " + isInProximityZone);
 
-        if (drawDistance > 0) {
-            if (beacon.getCircle() != null) {
-                beacon.getCircle().remove();
-            }
+        drawBeacon(beacon);
 
-            beacon.setCircle(googleMap.addCircle(new CircleOptions()
-                    .center(markerLoc)
-                    .radius(drawDistance)
-                    .strokeColor(Color.rgb(0, 153, 255))
-                    .strokeWidth(5)));
+        if (isInProximityZone) {
+            proximityZoneBeacon = beacon;
+        } else {
+            proximityZoneBeacon = null;
+        }
+    }
+
+    @Override
+    public void onUserAzimuthChanged(double azimuth) {
+        Log.d("BT-AZIMUTH", (int) Math.round(Math.toDegrees(azimuth)) + "");
+
+        if (proximityZoneBeacon != null) {
+            double x = proximityZoneBeacon.computeDistance() * Math.sin(azimuth) +
+                    proximityZoneBeacon.getPosition().getX();
+            double y = proximityZoneBeacon.computeDistance() * Math.cos(azimuth) +
+                    proximityZoneBeacon.getPosition().getY();
+
+            Position userMapPosition = MapActivity.toMapPosition(new Position(x, y));
+            LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
+            Location userLocation = new Location("");
+            userLocation.setLatitude(userLatLng.latitude);
+            userLocation.setLongitude(userLatLng.longitude);
+            userLocation.setAccuracy(200);
+
+            locSource.setLocation(userLocation);
         }
     }
 
     @Override
     public void onUserPositionChanged(Position userPosition) {
-        Position userMapPosition = MapActivity.toMapPosition(userPosition);
-        LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
-        Location userLocation = new Location("");
-        userLocation.setLatitude(userLatLng.latitude);
-        userLocation.setLongitude(userLatLng.longitude);
-        userLocation.setAccuracy(100);
+        if (proximityZoneBeacon == null) {
+            Position userMapPosition = MapActivity.toMapPosition(userPosition);
+            LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
+            Location userLocation = new Location("");
+            userLocation.setLatitude(userLatLng.latitude);
+            userLocation.setLongitude(userLatLng.longitude);
+            userLocation.setAccuracy(100);
 
-        locSource.setLocation(userLocation);
+            locSource.setLocation(userLocation);
+        }
+    }
+
+    @Override
+    public boolean getBeaconCirclesVisible() {
+        return beaconCirclesVisible;
+    }
+
+    @Override
+    public void setBeaconCirclesVisible(boolean visible) {
+        this.beaconCirclesVisible = visible;
     }
     
     private void setProjection() {
@@ -202,17 +239,49 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         parentAct.setBeaconListener(this);
         parentAct.setUserPositionListener(this);
     }
+
+    private void drawBeacon(IBeacon beacon) {
+        double pixelDistance = (beacon.computeDistance() / PositionCalculator.GRID_WIDTH) *
+                MapActivity.MAP_WIDTH;
+        double drawDistance = pixelDistance * DRAW_PIXEL_RATIO;
+        int beaconColor = beacon.isInProximityZone() ?
+                COLOR_BEACON_IN_PROXIMITY_ZONE : COLOR_BEACON;
+
+        Point p = (MapActivity.toMapPosition(beacon.getPosition())).toPoint();
+        LatLng markerLoc = proj.fromScreenLocation(p);
+
+        if (beacon.getMarkerCircle() != null) {
+            beacon.getMarkerCircle().remove();
+        }
+
+        beacon.setMarkerCircle(googleMap.addCircle(new CircleOptions()
+                .center(markerLoc)
+                .radius(20)
+                .strokeColor(Color.BLACK)
+                .strokeWidth(2)
+                .fillColor(beaconColor)));
+
+        if (drawDistance > 0) {
+            if (beacon.getRangeCircle() != null) {
+                beacon.getRangeCircle().remove();
+            }
+
+            if (beaconCirclesVisible) {
+                int rangeColor = beacon.isInProximityZone() ?
+                        COLOR_BEACON_RANGE_IN_PROXIMITY_ZONE : COLOR_BEACON_RANGE;
+
+                beacon.setRangeCircle(googleMap.addCircle(new CircleOptions()
+                        .center(markerLoc)
+                        .radius(drawDistance)
+                        .strokeColor(rangeColor)
+                        .strokeWidth(5)));
+            }
+        }
+    }
     
     private void drawBeaconMarkers() {
     	for (IBeacon beacon: map.getBeacons()) {
-    		LatLng markerLoc = proj.fromScreenLocation(beacon.getPosition().toPoint());
-
-            beacon.setCircle(googleMap.addCircle(new CircleOptions()
-                    .center(markerLoc)
-                    .radius(20)
-                    .strokeColor(Color.BLACK)
-                    .strokeWidth(2)
-                    .fillColor(Color.rgb(0, 53, 255))));
+            drawBeacon(beacon);
     	}
     }
     
