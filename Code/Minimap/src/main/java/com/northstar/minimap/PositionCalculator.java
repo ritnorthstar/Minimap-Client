@@ -1,5 +1,7 @@
 package com.northstar.minimap;
 
+import android.util.Log;
+
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
 
@@ -15,53 +17,13 @@ import Jama.Matrix;
  */
 public class PositionCalculator {
 
-    public static final double MAX_POSITION_DELTA = 1.0;
     public static final int GAUSS_NEWTON_ITERATIONS = 10;
-    public static final int SMOOTHING_RANGE = 5;
 
     public static final double GRID_HEIGHT = 3.0;
     public static final double GRID_WIDTH = 3.0;
 
-    private double prevAvgX;
-    private double prevAvgY;
-
-    private LinkedList<Double> prevX;
-    private LinkedList<Double> prevY;
-
     public PositionCalculator() {
-        prevX = new LinkedList<Double>();
-        prevY = new LinkedList<Double>();
-    }
 
-    /**
-     * Determines the RssiAtOneMeter and PropagationConstant values based on the distances
-     * to beacons placed at 1m and 5m.
-     */
-    public void calibrate(Map<Double, Double> distanceMap) {
-        StickNFindBluetoothBeacon.setRssiAtOneMeter(distanceMap.get(1.0));
-
-        double min = 1.0;
-        double max = 5.0;
-        double expectedDistance = 5.0;
-
-        // Perform a binary search to determine the best value for the propagation constant.
-        while (max - min > 0.01) {
-            StickNFindBluetoothBeacon.setPropagationConstant((min + max) / 2.0);
-
-            double calculatedDistance =
-                    StickNFindBluetoothBeacon.computeDistance(distanceMap.get(expectedDistance));
-
-            if (calculatedDistance > expectedDistance) {
-                min = (min + max) / 2.0;
-            } else {
-                max = (min + max) / 2.0;
-            }
-        }
-
-        Globals.log("CALIBRATION", "RSSI at one meter: " +
-                Double.toString(StickNFindBluetoothBeacon.getRssiAtOneMeter()));
-        Globals.log("CALIBRATION", "Propagation Constant: " +
-                Double.toString(StickNFindBluetoothBeacon.getPropagationConstant()));
     }
 
     /**
@@ -97,13 +59,29 @@ public class PositionCalculator {
             bx[i] = beacons.get(i).getPosition().getX();
             by[i] = beacons.get(i).getPosition().getY();
             br[i] = beacons.get(i).computeDistance();
-
-            x += bx[i];
-            y += by[i];
         }
 
-        x /= beacons.size();
-        y /= beacons.size();
+        int maxI = 0;
+        double maxR = 0;
+
+        for (int i = 0; i < beacons.size(); i++) {
+            if (br[i] > maxR) {
+                maxI = i;
+                maxR = br[i];
+            }
+        }
+
+        for (int i = 0; i < beacons.size(); i++) {
+            if (i != maxI) {
+                x += bx[i];
+                y += by[i];
+            } else {
+                Log.d("BT-MAX", beacons.get(i).getNumber() + "");
+            }
+        }
+
+        x /= (beacons.size() - 1);
+        y /= (beacons.size() - 1);
 
         // The algorithm is repeated n=GAUSS_NEWTON_ITERATIONS times
         for (int k = 0; k < GAUSS_NEWTON_ITERATIONS; k++) {
@@ -116,14 +94,16 @@ public class PositionCalculator {
 
             // Calculate elements of transposed Jacobian matrices needed.
             for (int i = 0; i < beacons.size(); i++) {
-                double f = minFn(x, y, bx[i], by[i], br[i]);
-                j0 += Math.pow(x - bx[i], 2) / Math.pow(f + br[i], 2);
-                j1 += ((x - bx[i]) * (y - by[i])) / Math.pow(f + br[i], 2);
-                j2 += ((x - bx[i]) * (y - by[i])) / Math.pow(f + br[i], 2);
-                j3 += Math.pow(y - by[i], 2) / Math.pow(f + br[i], 2);
+                if (i != maxI) {
+                    double f = minFn(x, y, bx[i], by[i], br[i]);
+                    j0 += Math.pow(x - bx[i], 2) / Math.pow(f + br[i], 2);
+                    j1 += ((x - bx[i]) * (y - by[i])) / Math.pow(f + br[i], 2);
+                    j2 += ((x - bx[i]) * (y - by[i])) / Math.pow(f + br[i], 2);
+                    j3 += Math.pow(y - by[i], 2) / Math.pow(f + br[i], 2);
 
-                j4 += ((x - bx[i]) * f) / (f + br[i]);
-                j5 += ((y - by[i]) * f) / (f + br[i]);
+                    j4 += ((x - bx[i]) * f) / (f + br[i]);
+                    j5 += ((y - by[i]) * f) / (f + br[i]);
+                }
             }
 
             // Form transposed Jacobian matrices.
@@ -137,41 +117,6 @@ public class PositionCalculator {
             y = Bk.get(1, 0);
         }
 
-        return getAveragedPosition(x, y);
-    }
-
-    /**
-     * @return An averaged position based on the last n=SMOOTHING_RANGE positions.
-     */
-    private Position getAveragedPosition(double x, double y) {
-        if (prevX.size() == SMOOTHING_RANGE) {
-            // Do not calculate a new average if the given value's delta is too high (jitter).
-            double delta = Math.sqrt(Math.pow(x - prevAvgX, 2) + Math.pow(y - prevAvgY, 2));
-            if (delta > MAX_POSITION_DELTA) {
-                return new Position(prevAvgX, prevAvgY);
-            }
-
-            prevX.removeLast();
-            prevY.removeLast();
-        }
-
-        double avgX = 0.0;
-        double avgY = 0.0;
-
-        prevX.addFirst(x);
-        prevY.addFirst(y);
-
-        for (int n = 0; n < prevX.size(); n++) {
-            avgX += prevX.get(n);
-            avgY += prevY.get(n);
-        }
-
-        avgX /= prevX.size();
-        avgY /= prevX.size();
-
-        prevAvgX = avgX;
-        prevAvgY = avgY;
-
-        return new Position(avgX, avgY);
+        return new Position(x, y);
     }
 }

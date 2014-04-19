@@ -18,6 +18,15 @@ public class Position {
         this.y = y;
     }
 
+    public Position(Point p) {
+        this.x = p.x;
+        this.y = p.y;
+    }
+
+    public double distance(Position p) {
+        return Math.sqrt(Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2));
+    }
+
     public double getX(){
         return x;
     }
