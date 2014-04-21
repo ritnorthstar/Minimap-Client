@@ -3,6 +3,8 @@ package com.northstar.minimap;
 import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.BeaconManager;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
+import com.northstar.minimap.itinerary.Itinerary;
+import com.northstar.minimap.itinerary.ItineraryPoint;
 import com.northstar.minimap.map.Map;
 import com.northstar.minimap.map.Table;
 import com.northstar.minimap.map.UserPositionListener;
@@ -68,9 +70,29 @@ public class MapActivity extends Activity {
         testMap.addBeacon(b3);
         testMap.addBeacon(b4);
         
-        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+        CustomMapFragment mapFrag = (CustomMapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
         
         mapFrag.setMap(testMap);
+    }
+    
+    public void processItinerary(){
+    	List<ItineraryPoint> itinPoints = new ArrayList<ItineraryPoint>();
+    	
+    	ItineraryPoint ip1 = new ItineraryPoint("Point 1", new Position(50.0, 50.0));
+    	ItineraryPoint ip2 = new ItineraryPoint("Point 2", new Position(100.0, 100.0));
+    	ItineraryPoint ip3 = new ItineraryPoint("Point 3", new Position(150.0, 150.0));
+    	
+    	Itinerary testItinerary = new Itinerary(itinPoints);
+    	
+    	ItineraryFragment itinFrag = (ItineraryFragment) getFragmentManager().findFragmentById(R.id.itinerary_fragment);
+    	
+    	itinFrag.setItinerary(testItinerary);
+    }
+    
+    public void setCurrentItineraryPoint(ItineraryPoint point){
+    	CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+        
+        mapFrag.setCurrentItineraryPoint(point);
     }
 
     public void setBeaconListener(BeaconListener beaconListener) {

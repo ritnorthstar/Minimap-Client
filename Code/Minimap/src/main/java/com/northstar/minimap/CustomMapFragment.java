@@ -28,11 +28,13 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
+import com.northstar.minimap.itinerary.ItineraryPoint;
 import com.northstar.minimap.map.BluetoothLELocationSource;
 import com.northstar.minimap.map.BoundaryLocationSource;
 import com.northstar.minimap.map.Map;
@@ -56,6 +58,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     private Map map;
     private List<LatLngBounds> boundBoxes = new ArrayList<LatLngBounds>();
     private LatLngBounds mapBounds;
+    private Marker currentItineraryPoint;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,9 +72,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         mapView.onCreate(savedInstanceState);
         mapView.onResume();//needed to get the map to display immediately
 
-        try {
+        //try {
             MapsInitializer.initialize(this.getActivity());
-        } catch (GooglePlayServicesNotAvailableException e) {}
+        //} catch (GooglePlayServicesNotAvailableException e) {}
         
         googleMap = mapView.getMap();
         
@@ -279,5 +282,21 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
             parentAct.calibrate(measuredPosition);
         }
     };
+
+	public void setCurrentItineraryPoint(ItineraryPoint point) {
+		currentItineraryPoint.remove();
+		
+		MarkerOptions currentItinMarkerOptions = new MarkerOptions();
+		
+		//Set the position of the Marker
+		LatLng markerLoc = proj.fromScreenLocation(new Point((int)point.getPos().getX(), (int)point.getPos().getY()));
+		currentItinMarkerOptions = currentItinMarkerOptions.position(markerLoc);
+		
+		//Set the title of the marker
+		currentItinMarkerOptions = currentItinMarkerOptions.title(point.getName());
+		
+		currentItineraryPoint = googleMap.addMarker(currentItinMarkerOptions);
+		
+	}
 
 }
