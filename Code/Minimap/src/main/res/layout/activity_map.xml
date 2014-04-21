@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schema.android.com/tools"
+        xmlns:tools="http://schemas.android.com/tools"
     	android:id="@+id/map_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -12,5 +12,12 @@
                   android:layout_width="match_parent"
                   android:layout_height="fill_parent"
                   tools:layout="@layout/fragment_map" />
+        
+        <fragment android:name="com.northstar.minimap.CustomMapFragment"
+                  android:id="@+id/itinerary_fragment"
+                  android:layout_weight="2"
+                  android:layout_width="match_parent"
+                  android:layout_height="200dp"
+                  tools:layout="@layout/fragment_itinerary" />
 
 </LinearLayout>
