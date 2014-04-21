@@ -38,15 +38,16 @@ public interface IBeacon {
      * @return The distance from the beacon, in (don't know the measurement).
      */
     public Double computeDistance();
+    public Double computeUnaveragedDistance();
 
     public String getFormattedDistance();
+    public Circle getMarkerCircle();
+    public Circle getRangeCircle();
 
-    /**
-     * Set the beacon's signal strength.
-     */
+    public boolean isInProximityZone();
+
+    public void setInProximityZone(boolean isInProximityZone);
+    public void setMarkerCircle(Circle markerCircle);
+    public void setRangeCircle(Circle rangeCircle);
     public void setSignalStrength(int signalStrength);
-
-    public void setCircle(Circle circle);
-
-    public Circle getCircle();
 }

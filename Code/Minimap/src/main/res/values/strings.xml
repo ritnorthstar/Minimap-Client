@@ -27,7 +27,10 @@
         <item>Select Map</item>
     </string-array>
 
+    <string name="button_map_go">Map</string>
+    <string name="calibrated">Calibration point set</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="button_map_go">Map</string>
+    <string name="restart_bluetooth">Restart bluetooth</string>
+    <string name="toggle_beacon_circles">Toggle beacon circles</string>
 </resources>

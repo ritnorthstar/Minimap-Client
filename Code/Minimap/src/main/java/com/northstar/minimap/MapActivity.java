@@ -2,26 +2,42 @@ package com.northstar.minimap;
 
 import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.BeaconManager;
+import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
 import com.northstar.minimap.map.Map;
 import com.northstar.minimap.map.Table;
 import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapActivity extends Activity {
+public class MapActivity extends Activity implements SensorEventListener {
 
     public static final int MAP_HEIGHT = 600;
     public static final int MAP_WIDTH = 600;
-    public static Position MAP_NE_CORNER = toMapPosition(new Position(MAP_WIDTH, 0));
-    public static Position MAP_SW_CORNER = toMapPosition(new Position(0, MAP_HEIGHT));
 
+    private float[] gravityValues;
+    private float[] magneticValues;
+
+    private BeaconListener beaconListener;
     private BeaconManager beaconManager;
+    private List<IBeacon> beacons;
+    private Sensor accelerometer;
+    private Sensor magnetometer;
+    private SensorManager sensorManager;
     private UserPositionListener userPositionListener;
 
     @Override
@@ -29,12 +45,97 @@ public class MapActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        beaconManager = new BeaconManager(this);
+        // Initialize beacon ids
+        StickNFindBluetoothBeacon.initBeaconIdMap();
+
+        Position[] positions = new Position[] {
+                new Position(0.0, 0.0),
+                new Position(PositionCalculator.GRID_WIDTH, 0.0),
+                new Position(0.0, PositionCalculator.GRID_HEIGHT),
+                new Position(PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT)
+        };
+
+        beacons = new ArrayList<IBeacon>();
+        for (int i = 1; i <= 4; i++) {
+            beacons.add(new StickNFindBluetoothBeacon(
+                    i, StickNFindBluetoothBeacon.beaconIdMap.get(i), positions[i - 1]));
+        }
+
+        beaconManager = new BeaconManager(this, beacons);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.map, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toggleBeaconCirclesMenuItem:
+                beaconListener.setBeaconCirclesVisible(!beaconListener.getBeaconCirclesVisible());
+                break;
+            case R.id.restartBluetoothMenuItem:
+                beaconManager.restartBluetooth();
+                break;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        switch(event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                gravityValues = event.values;
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                magneticValues = event.values;
+                break;
+            default:
+                break;
+        }
+
+        if (gravityValues != null && magneticValues != null) {
+            float R[] = new float[9];
+            float I[] = new float[9];
+
+            if (SensorManager.getRotationMatrix(R, I, gravityValues, magneticValues)) {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                userPositionListener.onUserAzimuthChanged(orientation[0]);
+            }
+        }
+    }
 
     public void calibrate(Position calibrationPosition) {
         beaconManager.calibrate(calibrationPosition);
+        Toast.makeText(this, R.string.calibrated, Toast.LENGTH_SHORT).show();
     }
     
     public void processMap(){
@@ -45,28 +146,13 @@ public class MapActivity extends Activity {
 
         List<Table> tables = new ArrayList<Table>();
 
-
-        Position p1 = toMapPosition(new Position(0.0, 0.0));
-        StickNFindBluetoothBeacon b1 = new StickNFindBluetoothBeacon(null, 0, "FD:65:28:71:80:C0", p1);
-
-        Position p2 = toMapPosition(new Position(PositionCalculator.GRID_WIDTH, 0.0));
-        StickNFindBluetoothBeacon b2 = new StickNFindBluetoothBeacon(null, 1, "FE:CC:38:AA:BE:B5", p2);
-
-        Position p3 = toMapPosition(new Position(0.0, PositionCalculator.GRID_HEIGHT));
-        StickNFindBluetoothBeacon b3 = new StickNFindBluetoothBeacon(null, 2, "E4:3E:A0:63:BC:C6", p3);
-
-        Position p4 = toMapPosition(new Position(
-                PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT));
-        StickNFindBluetoothBeacon b4 = new StickNFindBluetoothBeacon(null, 3, "E3:BF:2E:56:BF:B9", p4);
-
         for (Table table: tables) {
             testMap.addTable(table);
         }
-        
-        testMap.addBeacon(b1);
-        testMap.addBeacon(b2);
-        testMap.addBeacon(b3);
-        testMap.addBeacon(b4);
+
+        for (IBeacon beacon: beacons) {
+            testMap.addBeacon(beacon);
+        }
         
         CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
         
@@ -74,10 +160,12 @@ public class MapActivity extends Activity {
     }
 
     public void setBeaconListener(BeaconListener beaconListener) {
+        this.beaconListener = beaconListener;
         beaconManager.setBeaconListener(beaconListener);
     }
 
     public void setUserPositionListener(UserPositionListener userPositionListener) {
+        this.userPositionListener = userPositionListener;
         beaconManager.setUserPositionListener(userPositionListener);
     }
 

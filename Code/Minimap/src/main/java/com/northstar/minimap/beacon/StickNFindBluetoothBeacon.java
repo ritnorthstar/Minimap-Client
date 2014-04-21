@@ -6,36 +6,36 @@ package com.northstar.minimap.beacon;
 import com.google.android.gms.maps.model.Circle;
 import com.northstar.minimap.Globals;
 import com.northstar.minimap.Position;
+import com.northstar.minimap.util.MedianList;
+
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
-    private double propagationConstant = 2.007;
-    private double rssiAtOneMeter = -68.6;
-
-    public static final double MEAN_SHIFT_RSSI_RANGE = 2.0;
-    public static final int MEAN_SHIFT_ITERATIONS = 5;
-
-    public static final int SMOOTHING_RANGE = 5;
+    public static final double PROXIMITY_ZONE_RANGE = 0.8;
+    public static final int MEDIAN_RANGE_RSSI = 10;
 
     public static Map<Integer, String> beaconIdMap;
 
-    private double meanShiftedRssi = 0;
+    private double medianRssi = 0;
+    private double propagationConstant = 2.007;
+    private double rssiAtOneMeter = -68.6;
 
-    private Circle circle;
-    private LinkedList<Double> previousRssis;
+    private MedianList rssis;
 
-    public StickNFindBluetoothBeacon(BluetoothDevice device, int number, String id, Position position) {
-        super(device, number, id, position);
+    public StickNFindBluetoothBeacon(int number, String id, Position position) {
+        super(number, id, position);
 
-        previousRssis = new LinkedList<Double>();
+        rssis = new MedianList(MEDIAN_RANGE_RSSI);
     }
 
     public static void initBeaconIdMap() {
@@ -45,6 +45,20 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         beaconIdMap.put(3, "E4:3E:A0:63:BC:C6");
         beaconIdMap.put(4, "E3:BF:2E:56:BF:B9");
         beaconIdMap = Collections.unmodifiableMap(beaconIdMap);
+    }
+
+    @Override
+    public Double computeUnaveragedDistance() {
+        return computeDistance(rssis.getLast());
+    }
+
+    /**
+     * Method to use our own algorithm to compute distance to a
+     * bluetooth beacon
+     */
+    @Override
+    public Double computeDistance() {
+        return Math.pow(10, (rssiAtOneMeter - medianRssi) / (10.0 * propagationConstant));
     }
 
     public void calibrate(double expectedDistance) {
@@ -73,47 +87,27 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         Log.d("BT-CALI", number + " " + expectedDistance + " " + computeDistance() + " " + propagationConstant);
     }
 
-    /**
-     * Method to use our own algorithm to compute distance to a
-     * bluetooth beacon
-     */
-    @Override
-    public Double computeDistance() {
-        return Math.pow(10, (rssiAtOneMeter - meanShiftedRssi) / (10.0 * propagationConstant));
-    }
-
     public Double computeDistance(double rssi) {
         return Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
     }
 
-    public void meanShift() {
-        if (previousRssis.size() == SMOOTHING_RANGE) {
-            previousRssis.removeFirst();
+    public void computeMedianRssi() {
+        rssis.add(signalStrength);
+        medianRssi = rssis.getMedian();
+
+        // XXX: Unneccessary, but we'd still like to the median values logged for now...
+        List<Double> sortedRssis = new ArrayList<Double>();
+        String s = getNumber() + ": ";
+        for (double rssi : rssis) {
+            sortedRssis.add(rssi);
         }
-
-        previousRssis.addLast((double) signalStrength);
-
-        if (meanShiftedRssi == 0.0) {
-            meanShiftedRssi = previousRssis.getLast();
+        Collections.sort(sortedRssis);
+        for (double rssi : sortedRssis) {
+            s += rssi + " ";
         }
-
-        for (int i = 0; i < MEAN_SHIFT_ITERATIONS; i++) {
-            double sigma = 0.0;
-            int count = 0;
-
-            for (double previousRssi : previousRssis) {
-                if (Math.abs(previousRssi - meanShiftedRssi) <= MEAN_SHIFT_RSSI_RANGE) {
-                    sigma += previousRssi;
-                    count++;
-                }
-            }
-
-            if (count > 0) {
-                meanShiftedRssi = sigma / count;
-            }
-        }
-
-        Log.d("BT-MS", number + " " + meanShiftedRssi);
+        s += " | " + medianRssi;
+        s += " | " + getFormattedDistance();
+        Log.d("BT-MEDIAN-" + getNumber(), s);
     }
 
     public int getNumber() {
@@ -132,7 +126,7 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
     public String getFormattedDistance() {
         String distanceString = new DecimalFormat("#.##").format(computeDistance());
-        String rssiString = new DecimalFormat("#.##").format(meanShiftedRssi);
+        String rssiString = new DecimalFormat("#.##").format(medianRssi);
         return (distanceString + " m (" + rssiString + ")");
     }
 
@@ -155,13 +149,5 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
     public void setRssiAtOneMeter(double rssiAtOneMeter) {
         this.rssiAtOneMeter = rssiAtOneMeter;
-    }
-
-    public void setCircle(Circle circle) {
-        this.circle = circle;
-    }
-
-    public Circle getCircle() {
-        return circle;
     }
 }
