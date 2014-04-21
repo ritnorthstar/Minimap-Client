@@ -69,9 +69,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         mapView.onCreate(savedInstanceState);
         mapView.onResume();//needed to get the map to display immediately
 
-        try {
+        //try {
             MapsInitializer.initialize(this.getActivity());
-        } catch (GooglePlayServicesNotAvailableException e) {}
+        //} catch (GooglePlayServicesNotAvailableException e) {}
         
         googleMap = mapView.getMap();
         

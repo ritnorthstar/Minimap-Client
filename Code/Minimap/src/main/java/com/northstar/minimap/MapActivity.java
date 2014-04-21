@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +41,38 @@ public class MapActivity extends Activity {
     
     public void processMap(){
     	
+    	//CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+        
+        Globals state = (Globals)getApplicationContext();
+        
+        CallbackListener l = new MapCallback(this);
+        
+        state.comm.getMapsJson(l);
+        
+        //For testing map functionality
+        //mapFrag.setMap(testMap());
+    }
+    
+    public void setMap(){
+    	CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+    	
+    	Globals state = (Globals)getApplicationContext();
+    	
+    	String jsonMap = state.comm.mapJson;
+    	
+    	Map URLMap = new MapBuilder().getMap(jsonMap);
+        
+        mapFrag.setMap(URLMap);
+    }
+    
+    
+    private Map testMap(){
     	Map testMap = new Map();
         
         testMap.setMapID("0");
 
         List<Table> tables = new ArrayList<Table>();
-
-
+        
         Position p1 = toMapPosition(new Position(0.0, 0.0));
         StickNFindBluetoothBeacon b1 = new StickNFindBluetoothBeacon(null, 0, "FD:65:28:71:80:C0", p1);
 
@@ -68,9 +95,7 @@ public class MapActivity extends Activity {
         testMap.addBeacon(b3);
         testMap.addBeacon(b4);
         
-        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
-        
-        mapFrag.setMap(testMap);
+        return testMap;
     }
 
     public void setBeaconListener(BeaconListener beaconListener) {
