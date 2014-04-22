@@ -47,9 +47,9 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void submitIP(View view) {
+    public void launchProductionMap(View view) {
         Globals state = (Globals)getApplicationContext();
-        Intent mapIntent = new Intent(this, DrawerActivity.class);
+        Intent mapIntent = new Intent(this, MapActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         if (!serverIP.startsWith("http://")) {
@@ -73,29 +73,11 @@ public class MainActivity extends Activity {
         }
     }
     
-    public void goToMap(View view) {
-    	Globals state = (Globals)getApplicationContext();
+    public void launchTestMap(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_TEST);
     	Intent mapIntent = new Intent(this, MapActivity.class);
-        EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
-        String serverIP = ipTextbox.getText().toString();
-        if (!serverIP.startsWith("http://")) {
-            serverIP = "http://" + serverIP;
-        }
-        String ipErrorMessage = "no error!";
-        state.log(serverIP);
-
-        try {
-            state.comm.setServerIP(new URL(serverIP));
-            mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
-            startActivity(mapIntent);
-        } catch(Exception e) {
-            // Incorrect IP address format
-            ipErrorMessage = e.getMessage();
-
-            TextView errorText = (TextView) findViewById(R.id.ip_error_text_view);
-            errorText.setText("\"" + serverIP +"\" isn't a valid IP address.\nIt should be something like \"10.0.2.2:9000\"");
-            errorText.setTextColor(Color.RED);
-            ipTextbox.setText("");
-        }
+        mapIntent.putExtras(bundle);
+        startActivity(mapIntent);
     }
 }

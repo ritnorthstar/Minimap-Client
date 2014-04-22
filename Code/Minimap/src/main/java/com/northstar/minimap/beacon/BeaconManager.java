@@ -6,8 +6,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.northstar.minimap.bluetooth.LeScanCallbackProvider;
 import com.northstar.minimap.Position;
@@ -24,8 +29,12 @@ import java.util.Map;
  */
 public class BeaconManager implements LeScanCallbackProvider {
 
+    private int beaconsScanned = 0;
+
     private static final int REQUEST_ENABLE_BT = 1;
     private static final long SCAN_PERIOD = 4000;
+
+    private final List<IBeacon> beacons;
 
     private Activity activity;
     private BeaconListener beaconListener;
@@ -44,17 +53,8 @@ public class BeaconManager implements LeScanCallbackProvider {
         leScanCallbackProvider = this;
         positionCalculator = new PositionCalculator();
 
-        // Initialize beacons
-        StickNFindBluetoothBeacon.initBeaconIdMap();
         beaconMap = new HashMap<Integer, IBeacon>();
 
-        // Initialize hardcoded beacon locations;
-        beaconLocations = new HashMap<Integer, Position>();
-        beaconLocations.put(1, new Position(0.0, 0.0));
-        beaconLocations.put(2, new Position(PositionCalculator.GRID_WIDTH, 0.0));
-        beaconLocations.put(3, new Position(0.0, PositionCalculator.GRID_HEIGHT));
-        beaconLocations.put(4, new Position(PositionCalculator.GRID_WIDTH,
-                PositionCalculator.GRID_HEIGHT));
 
         //Initialize bluetooth adapter and associated list view.
 
@@ -67,26 +67,32 @@ public class BeaconManager implements LeScanCallbackProvider {
         }
     }
 
-    public BeaconManager(Activity activity) {
+    public BeaconManager(Activity activity, List<IBeacon> beacons) {
         init(activity);
         scanLeDevice();
+        this.beacons = beacons;
     }
 
-    public BeaconManager(Activity activity, LeScanCallbackProvider leScanCallbackProvider) {
+    public BeaconManager(Activity activity, List<IBeacon> beacons,
+                         LeScanCallbackProvider leScanCallbackProvider) {
         init(activity);
         this.leScanCallbackProvider = leScanCallbackProvider;
         scanLeDevice();
+        this.beacons = beacons;
     }
 
-    public BeaconManager(Activity activity, UserPositionListener userPositionListener) {
+    public BeaconManager(Activity activity, List<IBeacon> beacons,
+                         UserPositionListener userPositionListener) {
         init(activity);
         this.userPositionListener = userPositionListener;
         scanLeDevice();
+        this.beacons = beacons;
     }
 
-    public BeaconManager(Activity activity, LeScanCallbackProvider leScanCallbackProvider,
+    public BeaconManager(Activity activity, List<IBeacon> beacons,
+                         LeScanCallbackProvider leScanCallbackProvider,
                          UserPositionListener userPositionListener) {
-        this(activity, userPositionListener);
+        this(activity, beacons, userPositionListener);
         this.leScanCallbackProvider = leScanCallbackProvider;
         scanLeDevice();
     }
@@ -145,26 +151,54 @@ public class BeaconManager implements LeScanCallbackProvider {
                 }
 
                 int number = StickNFindBluetoothBeacon.getBeaconNumber(address);
+                beaconsScanned++;
 
-                // Create Beacon if it doesn't exist.
+                // Add beacon if it doesn't exist.
                 if (!beaconMap.containsKey(number)) {
-                    beaconMap.put(number,
-                            new StickNFindBluetoothBeacon(
-                                    device, number, address, beaconLocations.get(number)));
+                    for (IBeacon beacon: beacons) {
+                        if (beacon.getNumber() == number) {
+                            beaconMap.put(number, beacon);
+                        }
+                    }
                 }
 
                 // Update beacon's signal strength.
                 IBeacon beacon = beaconMap.get(number);
                 beacon.setSignalStrength(rssi);
-                ((StickNFindBluetoothBeacon) beacon).meanShift();
+                ((StickNFindBluetoothBeacon) beacon).computeMedianRssi();
 
                 if (beaconListener != null) {
                     beaconListener.onBeaconDistanceChanged(beacon, beacon.computeDistance());
                 }
 
+                Log.d("BT-REAL-SCAN", number + " " + rssi + " " + beacon.computeDistance());
+
                 updateUserPosition();
+
+                boolean isInProximityZone = (beacon.computeUnaveragedDistance() <
+                        StickNFindBluetoothBeacon.PROXIMITY_ZONE_RANGE);
+                if (isInProximityZone != beacon.isInProximityZone()) {
+                    beacon.setInProximityZone(isInProximityZone);
+
+                    if (beaconListener != null) {
+                        beaconListener.onBeaconInProximityZoneChanged(beacon, isInProximityZone);
+                    }
+
+                    Log.d("BT-COMPASS", beacon.getNumber() + "");
+                }
             }
         });
+    }
+
+    public void restartBluetooth() {
+        Log.d("BT-BLUE-OFF", bluetoothAdapter.disable() + "");
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("BT-BLUE-ON", bluetoothAdapter.enable() + "");
+            }
+        }, 500);
     }
 
     private void scanLeDevice() {
@@ -178,12 +212,12 @@ public class BeaconManager implements LeScanCallbackProvider {
             public void run() {
                 bluetoothAdapter.stopLeScan(leScanCallback);
                 scanLeDevice();
+                beaconsScanned = 0;
             }
         }, SCAN_PERIOD);
 
         bluetoothAdapter.startLeScan(leScanCallback);
     }
-
 
     public void setBeaconListener(BeaconListener beaconListener) {
         this.beaconListener = beaconListener;
