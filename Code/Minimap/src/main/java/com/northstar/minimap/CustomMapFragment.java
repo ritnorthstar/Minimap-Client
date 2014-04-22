@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,6 +122,16 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         };
         
         mapView.getViewTreeObserver().addOnGlobalLayoutListener(ready);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(parentAct);
+        SharedPreferences.OnSharedPreferenceChangeListener listener =
+                new SharedPreferences.OnSharedPreferenceChangeListener() {
+                    @Override
+                    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                        Log.d("BT-PREF", key);
+                    }
+                };
+        prefs.registerOnSharedPreferenceChangeListener(listener);
 
         return v;
     }

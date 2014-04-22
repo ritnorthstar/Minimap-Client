@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MapActivity" >
 
-    <item android:id="@+id/toggleBeaconCirclesMenuItem"
-          android:title="@string/toggle_beacon_circles" />
+    <item android:id="@+id/settingsMenuItem"
+          android:title="@string/settings" />
 
     <item android:id="@+id/restartBluetoothMenuItem"
           android:title="@string/restart_bluetooth" />

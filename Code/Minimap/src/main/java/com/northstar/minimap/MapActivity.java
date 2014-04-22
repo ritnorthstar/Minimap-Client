@@ -10,6 +10,7 @@ import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -64,7 +65,7 @@ public class MapActivity extends Activity implements SensorEventListener {
                     initTestEnvironment();
                     break;
                 case ENV_PRODUCTION:
-                    processMap();
+                    //processMap();
                     break;
                 default:
                     initTestEnvironment();
@@ -87,8 +88,9 @@ public class MapActivity extends Activity implements SensorEventListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.toggleBeaconCirclesMenuItem:
-                beaconListener.setBeaconCirclesVisible(!beaconListener.getBeaconCirclesVisible());
+            case R.id.settingsMenuItem:
+                startActivity(new Intent(this, SettingsActivity.class));
+//                beaconListener.setBeaconCirclesVisible(!beaconListener.getBeaconCirclesVisible());
                 break;
             case R.id.restartBluetoothMenuItem:
                 beaconManager.restartBluetooth();
@@ -169,6 +171,8 @@ public class MapActivity extends Activity implements SensorEventListener {
     public void processMap() {
         CustomMapFragment mapFrag =
                 (CustomMapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
+
+        Log.d("JS-START", "");
 
         if (configBundle != null) {
             switch (configBundle.getInt(KEY_ENV)) {
