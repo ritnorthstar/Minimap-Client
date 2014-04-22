@@ -59,7 +59,6 @@ public class MapActivity extends Activity implements SensorEventListener {
 
         if (this.getIntent() != null && this.getIntent().getExtras() != null) {
             configBundle = this.getIntent().getExtras();
-            Log.d("BT-STATE", configBundle.getInt(KEY_ENV) + "");
             switch (configBundle.getInt(KEY_ENV)) {
                 case ENV_TEST:
                     initTestEnvironment();
