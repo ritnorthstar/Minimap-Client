@@ -21,10 +21,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapActivity extends Activity implements SensorEventListener {
+
+    public static final String KEY_ENV = "ENV";
+
+    public static final int ENV_PRODUCTION = 1;
+    public static final int ENV_TEST = 2;
 
     public static final int MAP_HEIGHT = 600;
     public static final int MAP_WIDTH = 600;
@@ -34,6 +41,7 @@ public class MapActivity extends Activity implements SensorEventListener {
 
     private BeaconListener beaconListener;
     private BeaconManager beaconManager;
+    private Bundle configBundle;
     private List<IBeacon> beacons;
     private Sensor accelerometer;
     private Sensor magnetometer;
@@ -45,26 +53,23 @@ public class MapActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        // Initialize beacon ids
-        StickNFindBluetoothBeacon.initBeaconIdMap();
-
-        Position[] positions = new Position[] {
-                new Position(0.0, 0.0),
-                new Position(PositionCalculator.GRID_WIDTH, 0.0),
-                new Position(0.0, PositionCalculator.GRID_HEIGHT),
-                new Position(PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT)
-        };
-
-        beacons = new ArrayList<IBeacon>();
-        for (int i = 1; i <= 4; i++) {
-            beacons.add(new StickNFindBluetoothBeacon(
-                    i, StickNFindBluetoothBeacon.beaconIdMap.get(i), positions[i - 1]));
-        }
-
-        beaconManager = new BeaconManager(this, beacons);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        if (this.getIntent() != null && this.getIntent().getExtras() != null) {
+            configBundle = this.getIntent().getExtras();
+            switch (configBundle.getInt(KEY_ENV)) {
+                case ENV_TEST:
+                    initTestEnvironment();
+                    break;
+                case ENV_PRODUCTION:
+                    processMap();
+                    break;
+                default:
+                    initTestEnvironment();
+            }
+        }
     }
 
     @Override
@@ -128,7 +133,10 @@ public class MapActivity extends Activity implements SensorEventListener {
             if (SensorManager.getRotationMatrix(R, I, gravityValues, magneticValues)) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                userPositionListener.onUserAzimuthChanged(orientation[0]);
+
+                if (userPositionListener != null) {
+                    userPositionListener.onUserAzimuthChanged(orientation[0]);
+                }
             }
         }
     }
@@ -137,9 +145,57 @@ public class MapActivity extends Activity implements SensorEventListener {
         beaconManager.calibrate(calibrationPosition);
         Toast.makeText(this, R.string.calibrated, Toast.LENGTH_SHORT).show();
     }
+
+    private void initTestEnvironment() {
+        // Initialize beacon ids
+        StickNFindBluetoothBeacon.initBeaconIdMap();
+
+        Position[] positions = new Position[] {
+                new Position(0.0, 0.0),
+                new Position(PositionCalculator.GRID_WIDTH, 0.0),
+                new Position(0.0, PositionCalculator.GRID_HEIGHT),
+                new Position(PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT)
+        };
+
+        beacons = new ArrayList<IBeacon>();
+        for (int i = 1; i <= 4; i++) {
+            beacons.add(new StickNFindBluetoothBeacon(
+                    i, StickNFindBluetoothBeacon.beaconIdMap.get(i), positions[i - 1]));
+        }
+
+        beaconManager = new BeaconManager(this, beacons);
+    }
     
-    public void processMap(){
-    	
+    public void processMap() {
+        CustomMapFragment mapFrag =
+                (CustomMapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
+
+        if (configBundle != null) {
+            switch (configBundle.getInt(KEY_ENV)) {
+                case ENV_TEST:
+                    mapFrag.setMap(testMap());
+                    break;
+                case ENV_PRODUCTION:
+                    Globals state = (Globals)getApplicationContext();
+                    CallbackListener l = new MapCallback(this);
+                    state.comm.getMapsJson(l);
+                default:
+                    break;
+            }
+        }
+    }
+    
+    public void setMap() {
+    	CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+    	Globals state = (Globals)getApplicationContext();
+    	String jsonMap = state.comm.mapJson;
+
+    	Map URLMap = new MapBuilder().getMap(jsonMap);
+        mapFrag.setMap(URLMap);
+    }
+    
+    
+    private Map testMap(){
     	Map testMap = new Map();
         
         testMap.setMapID("0");
@@ -154,9 +210,7 @@ public class MapActivity extends Activity implements SensorEventListener {
             testMap.addBeacon(beacon);
         }
         
-        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
-        
-        mapFrag.setMap(testMap);
+        return testMap;
     }
 
     public void setBeaconListener(BeaconListener beaconListener) {

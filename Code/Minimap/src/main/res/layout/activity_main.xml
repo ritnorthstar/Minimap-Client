@@ -41,15 +41,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:onClick="submitIP"
-        android:text="@string/button_server_ip_go" />
+        android:onClick="launchTestMap"
+        android:text="@string/button_map_test" />
     
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:onClick="goToMap"
-        android:text="@string/button_map_go" />
+        android:onClick="launchProductionMap"
+        android:text="@string/button_map_production" />
     
     <TextView
         android:layout_width="wrap_content"

@@ -47,9 +47,9 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void submitIP(View view) {
+    public void launchProductionMap(View view) {
         Globals state = (Globals)getApplicationContext();
-        Intent mapIntent = new Intent(this, DrawerActivity.class);
+        Intent mapIntent = new Intent(this, MapActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         if (!serverIP.startsWith("http://")) {
@@ -73,8 +73,11 @@ public class MainActivity extends Activity {
         }
     }
     
-    public void goToMap(View view) {
+    public void launchTestMap(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_TEST);
     	Intent mapIntent = new Intent(this, MapActivity.class);
-    	startActivity(mapIntent);
+        mapIntent.putExtras(bundle);
+        startActivity(mapIntent);
     }
 }

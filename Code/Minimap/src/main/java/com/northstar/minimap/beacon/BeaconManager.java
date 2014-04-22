@@ -179,7 +179,10 @@ public class BeaconManager implements LeScanCallbackProvider {
                         StickNFindBluetoothBeacon.PROXIMITY_ZONE_RANGE);
                 if (isInProximityZone != beacon.isInProximityZone()) {
                     beacon.setInProximityZone(isInProximityZone);
-                    beaconListener.onBeaconInProximityZoneChanged(beacon, isInProximityZone);
+
+                    if (beaconListener != null) {
+                        beaconListener.onBeaconInProximityZoneChanged(beacon, isInProximityZone);
+                    }
 
                     Log.d("BT-COMPASS", beacon.getNumber() + "");
                 }

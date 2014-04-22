@@ -77,9 +77,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         mapView.onCreate(savedInstanceState);
         mapView.onResume();//needed to get the map to display immediately
 
-        try {
-            MapsInitializer.initialize(this.getActivity());
-        } catch (GooglePlayServicesNotAvailableException e) {}
+        MapsInitializer.initialize(this.getActivity());
         
         googleMap = mapView.getMap();
         
@@ -172,8 +170,6 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
     @Override
     public void onUserAzimuthChanged(double azimuth) {
-        Log.d("BT-AZIMUTH", (int) Math.round(Math.toDegrees(azimuth)) + "");
-
         if (proximityZoneBeacon != null) {
             double x = proximityZoneBeacon.computeDistance() * Math.sin(azimuth) +
                     proximityZoneBeacon.getPosition().getX();
