@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="landing_background">#006dd9</color>
+    <color name="landing_button">#ddd</color>
+    <color name="landing_title">#fff</color>
+    <color name="landing_subtitle">#ddd</color>
+    <color name="landing_edittext">#fff</color>
+    <color name="landing_error">#ffa500</color>
+</resources>

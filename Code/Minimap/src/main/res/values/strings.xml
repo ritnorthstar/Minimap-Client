@@ -27,11 +27,11 @@
         <item>Select Map</item>
     </string-array>
 
-    <string name="button_map_production">Launch Production Map</string>
-    <string name="button_map_test">Launch Test Map</string>
+    <string name="button_map_production">Launch Map</string>
     <string name="calibrated">Calibration point set</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="menu_test_map">Launch Test Map</string>
     <string name="restart_bluetooth">Restart bluetooth</string>
     <string name="toggle_beacon_circles">Toggle beacon circles</string>
 </resources>
