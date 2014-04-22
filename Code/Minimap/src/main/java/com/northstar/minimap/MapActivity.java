@@ -53,6 +53,9 @@ public class MapActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        // Initialize beacon ids
+        StickNFindBluetoothBeacon.initBeaconIdMap();
+
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -147,9 +150,6 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     private void initTestEnvironment() {
-        // Initialize beacon ids
-        StickNFindBluetoothBeacon.initBeaconIdMap();
-
         Position[] positions = new Position[] {
                 new Position(0.0, 0.0),
                 new Position(PositionCalculator.GRID_WIDTH, 0.0),
@@ -179,6 +179,7 @@ public class MapActivity extends Activity implements SensorEventListener {
                     Globals state = (Globals)getApplicationContext();
                     CallbackListener l = new MapCallback(this);
                     state.comm.getMapsJson(l);
+                    break;
                 default:
                     break;
             }
@@ -191,6 +192,7 @@ public class MapActivity extends Activity implements SensorEventListener {
     	String jsonMap = state.comm.mapJson;
 
     	Map URLMap = new MapBuilder().getMap(jsonMap);
+        beaconManager = new BeaconManager(this, URLMap.getBeacons());
         mapFrag.setMap(URLMap);
     }
     

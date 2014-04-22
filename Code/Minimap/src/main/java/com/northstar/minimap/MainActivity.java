@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
 
-        ipTextbox.setText("10.0.2.2:9000");
+        ipTextbox.setText("67.247.162.224:9000");
     }
 
     @Override
@@ -68,7 +68,12 @@ public class MainActivity extends Activity {
 
         try {
             state.comm.setServerIP(new URL(serverIP));
-            mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
+
+            Bundle bundle = new Bundle();
+            bundle.putString(IP_ERROR_MESSAGE, ipErrorMessage);
+            bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_PRODUCTION);
+            mapIntent.putExtras(bundle);
+
             startActivity(mapIntent);
         } catch(Exception e) {
             // Incorrect IP address format
