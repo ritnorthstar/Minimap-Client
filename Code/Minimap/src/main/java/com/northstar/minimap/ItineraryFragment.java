@@ -1,12 +1,12 @@
 package com.northstar.minimap;
 
-import com.devsmart.android.ui.HorizontalListView;
 import com.northstar.minimap.itinerary.Itinerary;
 import com.northstar.minimap.itinerary.ItineraryPoint;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +40,7 @@ public class ItineraryFragment extends Fragment {
     }
 	
 	public void setItinerary(Itinerary itinerary){
+		Log.w("JP", "Fake Itin being received, count of " + itinerary.getCount());
 		this.itinerary = itinerary;
 		itineraryListView.setAdapter(itineraryAdapter);
 		itineraryListView.setOnItemClickListener(itinerarySelector);

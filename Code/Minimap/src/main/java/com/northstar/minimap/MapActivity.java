@@ -73,14 +73,27 @@ public class MapActivity extends Activity {
         CustomMapFragment mapFrag = (CustomMapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
         
         mapFrag.setMap(testMap);
+        
+        processItinerary();
     }
     
     public void processItinerary(){
+    	Log.w("JP", "Fake Itin being sent to frag");
     	List<ItineraryPoint> itinPoints = new ArrayList<ItineraryPoint>();
     	
     	ItineraryPoint ip1 = new ItineraryPoint("Point 1", new Position(50.0, 50.0));
     	ItineraryPoint ip2 = new ItineraryPoint("Point 2", new Position(100.0, 100.0));
     	ItineraryPoint ip3 = new ItineraryPoint("Point 3", new Position(150.0, 150.0));
+    	ItineraryPoint ip4 = new ItineraryPoint("Point 4", new Position(150.0, 150.0));
+    	ItineraryPoint ip5 = new ItineraryPoint("Point 5", new Position(150.0, 150.0));
+    	ItineraryPoint ip6 = new ItineraryPoint("Point 6", new Position(150.0, 150.0));
+    	
+    	itinPoints.add(ip1);
+    	itinPoints.add(ip2);
+    	itinPoints.add(ip3);
+    	itinPoints.add(ip4);
+    	itinPoints.add(ip5);
+    	itinPoints.add(ip6);
     	
     	Itinerary testItinerary = new Itinerary(itinPoints);
     	

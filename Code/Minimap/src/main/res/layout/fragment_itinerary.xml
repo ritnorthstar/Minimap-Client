@@ -4,12 +4,13 @@
   android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
+  android:background="#ddd"
   >
   
-  <com.devsmart.android.ui.HorizontialListView
+  <com.northstar.minimap.HorizontalListView
       android:id="@+id/itinerary_list"
       android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="fill_parent"
   />
   
 </LinearLayout>

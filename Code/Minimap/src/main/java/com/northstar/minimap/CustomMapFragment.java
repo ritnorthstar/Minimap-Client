@@ -284,7 +284,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     };
 
 	public void setCurrentItineraryPoint(ItineraryPoint point) {
-		currentItineraryPoint.remove();
+		if(currentItineraryPoint != null){
+			currentItineraryPoint.remove();
+		}
 		
 		MarkerOptions currentItinMarkerOptions = new MarkerOptions();
 		

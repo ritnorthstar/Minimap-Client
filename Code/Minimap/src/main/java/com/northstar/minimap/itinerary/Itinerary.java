@@ -3,7 +3,6 @@
 
 package com.northstar.minimap.itinerary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +11,6 @@ import java.util.List;
 public class Itinerary {
 
     private List<ItineraryPoint> itinerary;
-    private int currentPoint = 0;
     private boolean[] visited;
 
     public Itinerary(List<ItineraryPoint> itinPoints){
