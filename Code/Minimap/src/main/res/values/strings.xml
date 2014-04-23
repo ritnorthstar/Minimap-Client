@@ -34,7 +34,7 @@
     <string name="menu_test_map">Launch Test Map</string>
     <string name="restart_bluetooth">Restart bluetooth</string>
     <string name="settings">Settings</string>
-    <string name="show_beacon_range_summary">Show beacon range circles</string>
+    <string name="show_beacon_range_summary">Show circles around beacons indicating estimated distance</string>
     <string name="show_beacon_range_title">Show beacon range circles</string>
     <string name="show_proximity_zone_summary">Highlights nearby beacon when within a certain proximity</string>
     <string name="show_proximity_zone_title">Enable proximity zones</string>
