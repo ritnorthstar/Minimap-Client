@@ -139,6 +139,8 @@ public class PositionCalculator {
         }
 
         positionError /= beacons.size();
+        positionError = Math.max(positionError, MIN_ERROR);
+        positionError = Math.min(positionError, MAX_ERROR);
     }
 
     public double getPositionError() {

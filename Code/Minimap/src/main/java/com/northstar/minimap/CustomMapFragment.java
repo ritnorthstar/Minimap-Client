@@ -203,13 +203,6 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         // Compass-assisted localization disabled.
 
         int accuracy = (int) Math.round(MapActivity.toMapLength(positionError) * DRAW_PIXEL_RATIO);
-        int minError = (int) Math.round(
-                MapActivity.toMapLength(PositionCalculator.MIN_ERROR) * DRAW_PIXEL_RATIO);
-        int maxError = (int) Math.round(
-                MapActivity.toMapLength(PositionCalculator.MAX_ERROR) * DRAW_PIXEL_RATIO);
-
-        accuracy = Math.max(accuracy, minError);
-        accuracy = Math.min(accuracy, maxError);
 
         Position userMapPosition = MapActivity.toMapPosition(userPosition);
         LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
