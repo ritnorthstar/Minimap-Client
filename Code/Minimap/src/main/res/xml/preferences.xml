@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="pref_beacon_range"
+        android:title="@string/show_beacon_range_title"
+        android:summary="@string/show_beacon_range_summary"
+        android:defaultValue="true" />
+    <CheckBoxPreference
+        android:key="pref_proximity_zone"
+        android:title="@string/show_proximity_zone_title"
+        android:summary="@string/show_proximity_zone_summary"
+        android:defaultValue="true" />
+</PreferenceScreen>

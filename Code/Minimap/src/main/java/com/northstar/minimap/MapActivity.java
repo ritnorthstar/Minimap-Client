@@ -10,11 +10,13 @@ import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -90,8 +92,8 @@ public class MapActivity extends Activity implements SensorEventListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.toggleBeaconCirclesMenuItem:
-                beaconListener.setBeaconCirclesVisible(!beaconListener.getBeaconCirclesVisible());
+            case R.id.settingsMenuItem:
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.restartBluetoothMenuItem:
                 beaconManager.restartBluetooth();
