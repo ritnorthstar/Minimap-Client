@@ -73,9 +73,9 @@ public class MainActivity extends Activity {
         }
     }
     
-    public void goToMap(View view) {
+    public void goToSelect(View view) {
     	Globals state = (Globals)getApplicationContext();
-    	Intent mapIntent = new Intent(this, MapActivity.class);
+    	Intent mapIntent = new Intent(this, SelectionActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         if (!serverIP.startsWith("http://")) {

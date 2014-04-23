@@ -1,17 +1,17 @@
 package com.northstar.minimap;
 
-public class MapCallback implements CallbackListener {
+public class RegisterUserCallback implements CallbackListener {
 
 	private SelectionActivity selectAct;
 	
-	public MapCallback(SelectionActivity selectActivity){
+	public RegisterUserCallback(SelectionActivity selectActivity){
 		selectAct = selectActivity;
 	}
 	
 	@Override
 	public void jsonCallback() {
 		// TODO Auto-generated method stub
-		selectAct.setMaps();
+		selectAct.goToMap();
 	}
 
 }

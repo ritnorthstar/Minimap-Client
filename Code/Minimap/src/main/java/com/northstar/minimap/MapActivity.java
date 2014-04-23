@@ -41,28 +41,17 @@ public class MapActivity extends Activity {
     
     public void processMap(){
     	
-    	//CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
-        
-        Globals state = (Globals)getApplicationContext();
-        
-        CallbackListener l = new MapCallback(this);
-        
-        state.comm.getMapsJson(l);
-        
-        //For testing map functionality
-        //mapFrag.setMap(testMap());
-    }
-    
-    public void setMap(){
-    	CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
     	
     	Globals state = (Globals)getApplicationContext();
     	
-    	String jsonMap = state.comm.mapJson;
+    	String jsonMap = state.data.mapsJson;
+    	String mapID = state.data.mapID;
     	
-    	Map URLMap = new MapBuilder().getMap(jsonMap);
+    	Map URLMap = new MapBuilder().getMap(jsonMap, mapID);
         
-        mapFrag.setMap(URLMap);
+        //For testing map functionality
+        //mapFrag.setMap(testMap());
     }
     
     

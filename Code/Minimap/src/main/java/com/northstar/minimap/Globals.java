@@ -8,6 +8,7 @@ import android.util.Log;
  */
 public class Globals extends Application {
     public Communicator comm = new Communicator();
+    public ReceivedData data = new ReceivedData();
     public static void log(String message)
     {
         log("Minimap: ", message);

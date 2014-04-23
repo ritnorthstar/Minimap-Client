@@ -15,12 +15,18 @@ public class MapBuilder {
 
 	JSONObject JSONMapDef;
 	
-	public Map getMap(String JSONMapString){
+	public Map getMap(String JSONMapString, String mapID){
 		Map JSONMap = new Map();
 		
 		try {
 			JSONArray maps = new JSONArray(JSONMapString);
-			this.JSONMapDef = maps.getJSONObject(0);
+			for(int i = 0; i < maps.length(); i++){
+				JSONObject map = maps.getJSONObject(i);
+				if(mapID.equals(map.get("Id"))){
+					this.JSONMapDef = map;
+					break;
+				}
+			}
 			addTables(JSONMap);
 			addBeacons(JSONMap);
 		} catch (JSONException e) {

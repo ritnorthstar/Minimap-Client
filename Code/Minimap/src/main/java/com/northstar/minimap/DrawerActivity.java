@@ -51,12 +51,12 @@ public class DrawerActivity extends FragmentActivity implements CallbackListener
         state.comm.getMapsJson(this);
     }
 
-    public void mapJsonCallback() {
+    public void jsonCallback() {
         TextView jsonDisplay = (TextView) findViewById(R.id.json_view);
         Globals.log("> In callback");
         Globals state = (Globals)getApplicationContext();
-        Globals.log(">" + state.comm.mapJson);
-        jsonDisplay.setText(state.comm.mapJson);
+        Globals.log(">" + state.data.mapsJson);
+        jsonDisplay.setText(state.data.mapsJson);
     }
 
     private void initDrawers() {

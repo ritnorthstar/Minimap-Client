@@ -30,4 +30,8 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="button_map_go">Map</string>
+    <string name="select_map">Select the map you want to load</string>
+    <string name="select_team">Select your team</string>
+    <string name="select_username">Enter a username</string>
+    <string name="button_select_go">Connect</string>
 </resources>
