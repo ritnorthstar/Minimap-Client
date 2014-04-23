@@ -19,22 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.IBeacon;
-import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
 import com.northstar.minimap.map.BluetoothLELocationSource;
 import com.northstar.minimap.map.BoundaryLocationSource;
 import com.northstar.minimap.map.Map;
@@ -124,16 +119,6 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         };
         
         mapView.getViewTreeObserver().addOnGlobalLayoutListener(ready);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(parentAct);
-        SharedPreferences.OnSharedPreferenceChangeListener listener =
-                new SharedPreferences.OnSharedPreferenceChangeListener() {
-                    @Override
-                    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                        Log.d("BT-PREF", key);
-                    }
-                };
-        prefs.registerOnSharedPreferenceChangeListener(listener);
 
         return v;
     }
