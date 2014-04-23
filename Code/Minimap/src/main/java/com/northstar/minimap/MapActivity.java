@@ -69,7 +69,7 @@ public class MapActivity extends Activity implements SensorEventListener {
                     initTestEnvironment();
                     break;
                 case ENV_PRODUCTION:
-                    //processMap();
+                    processMap();
                     break;
                 default:
                     initTestEnvironment();
@@ -94,7 +94,6 @@ public class MapActivity extends Activity implements SensorEventListener {
         switch (item.getItemId()) {
             case R.id.settingsMenuItem:
                 startActivity(new Intent(this, SettingsActivity.class));
-//                beaconListener.setBeaconCirclesVisible(!beaconListener.getBeaconCirclesVisible());
                 break;
             case R.id.restartBluetoothMenuItem:
                 beaconManager.restartBluetooth();
@@ -172,8 +171,6 @@ public class MapActivity extends Activity implements SensorEventListener {
     public void processMap() {
         CustomMapFragment mapFrag =
                 (CustomMapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
-
-        Log.d("JS-START", "");
 
         if (configBundle != null) {
             switch (configBundle.getInt(KEY_ENV)) {
