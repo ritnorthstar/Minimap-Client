@@ -36,6 +36,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
+        
+        Globals state = (Globals)getApplicationContext();
+        
+        state.comm.setDataHolder(state.data);
 
         ipTextbox.setText("10.0.2.2:9000");
     }
@@ -74,8 +78,9 @@ public class MainActivity extends Activity {
     }
     
     public void goToSelect(View view) {
+    	Log.w("JP", "Second Button");
     	Globals state = (Globals)getApplicationContext();
-    	Intent mapIntent = new Intent(this, SelectionActivity.class);
+    	Intent selectionIntent = new Intent(this, SelectionActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         if (!serverIP.startsWith("http://")) {
@@ -86,8 +91,8 @@ public class MainActivity extends Activity {
 
         try {
             state.comm.setServerIP(new URL(serverIP));
-            mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
-            startActivity(mapIntent);
+            selectionIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
+            startActivity(selectionIntent);
         } catch(Exception e) {
             // Incorrect IP address format
             ipErrorMessage = e.getMessage();

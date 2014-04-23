@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -35,7 +36,7 @@ public class SelectionActivity extends Activity {
         
         mapSpinner = (Spinner) findViewById(R.id.map_spinner);
         teamSpinner = (Spinner) findViewById(R.id.team_spinner);
-        usernameTextbox = (EditText) findViewById(R.id.username_text_view);
+        usernameTextbox = (EditText) findViewById(R.id.edit_username);
         
         Globals state = (Globals)getApplicationContext();
         
@@ -50,6 +51,7 @@ public class SelectionActivity extends Activity {
 		Globals state = (Globals)getApplicationContext();
 		
 		String JSONMapsString = state.data.mapsJson;
+		Log.w("JP", "MapJSON: " + JSONMapsString);
 		
 		try {
 			JSONArray maps = new JSONArray(JSONMapsString);
@@ -72,6 +74,7 @@ public class SelectionActivity extends Activity {
 		Globals state = (Globals)getApplicationContext();
 		
 		String JSONTeamsString = state.data.teamsJson;
+		Log.w("JP", "TeamJSON: " + JSONTeamsString);
 		
 		try {
 			JSONArray teams = new JSONArray(JSONTeamsString);
@@ -90,7 +93,7 @@ public class SelectionActivity extends Activity {
 		teamSpinner.setAdapter(teamAdapter);
 	}
 	
-	public void registerChoices(){
+	public void registerChoices(View view){
 		Globals state = (Globals)getApplicationContext();
 		
 		try {
@@ -142,7 +145,7 @@ public class SelectionActivity extends Activity {
 		if(!registered){
 			JSONObject userJson = new JSONObject();
 			try {
-				userJson.put("Name", "usernameTextbox.getText().toString()");
+				userJson.put("Name", usernameTextbox.getText().toString());
 				userJson.put("TeamId", state.data.teamID);
 				userJson.put("X", 0);
 				userJson.put("Y", 0);

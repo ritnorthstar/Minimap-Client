@@ -18,6 +18,8 @@ public class MapBuilder {
 	public Map getMap(String JSONMapString, String mapID){
 		Map JSONMap = new Map();
 		
+		Log.w("JP", "Building map");
+		
 		try {
 			JSONArray maps = new JSONArray(JSONMapString);
 			for(int i = 0; i < maps.length(); i++){
