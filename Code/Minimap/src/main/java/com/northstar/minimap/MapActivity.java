@@ -240,4 +240,11 @@ public class MapActivity extends Activity implements SensorEventListener {
 
         return new Position(x, y);
     }
+
+    public static double toMapLength(double measuredLength) {
+        double gridSize = Math.max(PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT);
+        double mapSize = Math.max(MAP_WIDTH, MAP_HEIGHT);
+
+        return measuredLength / gridSize * mapSize;
+    }
 }

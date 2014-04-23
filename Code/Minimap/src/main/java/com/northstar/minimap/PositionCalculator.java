@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
+import com.northstar.minimap.util.MedianList;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
@@ -21,6 +22,10 @@ public class PositionCalculator {
 
     public static final double GRID_HEIGHT = 3.0;
     public static final double GRID_WIDTH = 3.0;
+    public static final double MAX_ERROR = 3.0;
+    public static final double MIN_ERROR = 0.5;
+
+    private double positionError = 0.0;
 
     public PositionCalculator() {
 
@@ -117,6 +122,26 @@ public class PositionCalculator {
             y = Bk.get(1, 0);
         }
 
-        return new Position(x, y);
+        Position userPosition = new Position(x, y);
+        calculatePositionError(userPosition, beacons, br);
+
+        return userPosition;
+    }
+
+    private void calculatePositionError(Position userPosition, List<IBeacon> beacons,
+                                           double[] estimatedDistances) {
+        positionError = 0.0;
+
+        for (int i = 0; i < beacons.size(); i++) {
+            double calculatedDistance = userPosition.distance(beacons.get(i).getPosition());
+            double error = Math.abs(calculatedDistance - estimatedDistances[i]);
+            positionError += error;
+        }
+
+        positionError /= beacons.size();
+    }
+
+    public double getPositionError() {
+        return positionError;
     }
 }

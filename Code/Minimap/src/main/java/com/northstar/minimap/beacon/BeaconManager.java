@@ -230,9 +230,10 @@ public class BeaconManager implements LeScanCallbackProvider {
     private void updateUserPosition() {
         if (beaconMap.size() == 4) {
             Position userPosition = positionCalculator.multilaterate(getBeaconList());
+            double positionError = positionCalculator.getPositionError();
 
             if (userPositionListener != null) {
-                userPositionListener.onUserPositionChanged(userPosition);
+                userPositionListener.onUserPositionChanged(userPosition, positionError);
             }
         }
     }
