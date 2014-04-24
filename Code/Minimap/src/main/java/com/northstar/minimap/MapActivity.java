@@ -343,10 +343,7 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     public static double toMapLength(double measuredLength) {
-        double gridSize = Math.max(PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT);
-        double mapSize = Math.max(MAP_WIDTH, MAP_HEIGHT);
-
-        return measuredLength / gridSize * mapSize;
+        return measuredLength * FT_TO_MAP_PIXELS * CustomMapFragment.FT_IN_PIXELS;
     }
 
     private BaseAdapter itineraryAdapter = new BaseAdapter() {

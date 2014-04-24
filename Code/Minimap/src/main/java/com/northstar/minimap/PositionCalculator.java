@@ -22,8 +22,8 @@ public class PositionCalculator {
 
     public static final double GRID_HEIGHT = 3.0;
     public static final double GRID_WIDTH = 3.0;
-    public static final double MAX_ERROR = 3.0;
-    public static final double MIN_ERROR = 0.5;
+    public static final double MAX_ERROR = 20;
+    public static final double MIN_ERROR = 2;
 
     private double positionError = 0.0;
 
