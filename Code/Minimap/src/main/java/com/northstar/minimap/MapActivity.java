@@ -43,6 +43,10 @@ public class MapActivity extends Activity implements SensorEventListener {
 
     public static final String KEY_ENV = "ENV";
 
+    public static final double FT_TO_M = 0.3048;
+    public static final double M_TO_FT = 3.2808;
+    public static final double FT_TO_MAP_PIXELS = 20;
+
     public static final int ENV_PRODUCTION = 1;
     public static final int ENV_TEST = 2;
 
@@ -316,15 +320,15 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     public static Position toMapPosition(Position measuredPosition) {
-        double x = measuredPosition.getX() / PositionCalculator.GRID_WIDTH * MAP_WIDTH;
-        double y = measuredPosition.getY() / PositionCalculator.GRID_HEIGHT * MAP_HEIGHT;
+        double x = measuredPosition.getX() / FT_TO_MAP_PIXELS;
+        double y = measuredPosition.getY() / FT_TO_MAP_PIXELS;
 
         return new Position((int) Math.round(x), (int) Math.round(y));
     }
 
     public static Position toMeasuredPosition(Position mapPosition) {
-        double x = mapPosition.getX() / MAP_WIDTH * PositionCalculator.GRID_WIDTH;
-        double y = mapPosition.getY() / MAP_HEIGHT * PositionCalculator.GRID_HEIGHT;
+        double x = mapPosition.getX() * FT_TO_MAP_PIXELS;
+        double y = mapPosition.getY() * FT_TO_MAP_PIXELS;
 
         return new Position(x, y);
     }

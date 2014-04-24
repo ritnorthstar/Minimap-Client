@@ -5,6 +5,7 @@ package com.northstar.minimap.beacon;
 
 import com.google.android.gms.maps.model.Circle;
 import com.northstar.minimap.Globals;
+import com.northstar.minimap.MapActivity;
 import com.northstar.minimap.Position;
 import com.northstar.minimap.util.MedianList;
 
@@ -64,7 +65,8 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
      */
     @Override
     public Double computeDistance() {
-        return Math.pow(10, (rssiAtOneMeter - medianRssi) / (10.0 * propagationConstant));
+        double meters = Math.pow(10, (rssiAtOneMeter - medianRssi) / (10.0 * propagationConstant));
+        return (meters * MapActivity.M_TO_FT);
     }
 
     @Override
@@ -100,7 +102,8 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
     }
 
     public Double computeDistance(double rssi) {
-        return Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
+        double meters = Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
+        return (meters * MapActivity.M_TO_FT);
     }
 
     public void computeMedianRssi() {
