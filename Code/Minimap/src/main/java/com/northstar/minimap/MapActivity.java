@@ -4,27 +4,36 @@ import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.BeaconManager;
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
+import com.northstar.minimap.itinerary.Itinerary;
+import com.northstar.minimap.itinerary.ItineraryPoint;
 import com.northstar.minimap.map.Map;
 import com.northstar.minimap.map.Table;
 import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +50,14 @@ public class MapActivity extends Activity implements SensorEventListener {
     private float[] gravityValues;
     private float[] magneticValues;
 
+    private ActionBarDrawerToggle actionBarDrawerToggle;
     private BeaconListener beaconListener;
     private BeaconManager beaconManager;
     private Bundle configBundle;
+    private DrawerLayout drawerLayout;
+    private Itinerary itinerary;
     private List<IBeacon> beacons;
+    private ListView itineraryListView;
     private Sensor accelerometer;
     private Sensor magnetometer;
     private SensorManager sensorManager;
@@ -54,6 +67,18 @@ public class MapActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, drawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
+                R.string.drawer_close);
+
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        itineraryListView = (ListView) findViewById(R.id.leftDrawer);
 
         // Initialize beacon ids
         StickNFindBluetoothBeacon.initBeaconIdMap();
@@ -82,6 +107,12 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.map, menu);
@@ -90,6 +121,10 @@ public class MapActivity extends Activity implements SensorEventListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
             case R.id.settingsMenuItem:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -108,6 +143,12 @@ public class MapActivity extends Activity implements SensorEventListener {
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
     }
 
     @Override
@@ -210,13 +251,44 @@ public class MapActivity extends Activity implements SensorEventListener {
         for (IBeacon beacon: beacons) {
             testMap.addBeacon(beacon);
         }
-        
+
+        processItinerary();
+
         return testMap;
     }
+    
+    public void processItinerary() {
+        Log.w("JP", "Fake Itin being sent to frag");
+        List<ItineraryPoint> itinPoints = new ArrayList<ItineraryPoint>();
 
+        ItineraryPoint ip1 = new ItineraryPoint("Point 1", new Position(50.0, 50.0));
+        ItineraryPoint ip2 = new ItineraryPoint("Point 2", new Position(100.0, 100.0));
+        ItineraryPoint ip3 = new ItineraryPoint("Point 3", new Position(150.0, 150.0));
+        ItineraryPoint ip4 = new ItineraryPoint("Point 4", new Position(150.0, 150.0));
+        ItineraryPoint ip5 = new ItineraryPoint("Point 5", new Position(150.0, 150.0));
+        ItineraryPoint ip6 = new ItineraryPoint("Point 6", new Position(150.0, 150.0));
+
+        itinPoints.add(ip1);
+        itinPoints.add(ip2);
+        itinPoints.add(ip3);
+        itinPoints.add(ip4);
+        itinPoints.add(ip5);
+        itinPoints.add(ip6);
+
+        itinerary = new Itinerary(itinPoints);
+        itineraryListView.setAdapter(itineraryAdapter);
+        itineraryListView.setOnItemClickListener(itinerarySelector);
+    }
+    
     public void setBeaconListener(BeaconListener beaconListener) {
         this.beaconListener = beaconListener;
         beaconManager.setBeaconListener(beaconListener);
+    }
+
+    public void setCurrentItineraryPoint(ItineraryPoint point) {
+        CustomMapFragment mapFrag =
+                (CustomMapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
+        mapFrag.setCurrentItineraryPoint(point);
     }
 
     public void setUserPositionListener(UserPositionListener userPositionListener) {
@@ -237,4 +309,40 @@ public class MapActivity extends Activity implements SensorEventListener {
 
         return new Position(x, y);
     }
+
+    private BaseAdapter itineraryAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return itinerary.getCount();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return itinerary.getItineraryPoint(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View contentView, ViewGroup parent) {
+            View listItem = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.list_item_itinerary, null);
+            TextView title = (TextView) listItem.findViewById(R.id.itineraryTitle);
+            title.setText(itinerary.getItineraryPoint(position).getName());
+            return listItem;
+        }
+    };
+
+    private AdapterView.OnItemClickListener itinerarySelector =
+            new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+            ItineraryPoint currentPoint = itinerary.getItineraryPoint(position);
+            setCurrentItineraryPoint(currentPoint);
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }
+    };
 }
