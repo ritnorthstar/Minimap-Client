@@ -37,6 +37,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
+        
+        Globals state = (Globals)getApplicationContext();
+        
+        state.comm.setDataHolder(state.data);
 
         ipTextbox.setText("67.247.162.224:9000");
     }
@@ -55,9 +59,9 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void launchProductionMap(View view) {
+    public void launchSelectionActivity(View view) {
         Globals state = (Globals)getApplicationContext();
-        Intent mapIntent = new Intent(this, MapActivity.class);
+        Intent selectionIntent = new Intent(this, SelectionActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         if (!serverIP.startsWith("http://")) {
@@ -71,10 +75,9 @@ public class MainActivity extends Activity {
 
             Bundle bundle = new Bundle();
             bundle.putString(IP_ERROR_MESSAGE, ipErrorMessage);
-            bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_PRODUCTION);
-            mapIntent.putExtras(bundle);
+            selectionIntent.putExtras(bundle);
 
-            startActivity(mapIntent);
+            startActivity(selectionIntent);
         } catch(Exception e) {
             // Incorrect IP address format
             ipErrorMessage = e.getMessage();
@@ -85,7 +88,7 @@ public class MainActivity extends Activity {
             ipTextbox.setText("");
         }
     }
-    
+
     public void launchTestMap() {
         Bundle bundle = new Bundle();
         bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_TEST);

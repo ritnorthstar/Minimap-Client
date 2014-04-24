@@ -56,9 +56,16 @@
                 android:value="com.northstar.minimap.MapActivity" />
         </activity>
         <activity
+            android:name="com.northstar.minimap.SelectionActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName="com.northstar.minimap.SelectionActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.northstar.minimap.SelectionActivity" />
+        </activity>
+        <activity
             android:name="com.northstar.minimap.SettingsActivity"
             android:label="@string/title_activity_settings" />
-
     </application>
 
 </manifest>
