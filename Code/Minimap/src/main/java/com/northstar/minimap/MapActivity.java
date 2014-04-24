@@ -45,7 +45,7 @@ public class MapActivity extends Activity implements SensorEventListener {
 
     public static final double FT_TO_M = 0.3048;
     public static final double M_TO_FT = 3.2808;
-    public static final double FT_TO_MAP_PIXELS = 50;
+    public static final double FT_TO_MAP_PIXELS = 1;
 
     public static final int ENV_PRODUCTION = 1;
     public static final int ENV_TEST = 2;
@@ -168,13 +168,6 @@ public class MapActivity extends Activity implements SensorEventListener {
         super.onResume();
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String range = sharedPref.getString(SettingsActivity.KEY_PREF_PROXIMITY_ZONE_RANGE, "");
-
-        try {
-            beaconManager.setProximityZoneRange(Double.parseDouble(range));
-        } catch (NumberFormatException e) {}
     }
 
     @Override
@@ -229,6 +222,13 @@ public class MapActivity extends Activity implements SensorEventListener {
         }
 
         beaconManager = new BeaconManager(this, beacons);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String range = sharedPref.getString(SettingsActivity.KEY_PREF_PROXIMITY_ZONE_RANGE, "");
+
+        try {
+            beaconManager.setProximityZoneRange(Double.parseDouble(range));
+        } catch (NumberFormatException e) {}
     }
 
     public void processMap() {
@@ -256,7 +256,16 @@ public class MapActivity extends Activity implements SensorEventListener {
         String mapID = state.data.mapID;
 
         Map URLMap = new MapBuilder().getMap(jsonMap, mapID);
+
         beaconManager = new BeaconManager(this, URLMap.getBeacons());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String range = sharedPref.getString(SettingsActivity.KEY_PREF_PROXIMITY_ZONE_RANGE, "");
+
+        try {
+            beaconManager.setProximityZoneRange(Double.parseDouble(range));
+        } catch (NumberFormatException e) {}
+
+
         mapFrag.setMap(URLMap);
     }
     
@@ -320,15 +329,15 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     public static Position toMapPosition(Position measuredPosition) {
-        double x = measuredPosition.getX() * FT_TO_MAP_PIXELS;
-        double y = measuredPosition.getY() * FT_TO_MAP_PIXELS;
+        double x = measuredPosition.getX() * FT_TO_MAP_PIXELS * CustomMapFragment.FT_IN_PIXELS;
+        double y = measuredPosition.getY() * FT_TO_MAP_PIXELS * CustomMapFragment.FT_IN_PIXELS;
 
         return new Position((int) Math.round(x), (int) Math.round(y));
     }
 
     public static Position toMeasuredPosition(Position mapPosition) {
-        double x = mapPosition.getX() / FT_TO_MAP_PIXELS;
-        double y = mapPosition.getY() / FT_TO_MAP_PIXELS;
+        double x = mapPosition.getX() / FT_TO_MAP_PIXELS / CustomMapFragment.FT_IN_PIXELS;
+        double y = mapPosition.getY() / FT_TO_MAP_PIXELS / CustomMapFragment.FT_IN_PIXELS;
 
         return new Position(x, y);
     }
