@@ -164,6 +164,11 @@ public class BeaconManager implements LeScanCallbackProvider {
 
                 // Update beacon's signal strength.
                 IBeacon beacon = beaconMap.get(number);
+
+                if (beacon == null) {
+                    return;
+                }
+
                 beacon.setSignalStrength(rssi);
                 ((StickNFindBluetoothBeacon) beacon).computeMedianRssi();
 
