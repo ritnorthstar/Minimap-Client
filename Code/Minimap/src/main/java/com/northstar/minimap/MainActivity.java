@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void launchProductionMap(View view) {
+    public void launchSelectionActivity(View view) {
         Globals state = (Globals)getApplicationContext();
         Intent selectionIntent = new Intent(this, SelectionActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
@@ -75,7 +75,6 @@ public class MainActivity extends Activity {
 
             Bundle bundle = new Bundle();
             bundle.putString(IP_ERROR_MESSAGE, ipErrorMessage);
-            bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_PRODUCTION);
             selectionIntent.putExtras(bundle);
 
             startActivity(selectionIntent);

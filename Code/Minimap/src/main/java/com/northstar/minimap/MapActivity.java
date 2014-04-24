@@ -186,18 +186,18 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
     
     public void productionMap() {
-    	CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
-    	Globals state = (Globals)getApplicationContext();
-    	String jsonMap = state.data.mapsJson;
+        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+        Globals state = (Globals)getApplicationContext();
+        String jsonMap = state.data.mapsJson;
         String mapID = state.data.mapID;
 
-    	Map URLMap = new MapBuilder().getMap(jsonMap, mapID);
+        Map URLMap = new MapBuilder().getMap(jsonMap, mapID);
         beaconManager = new BeaconManager(this, URLMap.getBeacons());
         mapFrag.setMap(URLMap);
     }
     
     private Map testMap(){
-    	Map testMap = new Map();
+        Map testMap = new Map();
         
         testMap.setMapID("0");
 

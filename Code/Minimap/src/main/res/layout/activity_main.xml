@@ -99,7 +99,7 @@
                     android:id="@+id/launchButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="launchProductionMap"
+                    android:onClick="launchSelectionActivity"
                     android:text="@string/button_map_production"
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"

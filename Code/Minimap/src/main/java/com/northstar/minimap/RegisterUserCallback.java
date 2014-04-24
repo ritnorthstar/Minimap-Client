@@ -10,8 +10,6 @@ public class RegisterUserCallback implements CallbackListener {
 	
 	@Override
 	public void jsonCallback() {
-		// TODO Auto-generated method stub
 		selectAct.goToMap();
 	}
-
 }
