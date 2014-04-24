@@ -9,6 +9,7 @@ import android.util.Log;
 public class SettingsActivity extends PreferenceActivity {
     public static final String KEY_PREF_BEACON_RANGE = "pref_beacon_range";
     public static final String KEY_PREF_PROXIMITY_ZONE = "pref_proximity_zone";
+    public static final String KEY_PREF_PROXIMITY_ZONE_RANGE = "pref_proximity_zone_range";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

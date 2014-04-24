@@ -12,12 +12,14 @@ import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -132,6 +134,12 @@ public class MapActivity extends Activity implements SensorEventListener {
             case R.id.restartBluetoothMenuItem:
                 beaconManager.restartBluetooth();
                 break;
+            case R.id.resetCalibrationMenuItem:
+                for (IBeacon beacon : beacons) {
+                    beacon.resetCalibration();
+                }
+                Toast.makeText(this, R.string.reset_calibration_success, Toast.LENGTH_SHORT).show();
+                break;
             default:
                 break;
         }
@@ -156,6 +164,13 @@ public class MapActivity extends Activity implements SensorEventListener {
         super.onResume();
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String range = sharedPref.getString(SettingsActivity.KEY_PREF_PROXIMITY_ZONE_RANGE, "");
+
+        try {
+            beaconManager.setProximityZoneRange(Double.parseDouble(range));
+        } catch (NumberFormatException e) {}
     }
 
     @Override
