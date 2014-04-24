@@ -1,6 +1,7 @@
 package com.northstar.minimap;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -182,7 +183,6 @@ public class Communicator {
 
         protected void onPostExecute(String json) {
             Globals.log("Json response (oPE): " + json);
-            dataHolder.userJson = json;
             listener.jsonCallback();
         }
     }

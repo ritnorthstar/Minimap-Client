@@ -236,6 +236,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
             CallbackListener updateUser = new UpdateUserCallback(this);
             state.comm.updateUser(updateUser, userJson.toString());
+            state.data.userJson = userJson.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
