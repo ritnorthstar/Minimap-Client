@@ -74,7 +74,7 @@ public class SelectionActivity extends Activity {
                 userJson.put("Z", 0);
 
                 CallbackListener registerUser = new RegisterUserCallback(this);
-                state.comm.registerUsers(registerUser, userJson.toString());
+                state.comm.registerUser(registerUser, userJson.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -105,7 +105,7 @@ public class SelectionActivity extends Activity {
             e.printStackTrace();
         }
 
-        CallbackListener user = new UserCallback(this);
+        CallbackListener user = new UserNamesCallback(this);
         state.comm.getUsersJson(user);
     }
 

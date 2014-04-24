@@ -1,10 +1,10 @@
 package com.northstar.minimap;
 
-public class UserCallback implements CallbackListener {
+public class UserNamesCallback implements CallbackListener {
 
 	private SelectionActivity selectAct;
 	
-	public UserCallback(SelectionActivity selectActivity){
+	public UserNamesCallback(SelectionActivity selectActivity){
 		selectAct = selectActivity;
 	}
 	
