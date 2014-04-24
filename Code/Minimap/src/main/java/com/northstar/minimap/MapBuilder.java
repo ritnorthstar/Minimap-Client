@@ -60,11 +60,8 @@ public class MapBuilder {
 		Log.w("JP","Got Array");
 		for(int i = 0; i < beacons.length(); i++){
 			JSONObject JSONBeacon = beacons.getJSONObject(i);
-			IBeacon beacon = new StickNFindBluetoothBeacon(null,
-														   i,
-														   JSONBeacon.getString("BeaconId"), 
-														   new Position(JSONBeacon.getDouble("X"),
-																	 	JSONBeacon.getDouble("Y")));
+			IBeacon beacon = new StickNFindBluetoothBeacon(i, JSONBeacon.getString("BeaconId"),
+                    new Position(JSONBeacon.getDouble("X"), JSONBeacon.getDouble("Y")));
 			JSONMap.addBeacon(beacon);
 		}
 	}

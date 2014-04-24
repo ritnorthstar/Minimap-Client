@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -41,7 +42,7 @@ public class MainActivity extends Activity {
         
         state.comm.setDataHolder(state.data);
 
-        ipTextbox.setText("10.0.2.2:9000");
+        ipTextbox.setText("67.247.162.224:9000");
     }
 
     @Override
@@ -51,36 +52,16 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void submitIP(View view) {
-        Globals state = (Globals)getApplicationContext();
-        Intent mapIntent = new Intent(this, DrawerActivity.class);
-        EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
-        String serverIP = ipTextbox.getText().toString();
-        if (!serverIP.startsWith("http://")) {
-            serverIP = "http://" + serverIP;
-        }
-        String ipErrorMessage = "no error!";
-        state.log(serverIP);
 
-        try {
-            state.comm.setServerIP(new URL(serverIP));
-            mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
-            startActivity(mapIntent);
-        } catch(Exception e) {
-            // Incorrect IP address format
-            ipErrorMessage = e.getMessage();
-
-            TextView errorText = (TextView) findViewById(R.id.ip_error_text_view);
-            errorText.setText("\"" + serverIP +"\" isn't a valid IP address.\nIt should be something like \"10.0.2.2:9000\"");
-            errorText.setTextColor(Color.RED);
-            ipTextbox.setText("");
-        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        launchTestMap();
+        return super.onOptionsItemSelected(item);
     }
-    
-    public void goToSelect(View view) {
-    	Log.w("JP", "Second Button");
-    	Globals state = (Globals)getApplicationContext();
-    	Intent selectionIntent = new Intent(this, SelectionActivity.class);
+
+    public void launchProductionMap(View view) {
+        Globals state = (Globals)getApplicationContext();
+        Intent selectionIntent = new Intent(this, SelectionActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         if (!serverIP.startsWith("http://")) {
@@ -91,7 +72,12 @@ public class MainActivity extends Activity {
 
         try {
             state.comm.setServerIP(new URL(serverIP));
-            selectionIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
+
+            Bundle bundle = new Bundle();
+            bundle.putString(IP_ERROR_MESSAGE, ipErrorMessage);
+            bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_PRODUCTION);
+            selectionIntent.putExtras(bundle);
+
             startActivity(selectionIntent);
         } catch(Exception e) {
             // Incorrect IP address format
@@ -102,5 +88,13 @@ public class MainActivity extends Activity {
             errorText.setTextColor(Color.RED);
             ipTextbox.setText("");
         }
+    }
+
+    public void launchTestMap() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_TEST);
+    	Intent mapIntent = new Intent(this, MapActivity.class);
+        mapIntent.putExtras(bundle);
+        startActivity(mapIntent);
     }
 }

@@ -161,13 +161,12 @@ public class SelectionActivity extends Activity {
 			}
 		}
 	}
-	
-	public void goToMap(){
-		
-		Intent mapIntent = new Intent(this, MapActivity.class);
-		startActivity(mapIntent);
-	}
-	
-	
-	
+
+	public void goToMap() {
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_PRODUCTION);
+        mapIntent.putExtras(bundle);
+        startActivity(mapIntent);
+    }
 }
