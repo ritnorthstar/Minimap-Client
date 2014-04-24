@@ -261,9 +261,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
         beacon.setMarkerCircle(googleMap.addCircle(new CircleOptions()
                 .center(markerLoc)
-                .radius(20)
+                .radius(30)
                 .strokeColor(Color.BLACK)
-                .strokeWidth(2)
+                .strokeWidth(3)
                 .fillColor(beaconColor)));
 
         if (drawDistance > 0) {

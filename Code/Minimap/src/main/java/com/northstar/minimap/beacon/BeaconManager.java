@@ -147,10 +147,13 @@ public class BeaconManager implements LeScanCallbackProvider {
                 String address = device.getAddress();
 
                 if (!StickNFindBluetoothBeacon.beaconIdMap.containsValue(address)) {
+                    Log.d("BT-SCAN-UNKNOWN", device.getAddress() + " " + rssi);
                     return;
                 }
 
                 int number = StickNFindBluetoothBeacon.getBeaconNumber(address);
+                Log.d("BT-SCAN-KNOWN", number + " " + device.getAddress() + " " + rssi);
+
                 beaconsScanned++;
 
                 // Add beacon if it doesn't exist.
@@ -233,10 +236,10 @@ public class BeaconManager implements LeScanCallbackProvider {
     }
 
     private void updateUserPosition() {
-        if (beaconMap.size() == 4) {
+        if (beaconMap.size() >= 4) {
             Position userPosition = positionCalculator.multilaterate(getBeaconList());
 
-            if (userPositionListener != null) {
+            if (userPositionListener != null && userPosition != null) {
                 userPositionListener.onUserPositionChanged(userPosition);
             }
         }

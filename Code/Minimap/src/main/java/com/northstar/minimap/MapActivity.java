@@ -193,14 +193,18 @@ public class MapActivity extends Activity implements SensorEventListener {
 
     private void initTestEnvironment() {
         Position[] positions = new Position[] {
-                new Position(0.0, 0.0),
-                new Position(PositionCalculator.GRID_WIDTH, 0.0),
-                new Position(0.0, PositionCalculator.GRID_HEIGHT),
-                new Position(PositionCalculator.GRID_WIDTH, PositionCalculator.GRID_HEIGHT)
+                new Position(0, 0),
+                new Position(5, 0),
+                new Position(10, 0),
+                new Position(0, 5),
+                new Position(10, 5),
+                new Position(0, 10),
+                new Position(5, 10),
+                new Position(10, 10)
         };
 
         beacons = new ArrayList<IBeacon>();
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 8; i++) {
             beacons.add(new StickNFindBluetoothBeacon(
                     i, StickNFindBluetoothBeacon.beaconIdMap.get(i), positions[i - 1]));
         }
