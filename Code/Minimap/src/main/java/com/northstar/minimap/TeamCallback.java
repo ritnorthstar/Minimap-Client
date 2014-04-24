@@ -1,15 +1,15 @@
 package com.northstar.minimap;
 
-public class MapCallback implements CallbackListener {
-
+public class TeamCallback implements CallbackListener {
+    
     private SelectionActivity selectAct;
     
-    public MapCallback(SelectionActivity selectActivity) {
+    public TeamCallback(SelectionActivity selectActivity) {
         selectAct = selectActivity;
     }
     
     @Override
     public void jsonCallback() {
-        selectAct.setMaps();
+        selectAct.setTeams();
     }
 }

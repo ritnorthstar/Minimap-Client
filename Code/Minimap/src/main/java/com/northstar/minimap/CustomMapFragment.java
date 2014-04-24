@@ -27,6 +27,13 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.northstar.minimap.beacon.BeaconListener;
+import com.northstar.minimap.beacon.IBeacon;
+import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
+import com.northstar.minimap.itinerary.ItineraryPoint;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.IBeacon;
@@ -63,6 +70,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     private Map map;
     private List<LatLngBounds> boundBoxes = new ArrayList<LatLngBounds>();
     private LatLngBounds mapBounds;
+    private Marker currentItineraryPoint;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +85,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         mapView.onResume();//needed to get the map to display immediately
 
         MapsInitializer.initialize(this.getActivity());
-        
+
         googleMap = mapView.getMap();
         
         //Initial zoom for projection
@@ -255,9 +263,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
         beacon.setMarkerCircle(googleMap.addCircle(new CircleOptions()
                 .center(markerLoc)
-                .radius(20)
+                .radius(30)
                 .strokeColor(Color.BLACK)
-                .strokeWidth(2)
+                .strokeWidth(3)
                 .fillColor(beaconColor)));
 
         if (drawDistance > 0) {
@@ -292,6 +300,22 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     		storeBoundBoxes(table);
     		drawTables(table);
     	}	
+    }
+
+
+    public void setCurrentItineraryPoint(ItineraryPoint point) {
+        if (currentItineraryPoint != null) {
+            currentItineraryPoint.remove();
+        }
+
+        MarkerOptions currentItinMarkerOptions = new MarkerOptions();
+
+        // Set the position and title of the Marker.
+        LatLng markerLoc = proj.fromScreenLocation(point.getPos().toPoint());
+        currentItinMarkerOptions = currentItinMarkerOptions.position(markerLoc);
+        currentItinMarkerOptions = currentItinMarkerOptions.title(point.getName());
+
+        currentItineraryPoint = googleMap.addMarker(currentItinMarkerOptions);
     }
     
     private void storeBoundBoxes(Table table){
@@ -347,5 +371,4 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
             parentAct.calibrate(measuredPosition);
         }
     };
-
 }

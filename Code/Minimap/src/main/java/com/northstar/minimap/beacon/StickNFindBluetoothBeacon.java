@@ -44,6 +44,10 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
         beaconIdMap.put(2, "FE:CC:38:AA:BE:B5");
         beaconIdMap.put(3, "E4:3E:A0:63:BC:C6");
         beaconIdMap.put(4, "E3:BF:2E:56:BF:B9");
+        beaconIdMap.put(5, "CA:49:2F:AF:C6:33");
+        beaconIdMap.put(6, "C1:87:95:AA:38:B3");
+        beaconIdMap.put(7, "ED:1D:DA:AC:D9:59");
+        beaconIdMap.put(8, "FB:E3:E8:AD:1A:7A");
         beaconIdMap = Collections.unmodifiableMap(beaconIdMap);
     }
 

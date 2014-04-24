@@ -3,23 +3,30 @@
 
 package com.northstar.minimap.itinerary;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to represent a user's itinerary.
  */
 public class Itinerary {
 
-    private ArrayList<ItineraryPoint> itinerary;
-    private int currentPoint = 0;
+    private List<ItineraryPoint> itinerary;
     private boolean[] visited;
 
-    public Itinerary(ArrayList<ItineraryPoint> itinerary){
-        this.itinerary = itinerary;
-        visited = new boolean[itinerary.size()];
+    public Itinerary(List<ItineraryPoint> itinPoints){
+        this.itinerary = itinPoints;
+        visited = new boolean[itinPoints.size()];
         for(int i = 0; i < visited.length; i++){
             visited[i] = false;
         }
+    }
+    
+    public int getCount(){
+    	return itinerary.size();
+    }
+    
+    public ItineraryPoint getItineraryPoint(int position){
+    	return itinerary.get(position);
     }
 
 
