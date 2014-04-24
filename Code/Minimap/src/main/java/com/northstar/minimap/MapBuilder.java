@@ -21,7 +21,15 @@ public class MapBuilder {
         Log.w("JP","Got Array");
         for (int i = 0; i < beacons.length(); i++) {
             JSONObject JSONBeacon = beacons.getJSONObject(i);
-            IBeacon beacon = new StickNFindBluetoothBeacon(i, JSONBeacon.getString("BeaconId"),
+
+            int number = i;
+
+            // Attempt to parse DeviceLabel as a number.  Use index as a fallback.
+            try {
+                number = Integer.parseInt(JSONBeacon.getString("DeviceLabel"));
+            } catch (NumberFormatException e) {}
+
+            IBeacon beacon = new StickNFindBluetoothBeacon(number, JSONBeacon.getString("DeviceId"),
                     new Position(JSONBeacon.getDouble("X"), JSONBeacon.getDouble("Y")));
             JSONMap.addBeacon(beacon);
         }
