@@ -299,6 +299,22 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     		drawTables(table);
     	}	
     }
+
+
+    public void setCurrentItineraryPoint(ItineraryPoint point) {
+        if (currentItineraryPoint != null) {
+            currentItineraryPoint.remove();
+        }
+
+        MarkerOptions currentItinMarkerOptions = new MarkerOptions();
+
+        // Set the position and title of the Marker.
+        LatLng markerLoc = proj.fromScreenLocation(point.getPos().toPoint());
+        currentItinMarkerOptions = currentItinMarkerOptions.position(markerLoc);
+        currentItinMarkerOptions = currentItinMarkerOptions.title(point.getName());
+
+        currentItineraryPoint = googleMap.addMarker(currentItinMarkerOptions);
+    }
     
     private void storeBoundBoxes(Table table){
     	LatLng neCorner = proj.fromScreenLocation(new Point((int)table.getPosition().getX() + table.getWidth(),
@@ -353,23 +369,4 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
             parentAct.calibrate(measuredPosition);
         }
     };
-
-	public void setCurrentItineraryPoint(ItineraryPoint point) {
-		if(currentItineraryPoint != null){
-			currentItineraryPoint.remove();
-		}
-		
-		MarkerOptions currentItinMarkerOptions = new MarkerOptions();
-		
-		//Set the position of the Marker
-		LatLng markerLoc = proj.fromScreenLocation(new Point((int)point.getPos().getX(), (int)point.getPos().getY()));
-		currentItinMarkerOptions = currentItinMarkerOptions.position(markerLoc);
-		
-		//Set the title of the marker
-		currentItinMarkerOptions = currentItinMarkerOptions.title(point.getName());
-		
-		currentItineraryPoint = googleMap.addMarker(currentItinMarkerOptions);
-		
-	}
-
 }

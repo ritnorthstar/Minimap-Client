@@ -267,7 +267,7 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
     
     public void processItinerary() {
-    	Log.w("JP", "Fake Itin being sent to frag");
+        Log.w("JP", "Fake Itin being sent to frag");
     	List<ItineraryPoint> itinPoints = new ArrayList<ItineraryPoint>();
 
     	ItineraryPoint ip1 = new ItineraryPoint("Point 1", new Position(50.0, 50.0));
@@ -295,7 +295,8 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     public void setCurrentItineraryPoint(ItineraryPoint point) {
-        CustomMapFragment mapFrag = (CustomMapFragment)getFragmentManager().findFragmentById(R.id.map_fragment);
+        CustomMapFragment mapFrag =
+                (CustomMapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
         mapFrag.setCurrentItineraryPoint(point);
     }
 
@@ -319,7 +320,6 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     private BaseAdapter itineraryAdapter = new BaseAdapter() {
-
         @Override
         public int getCount() {
             return itinerary.getCount();
