@@ -5,6 +5,7 @@ package com.northstar.minimap.beacon;
 
 import com.google.android.gms.maps.model.Circle;
 import com.northstar.minimap.Globals;
+import com.northstar.minimap.MapActivity;
 import com.northstar.minimap.Position;
 import com.northstar.minimap.util.MedianList;
 
@@ -21,14 +22,16 @@ import java.util.Map;
 
 public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
+    public static final double DEFAULT_PROPAGATION_CONSTANT = 2.007;
+    public static final double DEFAULT_RSSI_AT_ONE_METER = -68.6;
     public static final double PROXIMITY_ZONE_RANGE = 0.8;
     public static final int MEDIAN_RANGE_RSSI = 10;
 
     public static Map<Integer, String> beaconIdMap;
 
     private double medianRssi = 0;
-    private double propagationConstant = 2.007;
-    private double rssiAtOneMeter = -68.6;
+    private double propagationConstant = DEFAULT_PROPAGATION_CONSTANT;
+    private double rssiAtOneMeter = DEFAULT_RSSI_AT_ONE_METER;
 
     private MedianList rssis;
 
@@ -62,7 +65,14 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
      */
     @Override
     public Double computeDistance() {
-        return Math.pow(10, (rssiAtOneMeter - medianRssi) / (10.0 * propagationConstant));
+        double meters = Math.pow(10, (rssiAtOneMeter - medianRssi) / (10.0 * propagationConstant));
+        return (meters * MapActivity.M_TO_FT);
+    }
+
+    @Override
+    public void resetCalibration() {
+        propagationConstant = DEFAULT_PROPAGATION_CONSTANT;
+        rssiAtOneMeter = DEFAULT_RSSI_AT_ONE_METER;
     }
 
     public void calibrate(double expectedDistance) {
@@ -92,7 +102,8 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
     }
 
     public Double computeDistance(double rssi) {
-        return Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
+        double meters = Math.pow(10, (rssiAtOneMeter - (rssi)) / (10.0 * propagationConstant));
+        return (meters * MapActivity.M_TO_FT);
     }
 
     public void computeMedianRssi() {

@@ -11,4 +11,10 @@
         android:title="@string/show_proximity_zone_title"
         android:summary="@string/show_proximity_zone_summary"
         android:defaultValue="true" />
+    <EditTextPreference
+        android:key="pref_proximity_zone_range"
+        android:title="@string/show_proximity_zone_range_title"
+        android:summary="@string/show_proximity_zone_range_summary"
+        android:inputType="numberDecimal"
+        android:defaultValue="1.0" />
 </PreferenceScreen>

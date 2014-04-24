@@ -49,6 +49,7 @@ import com.northstar.minimap.map.UserPositionListener;
 public class CustomMapFragment extends Fragment implements BeaconListener, UserPositionListener {
 
     public static final double DRAW_PIXEL_RATIO = 2.333;
+    public static final double FT_IN_PIXELS = 10;
 
     private boolean proximityZonesEnabled = true;
     private boolean showBeaconRangeCircles = true;
@@ -248,9 +249,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     }
 
     private void drawBeacon(IBeacon beacon) {
-        double pixelDistance = (beacon.computeDistance() / PositionCalculator.GRID_WIDTH) *
-                MapActivity.MAP_WIDTH;
-        double drawDistance = pixelDistance * DRAW_PIXEL_RATIO;
+        double drawDistance = beacon.computeDistance() * DRAW_PIXEL_RATIO * FT_IN_PIXELS;
         int beaconColor = (beacon.isInProximityZone() && proximityZonesEnabled) ?
                 COLOR_BEACON_IN_PROXIMITY_ZONE : COLOR_BEACON;
 
@@ -337,15 +336,15 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     			
     			PolygonOptions tableSquare = new PolygonOptions();
     			
-    			double leftX = (table.getPosition().getX() + 
-    							widthInc * wSub);
-    			double rightX = (table.getPosition().getX() + 
-								 widthInc * (wSub + 1));
-    			double topY = (table.getPosition().getY() + 
-							   heightInc * hSub);
-    			double bottomY = (table.getPosition().getY() + 
-						   		  heightInc * (hSub + 1));
-    			
+    			double leftX = (table.getPosition().getX() + widthInc * wSub);
+    			double rightX = (table.getPosition().getX() + widthInc * (wSub + 1));
+    			double topY = (table.getPosition().getY() + heightInc * hSub);
+    			double bottomY = (table.getPosition().getY() + heightInc * (hSub + 1));
+
+                leftX *= FT_IN_PIXELS;
+                rightX *= FT_IN_PIXELS;
+                topY *= FT_IN_PIXELS;
+                bottomY *= FT_IN_PIXELS;
     			
     			LatLng topLeft = proj.fromScreenLocation(new Point((int)leftX, (int)topY));
     			LatLng bottomLeft = proj.fromScreenLocation(new Point((int)leftX, (int)bottomY));
