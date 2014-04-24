@@ -36,6 +36,8 @@ public class BeaconManager implements LeScanCallbackProvider {
 
     private final List<IBeacon> beacons;
 
+    private double proximityZoneRange = 0.5;
+
     private Activity activity;
     private BeaconListener beaconListener;
     private BluetoothAdapter bluetoothAdapter;
@@ -183,8 +185,7 @@ public class BeaconManager implements LeScanCallbackProvider {
 
                 updateUserPosition();
 
-                boolean isInProximityZone = (beacon.computeUnaveragedDistance() <
-                        StickNFindBluetoothBeacon.PROXIMITY_ZONE_RANGE);
+                boolean isInProximityZone = (beacon.computeUnaveragedDistance() < proximityZoneRange);
                 if (isInProximityZone != beacon.isInProximityZone()) {
                     beacon.setInProximityZone(isInProximityZone);
 
@@ -231,6 +232,10 @@ public class BeaconManager implements LeScanCallbackProvider {
         this.beaconListener = beaconListener;
     }
 
+    public void setProximityZoneRange(double proximityZoneRange) {
+        this.proximityZoneRange = proximityZoneRange;
+    }
+
     public void setUserPositionListener(UserPositionListener userPositionListener) {
         this.userPositionListener = userPositionListener;
     }
@@ -238,9 +243,10 @@ public class BeaconManager implements LeScanCallbackProvider {
     private void updateUserPosition() {
         if (beaconMap.size() >= 4) {
             Position userPosition = positionCalculator.multilaterate(getBeaconList());
+            double positionError = positionCalculator.getPositionError();
 
-            if (userPositionListener != null && userPosition != null) {
-                userPositionListener.onUserPositionChanged(userPosition);
+            if (userPositionListener != null) {
+                userPositionListener.onUserPositionChanged(userPosition, positionError);
             }
         }
     }

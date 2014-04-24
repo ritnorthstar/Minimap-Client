@@ -7,4 +7,7 @@
 
     <item android:id="@+id/restartBluetoothMenuItem"
           android:title="@string/restart_bluetooth" />
+
+    <item android:id="@+id/resetCalibrationMenuItem"
+          android:title="@string/reset_calibration" />
 </menu>
