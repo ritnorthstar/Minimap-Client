@@ -22,6 +22,10 @@ public class PositionCalculator {
 
     public static final double GRID_HEIGHT = 3.0;
     public static final double GRID_WIDTH = 3.0;
+    public static final double MAX_ERROR = 20;
+    public static final double MIN_ERROR = 2;
+
+    private double positionError = 0.0;
 
     public PositionCalculator() {
 
@@ -134,9 +138,31 @@ public class PositionCalculator {
                 y = Bk.get(1, 0);
             }
 
-            return new Position(x, y);
+            Position userPosition = new Position(x, y);
+            calculatePositionError(userPosition, beacons, br);
+            return userPosition;
+
         } catch (RuntimeException e) {} // Singular matrix error.
 
         return null;
+    }
+
+    private void calculatePositionError(Position userPosition, List<IBeacon> beacons,
+                                           double[] estimatedDistances) {
+        positionError = 0.0;
+
+        for (int i = 0; i < beacons.size(); i++) {
+            double calculatedDistance = userPosition.distance(beacons.get(i).getPosition());
+            double error = Math.abs(calculatedDistance - estimatedDistances[i]);
+            positionError += error;
+        }
+
+        positionError /= beacons.size();
+        positionError = Math.max(positionError, MIN_ERROR);
+        positionError = Math.min(positionError, MAX_ERROR);
+    }
+
+    public double getPositionError() {
+        return positionError;
     }
 }

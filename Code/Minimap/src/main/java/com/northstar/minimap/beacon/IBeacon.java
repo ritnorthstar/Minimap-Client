@@ -46,6 +46,7 @@ public interface IBeacon {
 
     public boolean isInProximityZone();
 
+    public void resetCalibration();
     public void setInProximityZone(boolean isInProximityZone);
     public void setMarkerCircle(Circle markerCircle);
     public void setRangeCircle(Circle rangeCircle);

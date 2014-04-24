@@ -12,12 +12,14 @@ import com.northstar.minimap.map.UserPositionListener;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -40,6 +42,10 @@ import java.util.List;
 public class MapActivity extends Activity implements SensorEventListener {
 
     public static final String KEY_ENV = "ENV";
+
+    public static final double FT_TO_M = 0.3048;
+    public static final double M_TO_FT = 3.2808;
+    public static final double FT_TO_MAP_PIXELS = 1;
 
     public static final int ENV_PRODUCTION = 1;
     public static final int ENV_TEST = 2;
@@ -132,6 +138,12 @@ public class MapActivity extends Activity implements SensorEventListener {
             case R.id.restartBluetoothMenuItem:
                 beaconManager.restartBluetooth();
                 break;
+            case R.id.resetCalibrationMenuItem:
+                for (IBeacon beacon : beacons) {
+                    beacon.resetCalibration();
+                }
+                Toast.makeText(this, R.string.reset_calibration_success, Toast.LENGTH_SHORT).show();
+                break;
             default:
                 break;
         }
@@ -210,6 +222,13 @@ public class MapActivity extends Activity implements SensorEventListener {
         }
 
         beaconManager = new BeaconManager(this, beacons);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String range = sharedPref.getString(SettingsActivity.KEY_PREF_PROXIMITY_ZONE_RANGE, "");
+
+        try {
+            beaconManager.setProximityZoneRange(Double.parseDouble(range));
+        } catch (NumberFormatException e) {}
     }
 
     public void processMap() {
@@ -237,7 +256,16 @@ public class MapActivity extends Activity implements SensorEventListener {
         String mapID = state.data.mapID;
 
         Map URLMap = new MapBuilder().getMap(jsonMap, mapID);
+
         beaconManager = new BeaconManager(this, URLMap.getBeacons());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String range = sharedPref.getString(SettingsActivity.KEY_PREF_PROXIMITY_ZONE_RANGE, "");
+
+        try {
+            beaconManager.setProximityZoneRange(Double.parseDouble(range));
+        } catch (NumberFormatException e) {}
+
+
         mapFrag.setMap(URLMap);
     }
     
@@ -301,17 +329,21 @@ public class MapActivity extends Activity implements SensorEventListener {
     }
 
     public static Position toMapPosition(Position measuredPosition) {
-        double x = measuredPosition.getX() / PositionCalculator.GRID_WIDTH * MAP_WIDTH;
-        double y = measuredPosition.getY() / PositionCalculator.GRID_HEIGHT * MAP_HEIGHT;
+        double x = measuredPosition.getX() * FT_TO_MAP_PIXELS * CustomMapFragment.FT_IN_PIXELS;
+        double y = measuredPosition.getY() * FT_TO_MAP_PIXELS * CustomMapFragment.FT_IN_PIXELS;
 
         return new Position((int) Math.round(x), (int) Math.round(y));
     }
 
     public static Position toMeasuredPosition(Position mapPosition) {
-        double x = mapPosition.getX() / MAP_WIDTH * PositionCalculator.GRID_WIDTH;
-        double y = mapPosition.getY() / MAP_HEIGHT * PositionCalculator.GRID_HEIGHT;
+        double x = mapPosition.getX() / FT_TO_MAP_PIXELS / CustomMapFragment.FT_IN_PIXELS;
+        double y = mapPosition.getY() / FT_TO_MAP_PIXELS / CustomMapFragment.FT_IN_PIXELS;
 
         return new Position(x, y);
+    }
+
+    public static double toMapLength(double measuredLength) {
+        return measuredLength * FT_TO_MAP_PIXELS * CustomMapFragment.FT_IN_PIXELS;
     }
 
     private BaseAdapter itineraryAdapter = new BaseAdapter() {

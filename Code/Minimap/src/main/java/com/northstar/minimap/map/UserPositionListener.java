@@ -7,5 +7,5 @@ import com.northstar.minimap.Position;
  */
 public interface UserPositionListener {
     public void onUserAzimuthChanged(double azimuth);
-    public void onUserPositionChanged(Position userPosition);
+    public void onUserPositionChanged(Position userPosition, double positionError);
 }
