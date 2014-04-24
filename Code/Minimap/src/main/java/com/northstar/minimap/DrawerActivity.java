@@ -1,13 +1,7 @@
 package com.northstar.minimap;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -21,11 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DrawerActivity extends FragmentActivity implements CallbackListener {
 
@@ -69,17 +58,18 @@ public class DrawerActivity extends FragmentActivity implements CallbackListener
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
         leftDrawerItems = getResources().getStringArray(R.array.left_drawer_items);
         leftDrawerListView = (ListView) findViewById(R.id.left_drawer);
         leftDrawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_listview_item, leftDrawerItems));
+                R.layout.list_item_itinerary, leftDrawerItems));
         leftDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
 
         rightDrawerItems = getResources().getStringArray(R.array.right_drawer_items);
         rightDrawerListView = (ListView) findViewById(R.id.right_drawer);
         rightDrawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_listview_item, rightDrawerItems));
+                R.layout.list_item_itinerary, rightDrawerItems));
         rightDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
     }
 

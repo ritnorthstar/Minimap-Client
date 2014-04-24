@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -37,7 +38,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
 
-        ipTextbox.setText("10.0.2.2:9000");
+        ipTextbox.setText("67.247.162.224:9000");
     }
 
     @Override
@@ -47,9 +48,16 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void submitIP(View view) {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        launchTestMap();
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void launchProductionMap(View view) {
         Globals state = (Globals)getApplicationContext();
-        Intent mapIntent = new Intent(this, DrawerActivity.class);
+        Intent mapIntent = new Intent(this, MapActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
         if (!serverIP.startsWith("http://")) {
@@ -60,7 +68,12 @@ public class MainActivity extends Activity {
 
         try {
             state.comm.setServerIP(new URL(serverIP));
-            mapIntent.putExtra(IP_ERROR_MESSAGE, ipErrorMessage);
+
+            Bundle bundle = new Bundle();
+            bundle.putString(IP_ERROR_MESSAGE, ipErrorMessage);
+            bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_PRODUCTION);
+            mapIntent.putExtras(bundle);
+
             startActivity(mapIntent);
         } catch(Exception e) {
             // Incorrect IP address format
@@ -73,8 +86,11 @@ public class MainActivity extends Activity {
         }
     }
     
-    public void goToMap(View view) {
+    public void launchTestMap() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(MapActivity.KEY_ENV, MapActivity.ENV_TEST);
     	Intent mapIntent = new Intent(this, MapActivity.class);
-    	startActivity(mapIntent);
+        mapIntent.putExtras(bundle);
+        startActivity(mapIntent);
     }
 }

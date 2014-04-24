@@ -3,6 +3,7 @@
 
 package com.northstar.minimap.beacon;
 
+import com.google.android.gms.maps.model.Circle;
 import com.northstar.minimap.Position;
 import android.bluetooth.BluetoothDevice;
 
@@ -15,18 +16,49 @@ import java.text.DecimalFormat;
 */
 public abstract class BluetoothBeacon implements IBeacon {
 
+    protected boolean isInProximityZone;
     protected int number;
     protected int signalStrength;
 
+    protected Circle markerCircle;
+    protected Circle rangeCircle;
     protected String id;
     protected Position position;
-    private BluetoothDevice beacon;
 
-    public BluetoothBeacon(BluetoothDevice device, int number, String id, Position position) {
-        beacon = device;
+    public BluetoothBeacon(int number, String id, Position position) {
         this.id = id;
         this.number = number;
         this.position = position;
+    }
+
+    @Override
+    public Circle getMarkerCircle() {
+        return markerCircle;
+    }
+
+    @Override
+    public Circle getRangeCircle() {
+        return rangeCircle;
+    }
+
+    @Override
+    public boolean isInProximityZone() {
+        return isInProximityZone;
+    }
+
+    @Override
+    public void setInProximityZone(boolean isInProximityZone) {
+        this.isInProximityZone = isInProximityZone;
+    }
+
+    @Override
+    public void setMarkerCircle(Circle markerCircle) {
+        this.markerCircle = markerCircle;
+    }
+
+    @Override
+    public void setRangeCircle(Circle rangeCircle) {
+        this.rangeCircle = rangeCircle;
     }
 
     /**
