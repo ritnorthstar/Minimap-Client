@@ -6,5 +6,6 @@ public class ReceivedData {
     public String teamID = "";
     public String teamsJson = "";
     public String userID = "";
+    public String userJson = "";
     public String usersJson = "";
 }

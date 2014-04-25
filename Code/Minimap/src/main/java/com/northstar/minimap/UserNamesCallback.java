@@ -1,23 +1,26 @@
 package com.northstar.minimap;
 
-public class RegisterUserCallback implements CallbackListener {
+public class UserNamesCallback implements CallbackListener {
 
 	private SelectionActivity selectAct;
 	private boolean destroyed = false;
 	
-	public RegisterUserCallback(SelectionActivity selectActivity){
-		selectAct = selectActivity;
+	public UserNamesCallback(SelectionActivity selectActivity){
+		if(!destroyed){
+			selectAct = selectActivity;
+		}
 	}
 	
 	@Override
 	public void jsonCallback() {
 		if(!destroyed){
-			selectAct.goToMap();
+			selectAct.checkRegister();
 		}
 	}
-	
+
 	@Override
 	public void parentDestroyed() {
 		destroyed = true;
 	}
+
 }

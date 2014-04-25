@@ -1,6 +1,7 @@
 package com.northstar.minimap;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -9,11 +10,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -123,7 +127,7 @@ public class Communicator {
         }
     }
     
-    public void registerUsers(CallbackListener l, String json){
+    public void registerUser(CallbackListener l, String json){
     	Globals.log(">> getting users json from " + serverIpAddress.toString());
         try {
             new registerUserTask(l, json).execute(new URL(serverIpAddress, "/api/users"));
@@ -145,6 +149,40 @@ public class Communicator {
 
         protected void onPostExecute(String json) {
             Globals.log("Json response (oPE): " + json);
+            dataHolder.userJson = json;
+            try {
+				JSONObject user = new JSONObject(json);
+				dataHolder.userID = user.getString("Id");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            listener.jsonCallback();
+        }
+    }
+    
+    public void updateUser(CallbackListener l, String json){
+    	Globals.log(">> getting users json from " + serverIpAddress.toString());
+        try {
+            new updateUserTask(l, json).execute(new URL(serverIpAddress, "/api/users/" + dataHolder.userID));
+        } catch (MalformedURLException e) {}
+    }
+    
+    private class updateUserTask extends AsyncTask<URL, Void, String> {
+        private CallbackListener listener;
+        private String json;
+
+        public updateUserTask(CallbackListener l, String json){
+            this.listener = l;
+            this.json = json;
+        }
+
+        protected String doInBackground(URL... url) {
+            return jsonPUT(url[0], json);
+        }
+
+        protected void onPostExecute(String code) {
+            Globals.log("Json response (oPE): " + code);
             listener.jsonCallback();
         }
     }
@@ -182,6 +220,33 @@ public class Communicator {
             httppost.setEntity(se);
             
             HttpResponse httpResponse = httpclient.execute(httppost);
+            inputStream = httpResponse.getEntity().getContent();
+
+            if (inputStream != null) {
+                result = readStream(inputStream);
+            } else {
+                result = "Did not work!";
+            }
+
+        } catch (Exception e) {
+            Globals.log(e.getLocalizedMessage());
+        }
+    	
+    	return result;
+    }
+    
+    public String jsonPUT(URL url, String json) {
+    	InputStream inputStream = null;
+    	String result = "";
+    	try {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPut httpput = new HttpPut(url.toString());
+            
+            StringEntity se = new StringEntity(json);  
+            se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+            httpput.setEntity(se);
+            
+            HttpResponse httpResponse = httpclient.execute(httpput);
             inputStream = httpResponse.getEntity().getContent();
 
             if (inputStream != null) {

@@ -6,12 +6,17 @@ package com.northstar.minimap;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +30,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -72,6 +79,11 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     private List<LatLngBounds> boundBoxes = new ArrayList<LatLngBounds>();
     private LatLngBounds mapBounds;
     private Marker currentItineraryPoint;
+    private List<Marker> userPosMarkers = new ArrayList<Marker>();
+    private String userPosOption = "All";
+    
+    private CallbackListener updateUser;
+    private CallbackListener getUsersPos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,6 +140,10 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         };
         
         mapView.getViewTreeObserver().addOnGlobalLayoutListener(ready);
+        
+        //Create callback listener;
+        CallbackListener updateUser = new UpdateUserCallback(this);
+        CallbackListener getUsersPos = new UserPosCallback(this);
 
         return v;
     }
@@ -160,6 +176,8 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        updateUser.parentDestroyed();
+        getUsersPos.parentDestroyed();
     }
 
     @Override
@@ -188,6 +206,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
     @Override
     public void onUserPositionChanged(Position userPosition, double positionError) {
+    	Log.w("JP", "Position being set");
         // Compass-assisted localization disabled.
 
         int accuracy = (int) Math.round(positionError * DRAW_PIXEL_RATIO * FT_IN_PIXELS);
@@ -200,6 +219,91 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         userLocation.setAccuracy(accuracy);
 
         locSource.setLocation(userLocation);
+        
+        //Update the server with new user position
+        Globals state = (Globals) this.getActivity().getApplicationContext();
+        try {
+        	JSONObject userJson = new JSONObject(state.data.userJson);
+            userJson.put("X", userMapPosition.getX());
+            userJson.put("Y", userMapPosition.getY());
+            state.comm.updateUser(updateUser, userJson.toString());
+            state.data.userJson = userJson.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void getUsersPos(){
+    	Globals state = (Globals) this.getActivity().getApplicationContext();
+        state.comm.getUsersJson(getUsersPos);
+    }
+    
+    public void updateUsersPos(){
+    	removeUsersPos();
+    	if(userPosOption.equals("All")){
+    		AllUsersPos();
+    	}
+    	else if(userPosOption.equals("Team")){
+    		TeamUsersPos();
+    	}
+    }
+    
+    public void removeUsersPos(){
+    	for(int i = 0; i < userPosMarkers.size(); i++){
+    		Marker mark = userPosMarkers.get(i);
+    		mark.remove();
+    	}
+    	userPosMarkers.clear();
+    }
+    
+    public void AllUsersPos(){
+    	Globals state = (Globals) this.getActivity().getApplicationContext();
+    	try {
+			JSONArray usersPos = new JSONArray(state.data.usersJson);
+			for (int i = 0; i < usersPos.length(); i++) {
+	            JSONObject userPos = usersPos.getJSONObject(i);
+	            if(!userPos.getString("Id").equals(state.data.userID)){
+	            	MarkerOptions userPosMarkOpts = new MarkerOptions();
+	            	LatLng markerLoc = proj.fromScreenLocation(new Point(userPos.getInt("X"),
+	            														 userPos.getInt("Y")));
+	            	userPosMarkOpts = userPosMarkOpts.position(markerLoc);
+	            	userPosMarkOpts = userPosMarkOpts.title(userPos.getString("Name"));
+	            	
+	            	Marker userPosMark = googleMap.addMarker(userPosMarkOpts);
+	            	userPosMarkers.add(userPosMark);
+	            }
+	        }
+
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void TeamUsersPos(){
+    	Globals state = (Globals) this.getActivity().getApplicationContext();
+    	try {
+    		JSONArray usersPos = new JSONArray(state.data.usersJson);
+			for (int i = 0; i < usersPos.length(); i++) {
+	            JSONObject userPos = usersPos.getJSONObject(i);
+	            if(!userPos.getString("Id").equals(state.data.userID) && 
+	               userPos.getString("TeamId").equals(state.data.teamID)){
+	            	
+	            	MarkerOptions userPosMarkOpts = new MarkerOptions();
+	            	LatLng markerLoc = proj.fromScreenLocation(new Point(userPos.getInt("X"),
+	            														 userPos.getInt("Y")));
+	            	userPosMarkOpts = userPosMarkOpts.position(markerLoc);
+	            	userPosMarkOpts = userPosMarkOpts.title(userPos.getString("Name"));
+	            	
+	            	Marker userPosMark = googleMap.addMarker(userPosMarkOpts);
+	            	userPosMarkers.add(userPosMark);
+	            }
+	        }
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     private void setProjection() {
