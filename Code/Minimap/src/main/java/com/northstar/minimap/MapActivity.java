@@ -139,10 +139,14 @@ public class MapActivity extends Activity implements SensorEventListener {
                 beaconManager.restartBluetooth();
                 break;
             case R.id.resetCalibrationMenuItem:
-                for (IBeacon beacon : beacons) {
-                    beacon.resetCalibration();
+                try {
+                    for (IBeacon beacon : beaconManager.getBeaconList()) {
+                        beacon.resetCalibration();
+                    }
+                    Toast.makeText(this, R.string.reset_calibration_success, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(this, R.string.reset_calibration_failed, Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(this, R.string.reset_calibration_success, Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;

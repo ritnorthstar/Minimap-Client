@@ -1,5 +1,7 @@
 package com.northstar.minimap;
 
+import android.widget.Toast;
+
 public class MapCallback implements CallbackListener {
 
     private SelectionActivity selectAct;
@@ -10,6 +12,12 @@ public class MapCallback implements CallbackListener {
     
     @Override
     public void jsonCallback() {
-        selectAct.setMaps();
+        Globals state = (Globals) selectAct.getApplicationContext();
+        if (state.data.mapsJson.length() > 0) {
+            selectAct.setMaps();
+        } else {
+            Toast.makeText(selectAct, R.string.no_server_data, Toast.LENGTH_SHORT).show();
+            selectAct.finish();
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class SelectionActivity extends Activity {
     
@@ -64,7 +65,9 @@ public class SelectionActivity extends Activity {
             e.printStackTrace();
         }
 
-        if (!registered) {
+        if (registered) {
+            Toast.makeText(this, R.string.username_unavailable, Toast.LENGTH_LONG).show();
+        } else {
             JSONObject userJson = new JSONObject();
             try {
                 userJson.put("Name", usernameTextbox.getText().toString());
@@ -112,7 +115,7 @@ public class SelectionActivity extends Activity {
     public void setMaps() {
         Globals state = (Globals)getApplicationContext();
         String JSONMapsString = state.data.mapsJson;
-        Log.w("JP", "MapJSON: " + JSONMapsString);
+        Log.d("JP", "MapJSON: " + JSONMapsString);
         
         try {
             JSONArray maps = new JSONArray(JSONMapsString);
@@ -135,7 +138,7 @@ public class SelectionActivity extends Activity {
     public void setTeams() {
         Globals state = (Globals)getApplicationContext();
         String JSONTeamsString = state.data.teamsJson;
-        Log.w("JP", "TeamJSON: " + JSONTeamsString);
+        Log.d("JP", "TeamJSON: " + JSONTeamsString);
         
         try {
             JSONArray teams = new JSONArray(JSONTeamsString);
