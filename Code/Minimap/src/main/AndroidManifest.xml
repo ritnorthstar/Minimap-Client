@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.northstar.minimap"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0">
 
     <uses-sdk
         android:minSdkVersion="18"
@@ -40,7 +40,8 @@
             android:value="AIzaSyAsMxC-1c69huQYkwp10c2ZtxlrF6A-hn8"/>
         <activity
             android:name="com.northstar.minimap.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -58,7 +59,8 @@
         <activity
             android:name="com.northstar.minimap.SelectionActivity"
             android:label="@string/title_activity_selection"
-            android:parentActivityName="com.northstar.minimap.SelectionActivity" >
+            android:parentActivityName="com.northstar.minimap.SelectionActivity"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.northstar.minimap.SelectionActivity" />

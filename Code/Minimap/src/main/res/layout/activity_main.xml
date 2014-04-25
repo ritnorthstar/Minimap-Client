@@ -78,7 +78,7 @@
                 android:paddingBottom="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:height="50dp"/>
+                android:height="50dp" />
 
             <FrameLayout
                 android:layout_width="fill_parent"

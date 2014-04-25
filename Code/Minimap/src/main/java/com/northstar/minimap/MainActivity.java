@@ -4,11 +4,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import com.northstar.minimap.Globals;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -42,7 +44,9 @@ public class MainActivity extends Activity {
         
         state.comm.setDataHolder(state.data);
 
-        ipTextbox.setText("67.247.162.224:9000");
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String ip = sharedPref.getString(SettingsActivity.KEY_PREF_IP, "67.247.162.224:9000");
+        ipTextbox.setText(ip);
     }
 
     @Override
@@ -64,6 +68,7 @@ public class MainActivity extends Activity {
         Intent selectionIntent = new Intent(this, SelectionActivity.class);
         EditText ipTextbox = (EditText) findViewById(R.id.server_ip);
         String serverIP = ipTextbox.getText().toString();
+        String originalIP = serverIP;
         if (!serverIP.startsWith("http://")) {
             serverIP = "http://" + serverIP;
         }
@@ -72,6 +77,11 @@ public class MainActivity extends Activity {
 
         try {
             state.comm.setServerIP(new URL(serverIP));
+
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(SettingsActivity.KEY_PREF_IP, originalIP);
+            editor.commit();
 
             Bundle bundle = new Bundle();
             bundle.putString(IP_ERROR_MESSAGE, ipErrorMessage);
@@ -84,7 +94,7 @@ public class MainActivity extends Activity {
 
             TextView errorText = (TextView) findViewById(R.id.ip_error_text_view);
             errorText.setText("\"" + serverIP +"\" isn't a valid IP address.\nIt should be something like \"10.0.2.2:9000\"");
-            errorText.setTextColor(Color.RED);
+            errorText.setTextColor(Color.WHITE);
             ipTextbox.setText("");
         }
     }

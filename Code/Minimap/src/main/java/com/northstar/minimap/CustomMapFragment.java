@@ -205,27 +205,6 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     }
 
     @Override
-    public void onUserAzimuthChanged(double azimuth) {
-        // Compass-assisted localization disabled.
-
-//        if (proximityZoneBeacon != null) {
-//            double x = proximityZoneBeacon.computeDistance() * Math.sin(azimuth) +
-//                    proximityZoneBeacon.getPosition().getX();
-//            double y = proximityZoneBeacon.computeDistance() * Math.cos(azimuth) +
-//                    proximityZoneBeacon.getPosition().getY();
-//
-//            Position userMapPosition = MapActivity.toMapPosition(new Position(x, y));
-//            LatLng userLatLng = proj.fromScreenLocation(userMapPosition.toPoint());
-//            Location userLocation = new Location("");
-//            userLocation.setLatitude(userLatLng.latitude);
-//            userLocation.setLongitude(userLatLng.longitude);
-//            userLocation.setAccuracy(200);
-//
-//            locSource.setLocation(userLocation);
-//        }
-    }
-
-    @Override
     public void onUserPositionChanged(Position userPosition, double positionError) {
     	Log.w("JP", "Position being set");
         // Compass-assisted localization disabled.
@@ -366,7 +345,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
         beacon.setMarkerCircle(googleMap.addCircle(new CircleOptions()
                 .center(markerLoc)
-                .radius(30)
+                .radius(10)
                 .strokeColor(Color.BLACK)
                 .strokeWidth(3)
                 .fillColor(beaconColor)));

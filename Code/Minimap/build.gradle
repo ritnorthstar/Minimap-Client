@@ -27,4 +27,19 @@ android {
         minSdkVersion 18
         targetSdkVersion 18
     }
+
+    signingConfigs {
+        releaseConfig {
+            storeFile file("/Users/Chris/Classwork/Senior Project/ritnorthstar.jks")
+            storePassword "rittigers"
+            keyAlias "ritnorthstar"
+            keyPassword "rittigers"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.releaseConfig
+        }
+    }
 }
