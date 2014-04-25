@@ -44,7 +44,7 @@
     <string name="show_beacon_range_title">Show beacon range circles</string>
     <string name="show_proximity_zone_summary">Highlights nearby beacon when within a certain proximity</string>
     <string name="show_proximity_zone_title">Enable proximity zones</string>
-    <string name="show_proximity_zone_range_summary">Minimum distance (in meters) to activate a beacon proximity zone</string>
+    <string name="show_proximity_zone_range_summary">Minimum distance (in feet) to activate a beacon proximity zone</string>
     <string name="show_proximity_zone_range_title">Proximity zone range</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_selection">Map Selection</string>
