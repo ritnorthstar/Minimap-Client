@@ -3,15 +3,24 @@ package com.northstar.minimap;
 public class UserNamesCallback implements CallbackListener {
 
 	private SelectionActivity selectAct;
+	private boolean destroyed = false;
 	
 	public UserNamesCallback(SelectionActivity selectActivity){
-		selectAct = selectActivity;
+		if(!destroyed){
+			selectAct = selectActivity;
+		}
 	}
 	
 	@Override
 	public void jsonCallback() {
-		// TODO Auto-generated method stub
-		selectAct.checkRegister();
+		if(!destroyed){
+			selectAct.checkRegister();
+		}
+	}
+
+	@Override
+	public void parentDestroyed() {
+		destroyed = true;
 	}
 
 }

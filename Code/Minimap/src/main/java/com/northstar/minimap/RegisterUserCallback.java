@@ -3,6 +3,7 @@ package com.northstar.minimap;
 public class RegisterUserCallback implements CallbackListener {
 
 	private SelectionActivity selectAct;
+	private boolean destroyed = false;
 	
 	public RegisterUserCallback(SelectionActivity selectActivity){
 		selectAct = selectActivity;
@@ -10,6 +11,13 @@ public class RegisterUserCallback implements CallbackListener {
 	
 	@Override
 	public void jsonCallback() {
-		selectAct.goToMap();
+		if(!destroyed){
+			selectAct.goToMap();
+		}
+	}
+	
+	@Override
+	public void parentDestroyed() {
+		destroyed = true;
 	}
 }

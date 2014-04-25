@@ -3,6 +3,7 @@ package com.northstar.minimap;
 public class UpdateUserCallback implements CallbackListener {
 
 	private CustomMapFragment mapFrag;
+	private boolean destroyed = false;
 	
 	public UpdateUserCallback(CustomMapFragment mapFragment){
 		mapFrag = mapFragment;
@@ -10,8 +11,14 @@ public class UpdateUserCallback implements CallbackListener {
 	
 	@Override
 	public void jsonCallback() {
-		// TODO Auto-generated method stub
-		mapFrag.getUsersPos();
+		if(!destroyed){
+			mapFrag.getUsersPos();
+		}
+	}
+	
+	@Override
+	public void parentDestroyed() {
+		destroyed = true;
 	}
 
 }

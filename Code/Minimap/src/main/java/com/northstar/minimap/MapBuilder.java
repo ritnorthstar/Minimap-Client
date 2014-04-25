@@ -16,9 +16,7 @@ public class MapBuilder {
     JSONObject JSONMapDef;
 
     private void addBeacons(Map JSONMap) throws JSONException {
-        Log.w("JP","In beacons");
         JSONArray beacons = JSONMapDef.getJSONArray("Beacons");
-        Log.w("JP","Got Array");
         for (int i = 0; i < beacons.length(); i++) {
             JSONObject JSONBeacon = beacons.getJSONObject(i);
 
@@ -52,8 +50,6 @@ public class MapBuilder {
     public Map getMap(String JSONMapString, String mapID) {
         Map JSONMap = new Map();
 
-        Log.w("JP", "Building map");
-
         try {
             JSONArray maps = new JSONArray(JSONMapString);
             for (int i = 0; i < maps.length(); i++) {
@@ -67,7 +63,6 @@ public class MapBuilder {
             addBeacons(JSONMap);
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.w("JP", "Failed");
         }
 
         return JSONMap;

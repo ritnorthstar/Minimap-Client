@@ -181,8 +181,8 @@ public class Communicator {
             return jsonPUT(url[0], json);
         }
 
-        protected void onPostExecute(String json) {
-            Globals.log("Json response (oPE): " + json);
+        protected void onPostExecute(String code) {
+            Globals.log("Json response (oPE): " + code);
             listener.jsonCallback();
         }
     }

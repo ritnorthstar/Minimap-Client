@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,6 +81,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     private Marker currentItineraryPoint;
     private List<Marker> userPosMarkers = new ArrayList<Marker>();
     private String userPosOption = "All";
+    
+    private CallbackListener updateUser;
+    private CallbackListener getUsersPos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -136,6 +140,10 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         };
         
         mapView.getViewTreeObserver().addOnGlobalLayoutListener(ready);
+        
+        //Create callback listener;
+        CallbackListener updateUser = new UpdateUserCallback(this);
+        CallbackListener getUsersPos = new UserPosCallback(this);
 
         return v;
     }
@@ -168,6 +176,8 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        updateUser.parentDestroyed();
+        getUsersPos.parentDestroyed();
     }
 
     @Override
@@ -217,6 +227,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
     @Override
     public void onUserPositionChanged(Position userPosition, double positionError) {
+    	Log.w("JP", "Position being set");
         // Compass-assisted localization disabled.
 
         int accuracy = (int) Math.round(positionError * DRAW_PIXEL_RATIO * FT_IN_PIXELS);
@@ -234,10 +245,8 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         Globals state = (Globals) this.getActivity().getApplicationContext();
         try {
         	JSONObject userJson = new JSONObject(state.data.userJson);
-            userJson.put("X", userLatLng.latitude);
-            userJson.put("Y", userLatLng.longitude);
-
-            CallbackListener updateUser = new UpdateUserCallback(this);
+            userJson.put("X", userMapPosition.getX());
+            userJson.put("Y", userMapPosition.getY());
             state.comm.updateUser(updateUser, userJson.toString());
             state.data.userJson = userJson.toString();
         } catch (JSONException e) {
@@ -247,7 +256,6 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     
     public void getUsersPos(){
     	Globals state = (Globals) this.getActivity().getApplicationContext();
-    	CallbackListener getUsersPos = new UpdateUserCallback(this);
         state.comm.getUsersJson(getUsersPos);
     }
     
