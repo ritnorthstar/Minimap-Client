@@ -15,8 +15,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -39,7 +37,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapActivity extends Activity implements SensorEventListener {
+public class MapActivity extends Activity {
 
     public static final String KEY_ENV = "ENV";
 
@@ -53,9 +51,6 @@ public class MapActivity extends Activity implements SensorEventListener {
     public static final int MAP_HEIGHT = 600;
     public static final int MAP_WIDTH = 600;
 
-    private float[] gravityValues;
-    private float[] magneticValues;
-
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private BeaconListener beaconListener;
     private BeaconManager beaconManager;
@@ -64,9 +59,6 @@ public class MapActivity extends Activity implements SensorEventListener {
     private Itinerary itinerary;
     private List<IBeacon> beacons;
     private ListView itineraryListView;
-    private Sensor accelerometer;
-    private Sensor magnetometer;
-    private SensorManager sensorManager;
     private UserPositionListener userPositionListener;
 
     @Override
@@ -89,10 +81,6 @@ public class MapActivity extends Activity implements SensorEventListener {
         // Initialize beacon ids
         StickNFindBluetoothBeacon.initBeaconIdMap();
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
         if (this.getIntent() != null && this.getIntent().getExtras() != null) {
             configBundle = this.getIntent().getExtras();
             switch (configBundle.getInt(KEY_ENV)) {
@@ -105,11 +93,6 @@ public class MapActivity extends Activity implements SensorEventListener {
                     initTestEnvironment();
             }
         }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
     }
 
     @Override
@@ -158,7 +141,6 @@ public class MapActivity extends Activity implements SensorEventListener {
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -170,36 +152,6 @@ public class MapActivity extends Activity implements SensorEventListener {
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        switch(event.sensor.getType()) {
-            case Sensor.TYPE_ACCELEROMETER:
-                gravityValues = event.values;
-                break;
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                magneticValues = event.values;
-                break;
-            default:
-                break;
-        }
-
-        if (gravityValues != null && magneticValues != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-
-            if (SensorManager.getRotationMatrix(R, I, gravityValues, magneticValues)) {
-                float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
-
-                if (userPositionListener != null) {
-                    userPositionListener.onUserAzimuthChanged(orientation[0]);
-                }
-            }
-        }
     }
 
     public void calibrate(Position calibrationPosition) {
