@@ -3,6 +3,7 @@ package com.northstar.minimap;
 public class TeamCallback implements CallbackListener {
     
     private SelectionActivity selectAct;
+    private boolean destroyed = false;
     
     public TeamCallback(SelectionActivity selectActivity) {
         selectAct = selectActivity;
@@ -10,6 +11,13 @@ public class TeamCallback implements CallbackListener {
     
     @Override
     public void jsonCallback() {
-        selectAct.setTeams();
+    	if(!destroyed){
+    		selectAct.setTeams();
+    	}
     }
+    
+    @Override
+	public void parentDestroyed() {
+		destroyed = true;
+	}
 }

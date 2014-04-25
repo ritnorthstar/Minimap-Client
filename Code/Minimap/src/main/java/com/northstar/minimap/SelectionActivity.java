@@ -22,6 +22,10 @@ public class SelectionActivity extends Activity {
     private Spinner teamSpinner;
     private EditText usernameTextbox;
     
+    private CallbackListener map;
+    private CallbackListener team;
+    private CallbackListener registerUser;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +37,22 @@ public class SelectionActivity extends Activity {
         
         Globals state = (Globals)getApplicationContext();
         
-        CallbackListener map = new MapCallback(this);
-        CallbackListener team = new TeamCallback(this);
+        map = new MapCallback(this);
+        team = new TeamCallback(this);
+        registerUser = new RegisterUserCallback(this);
         
         state.comm.getMapsJson(map);
         state.comm.getTeamsJson(team);
     }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        map.parentDestroyed();
+        team.parentDestroyed();
+        registerUser.parentDestroyed();
+    }
+
 
     public void checkRegister() {
         boolean registered = true;
@@ -72,9 +86,8 @@ public class SelectionActivity extends Activity {
                 userJson.put("X", 0);
                 userJson.put("Y", 0);
                 userJson.put("Z", 0);
-
-                CallbackListener registerUser = new RegisterUserCallback(this);
-                state.comm.registerUsers(registerUser, userJson.toString());
+                
+                state.comm.registerUser(registerUser, userJson.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -105,14 +118,13 @@ public class SelectionActivity extends Activity {
             e.printStackTrace();
         }
 
-        CallbackListener user = new UserCallback(this);
+        CallbackListener user = new UserNamesCallback(this);
         state.comm.getUsersJson(user);
     }
 
     public void setMaps() {
         Globals state = (Globals)getApplicationContext();
         String JSONMapsString = state.data.mapsJson;
-        Log.w("JP", "MapJSON: " + JSONMapsString);
         
         try {
             JSONArray maps = new JSONArray(JSONMapsString);
@@ -135,7 +147,6 @@ public class SelectionActivity extends Activity {
     public void setTeams() {
         Globals state = (Globals)getApplicationContext();
         String JSONTeamsString = state.data.teamsJson;
-        Log.w("JP", "TeamJSON: " + JSONTeamsString);
         
         try {
             JSONArray teams = new JSONArray(JSONTeamsString);
