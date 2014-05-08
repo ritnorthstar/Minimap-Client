@@ -13,6 +13,7 @@ public class Map {
 
     private List<IBeacon> beacons = new ArrayList<IBeacon>();
     private List<Table> tables = new ArrayList<Table>();
+    private List<Barrier> barriers = new ArrayList<Barrier>();
     private String mapID;
     
     public void setMapID(String id){
@@ -37,6 +38,14 @@ public class Map {
     
     public List<Table> getTables(){
     	return tables;
+    }
+    
+    public void addBarrier(Barrier barrier){
+    	barriers.add(barrier);
+    }
+    
+    public List<Barrier> getBarriers(){
+    	return barriers;
     }
 
 }

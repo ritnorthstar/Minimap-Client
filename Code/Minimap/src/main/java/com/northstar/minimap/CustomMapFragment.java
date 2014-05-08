@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
@@ -44,6 +45,7 @@ import com.northstar.minimap.itinerary.ItineraryPoint;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.northstar.minimap.beacon.BeaconListener;
 import com.northstar.minimap.beacon.IBeacon;
+import com.northstar.minimap.map.Barrier;
 import com.northstar.minimap.map.BluetoothLELocationSource;
 import com.northstar.minimap.map.BoundaryLocationSource;
 import com.northstar.minimap.map.Map;
@@ -317,6 +319,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     	locSource.setMap(this.map);
 
     	processTables();
+    	processBarriers();
         drawBeaconMarkers();
     	
     	//Temporary location set
@@ -384,6 +387,15 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     	}	
     }
 
+    private void processBarriers(){
+    	List<Barrier> barriers = map.getBarriers();
+    	for(int i = 0; i < barriers.size(); i++){
+    		Barrier barrier = barriers.get(i);
+    		
+    		storeBoundBoxes(barrier);
+    		drawBarriers(barrier);
+    	}	
+    }
 
     public void setCurrentItineraryPoint(ItineraryPoint point) {
         if (currentItineraryPoint != null) {
@@ -400,11 +412,11 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         currentItineraryPoint = googleMap.addMarker(currentItinMarkerOptions);
     }
     
-    private void storeBoundBoxes(Table table){
-    	LatLng neCorner = proj.fromScreenLocation(new Point((int)table.getPosition().getX() + table.getWidth(),
-    								 						(int)table.getPosition().getY()));
-    	LatLng swCorner = proj.fromScreenLocation(new Point((int)table.getPosition().getX(),
-    								 						(int)table.getPosition().getY() + table.getHeight()));
+    private void storeBoundBoxes(Barrier barrier){
+    	LatLng neCorner = proj.fromScreenLocation(new Point((int)barrier.getPosition().getX() + barrier.getWidth(),
+    								 						(int)barrier.getPosition().getY()));
+    	LatLng swCorner = proj.fromScreenLocation(new Point((int)barrier.getPosition().getX(),
+    								 						(int)barrier.getPosition().getY() + barrier.getHeight()));
     	LatLngBounds bound = new LatLngBounds(swCorner, neCorner);
     	boundBoxes.add(bound);
     }
@@ -443,6 +455,47 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     			googleMap.addPolygon(tableSquare);
     		}
     	}
+    }
+    
+    private void drawBarriers(Barrier barrier){
+    	PolygonOptions barrierSquare = new PolygonOptions();
+    	PolylineOptions barrierDiag1 = new PolylineOptions();
+    	PolylineOptions barrierDiag2 = new PolylineOptions();
+		
+		double leftX = (barrier.getPosition().getX());
+		double rightX = (barrier.getPosition().getX() + barrier.getWidth());
+		double topY = (barrier.getPosition().getY());
+		double bottomY = (barrier.getPosition().getY() + barrier.getHeight());
+
+        leftX *= FT_IN_PIXELS;
+        rightX *= FT_IN_PIXELS;
+        topY *= FT_IN_PIXELS;
+        bottomY *= FT_IN_PIXELS;
+		
+		LatLng topLeft = proj.fromScreenLocation(new Point((int)leftX, (int)topY));
+		LatLng bottomLeft = proj.fromScreenLocation(new Point((int)leftX, (int)bottomY));
+		LatLng bottomRight = proj.fromScreenLocation(new Point((int)rightX, (int)bottomY));
+		LatLng topRight = proj.fromScreenLocation(new Point((int)rightX, (int)topY));
+		
+		//Make the barrier square
+		
+		barrierSquare = barrierSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft);
+		barrierSquare = barrierSquare.strokeColor(Color.RED);
+		barrierSquare = barrierSquare.strokeWidth(4);
+		googleMap.addPolygon(barrierSquare);
+		
+		//Make the barrier diagonals
+		
+		barrierDiag1 = barrierDiag1.add(topLeft, bottomRight);
+		barrierDiag1 = barrierDiag1.color(Color.RED);
+		barrierDiag1 = barrierDiag1.width(4);
+		googleMap.addPolyline(barrierDiag1);
+		
+		barrierDiag2 = barrierDiag2.add(bottomLeft, topRight);
+		barrierDiag2 = barrierDiag2.color(Color.RED);
+		barrierDiag2 = barrierDiag2.width(4);
+		googleMap.addPolyline(barrierDiag2);
+		
     }
 
     private GoogleMap.OnMapLongClickListener onMapLongClickListener =
