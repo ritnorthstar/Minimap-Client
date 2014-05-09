@@ -160,7 +160,7 @@ public class BeaconManager implements LeScanCallbackProvider {
 
                 // Add beacon if it doesn't exist.
                 if (!beaconMap.containsKey(number)) {
-                    for (IBeacon beacon: beacons) {
+                    for (IBeacon beacon : beacons) {
                         if (beacon.getNumber() == number) {
                             beaconMap.put(number, beacon);
                         }
@@ -185,15 +185,37 @@ public class BeaconManager implements LeScanCallbackProvider {
 
                 updateUserPosition();
 
-                boolean isInProximityZone = (beacon.computeUnaveragedDistance() < proximityZoneRange);
-                if (isInProximityZone != beacon.isInProximityZone()) {
-                    beacon.setInProximityZone(isInProximityZone);
+                double minDistance = Double.MAX_VALUE;
+                int minIndex = 0;
 
-                    if (beaconListener != null) {
-                        beaconListener.onBeaconInProximityZoneChanged(beacon, isInProximityZone);
+                for (int i = 0; i < beacons.size(); i++) {
+                    Double distance = beacons.get(i).computeUnaveragedDistance();
+                    if (distance != null && distance < minDistance) {
+                        minDistance = distance;
+                        minIndex = i;
                     }
+                }
 
-                    Log.d("BT-COMPASS", beacon.getNumber() + "");
+                for (int i = 0; i < beacons.size(); i++) {
+                    if (minIndex == i) {
+                        if (minDistance < proximityZoneRange) {
+                            if (!beacons.get(i).isInProximityZone()) {
+                                beacons.get(i).setInProximityZone(true);
+
+                                if (beaconListener != null) {
+                                    beaconListener.onBeaconInProximityZoneChanged(beacons.get(i), true);
+                                }
+                            }
+                        }
+                    } else {
+                        if (beacons.get(i).isInProximityZone()) {
+                            beacons.get(i).setInProximityZone(false);
+
+                            if (beaconListener != null) {
+                                beaconListener.onBeaconInProximityZoneChanged(beacons.get(i), false);
+                            }
+                        }
+                    }
                 }
             }
         });

@@ -178,8 +178,14 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-        updateUser.parentDestroyed();
-        getUsersPos.parentDestroyed();
+
+        if (updateUser != null) {
+            updateUser.parentDestroyed();
+        }
+
+        if (getUsersPos != null) {
+            getUsersPos.parentDestroyed();
+        }
     }
 
     @Override
@@ -195,9 +201,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 
     @Override
     public void onBeaconInProximityZoneChanged(IBeacon beacon, boolean isInProximityZone) {
-        Log.d("BT-PROX", beacon.getNumber() + " " + isInProximityZone);
-
-        drawBeacon(beacon);
+        for (IBeacon b: map.getBeacons()) {
+            drawBeacon(b);
+        }
 
         if (isInProximityZone) {
             proximityZoneBeacon = beacon;
@@ -223,15 +229,17 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
         locSource.setLocation(userLocation);
         
         //Update the server with new user position
-        Globals state = (Globals) this.getActivity().getApplicationContext();
-        try {
-        	JSONObject userJson = new JSONObject(state.data.userJson);
-            userJson.put("X", userMapPosition.getX());
-            userJson.put("Y", userMapPosition.getY());
-            state.comm.updateUser(updateUser, userJson.toString());
-            state.data.userJson = userJson.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (this.getActivity() != null) {
+            Globals state = (Globals) this.getActivity().getApplicationContext();
+            try {
+                JSONObject userJson = new JSONObject(state.data.userJson);
+                userJson.put("X", userMapPosition.getX());
+                userJson.put("Y", userMapPosition.getY());
+                state.comm.updateUser(updateUser, userJson.toString());
+                state.data.userJson = userJson.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
     

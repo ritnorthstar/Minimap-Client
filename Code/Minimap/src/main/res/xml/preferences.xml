@@ -16,5 +16,5 @@
         android:title="@string/show_proximity_zone_range_title"
         android:summary="@string/show_proximity_zone_range_summary"
         android:inputType="numberDecimal"
-        android:defaultValue="1.0" />
+        android:defaultValue="3.0" />
 </PreferenceScreen>

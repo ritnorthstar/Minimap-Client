@@ -183,7 +183,10 @@ public class Communicator {
 
         protected void onPostExecute(String code) {
             Globals.log("Json response (oPE): " + code);
-            listener.jsonCallback();
+
+            if (listener != null) {
+                listener.jsonCallback();
+            }
         }
     }
 

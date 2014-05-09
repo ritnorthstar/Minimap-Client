@@ -56,6 +56,10 @@ public class StickNFindBluetoothBeacon extends BluetoothBeacon {
 
     @Override
     public Double computeUnaveragedDistance() {
+        if (rssis.size() == 0) {
+            return null;
+        }
+
         return computeDistance(rssis.getLast());
     }
 

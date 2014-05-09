@@ -162,15 +162,17 @@ public class MapActivity extends Activity {
     private void initTestEnvironment() {
         Position[] positions = new Position[] {
                 new Position(0, 0),
-                new Position(7.5, 0),
-                new Position(15, 0),
-                new Position(0, 12.83),
-                new Position(7.5, 12.83),
-                new Position(15, 12.83)
+                new Position(12.5, 0),
+                new Position(25, 0),
+                new Position(25, 12.5),
+                new Position(25, 25),
+                new Position(12.5, 25),
+                new Position(0, 25),
+                new Position(0, 12.5)
         };
 
         beacons = new ArrayList<IBeacon>();
-        for (int i = 1; i <= 6; i++) {
+        for (int i = 1; i <= 8; i++) {
             beacons.add(new StickNFindBluetoothBeacon(
                     i, StickNFindBluetoothBeacon.beaconIdMap.get(i), positions[i - 1]));
         }
