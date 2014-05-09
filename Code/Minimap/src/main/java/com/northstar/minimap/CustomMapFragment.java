@@ -446,12 +446,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     			LatLng bottomRight = proj.fromScreenLocation(new Point((int)rightX, (int)bottomY));
     			LatLng topRight = proj.fromScreenLocation(new Point((int)rightX, (int)topY));
     			
-    			tableSquare = tableSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft);
-    			
-    			tableSquare = tableSquare.strokeColor(Color.BLACK);
-    			
-    			tableSquare = tableSquare.strokeWidth(4);
-    			
+    			tableSquare = tableSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft)
+    									 .strokeColor(Color.BLACK)
+    									 .strokeWidth(4);
     			googleMap.addPolygon(tableSquare);
     		}
     	}
@@ -479,21 +476,21 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 		
 		//Make the barrier square
 		
-		barrierSquare = barrierSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft);
-		barrierSquare = barrierSquare.strokeColor(Color.RED);
-		barrierSquare = barrierSquare.strokeWidth(4);
+		barrierSquare = barrierSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft)
+									 .strokeColor(Color.RED)
+									 .strokeWidth(4);
 		googleMap.addPolygon(barrierSquare);
 		
 		//Make the barrier diagonals
 		
-		barrierDiag1 = barrierDiag1.add(topLeft, bottomRight);
-		barrierDiag1 = barrierDiag1.color(Color.RED);
-		barrierDiag1 = barrierDiag1.width(4);
+		barrierDiag1 = barrierDiag1.add(topLeft, bottomRight)
+								   .color(Color.RED)
+								   .width(4);
 		googleMap.addPolyline(barrierDiag1);
 		
-		barrierDiag2 = barrierDiag2.add(bottomLeft, topRight);
-		barrierDiag2 = barrierDiag2.color(Color.RED);
-		barrierDiag2 = barrierDiag2.width(4);
+		barrierDiag2 = barrierDiag2.add(bottomLeft, topRight)
+								   .color(Color.RED)
+								   .width(4);
 		googleMap.addPolyline(barrierDiag2);
 		
     }
