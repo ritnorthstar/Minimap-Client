@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.northstar.minimap.beacon.IBeacon;
 import com.northstar.minimap.beacon.StickNFindBluetoothBeacon;
+import com.northstar.minimap.map.Barrier;
 import com.northstar.minimap.map.Map;
 import com.northstar.minimap.map.Table;
 
@@ -30,6 +31,18 @@ public class MapBuilder {
             IBeacon beacon = new StickNFindBluetoothBeacon(number, JSONBeacon.getString("DeviceId"),
                     new Position(JSONBeacon.getDouble("X"), JSONBeacon.getDouble("Y")));
             JSONMap.addBeacon(beacon);
+        }
+    }
+    
+    private void addBarriers(Map JSONMap) throws JSONException {
+    	JSONArray barriers = JSONMapDef.getJSONArray("Barriers");
+    	for (int i = 0; i < barriers.length(); i++) {
+            JSONObject JSONBarrier = barriers.getJSONObject(i);
+            Barrier barrier = new Barrier(new Position(JSONBarrier.getDouble("X"),
+                                                 	 JSONBarrier.getDouble("Y")), 
+                                        JSONBarrier.getInt("Width"), 
+                                        JSONBarrier.getInt("Height"));
+            JSONMap.addBarrier(barrier);
         }
     }
 
@@ -60,6 +73,7 @@ public class MapBuilder {
                 }
             }
             addTables(JSONMap);
+            addBarriers(JSONMap);
             addBeacons(JSONMap);
         } catch (JSONException e) {
             e.printStackTrace();

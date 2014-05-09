@@ -2,13 +2,10 @@ package com.northstar.minimap.map;
 
 import com.northstar.minimap.Position;
 
-public class Table {
+public class Table extends Barrier{
 	
 	private int widthSubdivisions;
 	private int heightSubdivisions;
-	private Position pos;
-	private int width;
-	private int height;
 	
 	/**
 	 * Constructor for Table
@@ -19,11 +16,9 @@ public class Table {
 	 * @param height An int of how tall the tables are.
 	 */
 	public Table(int widthSubdivisions, int heightSubdivisions, Position pos, int width, int height){
+		super(pos, width, height);
 		this.widthSubdivisions = widthSubdivisions;
 		this.heightSubdivisions = heightSubdivisions;
-		this.pos = pos;
-		this.width = width;
-		this.height = height;
 	}
 	
 	/**
@@ -40,29 +35,6 @@ public class Table {
 	 */
 	public int getHeightSubdivisions(){
 		return heightSubdivisions;
-	}
-	/**
-	 * Method to obtain the Position of the table
-	 * @return A Position object containing the x,y coordinates of the top left position of the table
-	 */
-	public Position getPosition(){
-		return pos;
-	}
-	
-	/**
-	 * Method to obtain the width of the table.
-	 * @return An int representing the width of the tables.
-	 */
-	public int getWidth(){
-		return width;
-	}
-	
-	/**
-	 * Method to obtain the height of the table. 
-	 * @returnan An int representing the height of the table.
-	 */
-	public int getHeight(){
-		return height;
 	}
 	
 }
