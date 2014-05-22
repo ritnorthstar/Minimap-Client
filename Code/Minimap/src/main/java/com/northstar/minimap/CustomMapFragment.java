@@ -69,6 +69,8 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     public static final int COLOR_BEACON_IN_PROXIMITY_ZONE = Color.rgb(255, 165, 0);
     public static final int COLOR_BEACON_RANGE = Color.rgb(0, 153, 255);
     public static final int COLOR_BEACON_RANGE_IN_PROXIMITY_ZONE = Color.rgb(255, 214, 153);
+    public static final int COLOR_TABLE = Color.parseColor("#008000");
+    public static final int COLOR_BARRIER = Color.parseColor("#CC0000");
 
     private IBeacon proximityZoneBeacon;
 
@@ -473,7 +475,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     			LatLng topRight = proj.fromScreenLocation(new Point((int)rightX, (int)topY));
     			
     			tableSquare = tableSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft)
-    									 .strokeColor(Color.BLACK)
+    									 .strokeColor(COLOR_TABLE)
     									 .strokeWidth(4);
     			googleMap.addPolygon(tableSquare);
     		}
@@ -503,19 +505,19 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 		//Make the barrier square
 		
 		barrierSquare = barrierSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft)
-									 .strokeColor(Color.RED)
+									 .strokeColor(COLOR_BARRIER)
 									 .strokeWidth(4);
 		googleMap.addPolygon(barrierSquare);
 		
 		//Make the barrier diagonals
 		
 		barrierDiag1 = barrierDiag1.add(topLeft, bottomRight)
-								   .color(Color.RED)
+								   .color(COLOR_BARRIER)
 								   .width(4);
 		googleMap.addPolyline(barrierDiag1);
 		
 		barrierDiag2 = barrierDiag2.add(bottomLeft, topRight)
-								   .color(Color.RED)
+								   .color(COLOR_BARRIER)
 								   .width(4);
 		googleMap.addPolyline(barrierDiag2);
 		
