@@ -90,6 +90,9 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     
     private CallbackListener updateUser;
     private CallbackListener getUsersPos;
+    
+    private String tableColor = "#008000";
+    private String barrierColor = "#CC0000";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -473,7 +476,7 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
     			LatLng topRight = proj.fromScreenLocation(new Point((int)rightX, (int)topY));
     			
     			tableSquare = tableSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft)
-    									 .strokeColor(Color.BLACK)
+    									 .strokeColor(Color.parseColor(tableColor))
     									 .strokeWidth(4);
     			googleMap.addPolygon(tableSquare);
     		}
@@ -503,19 +506,19 @@ public class CustomMapFragment extends Fragment implements BeaconListener, UserP
 		//Make the barrier square
 		
 		barrierSquare = barrierSquare.add(topLeft, bottomLeft, bottomRight, topRight, topLeft)
-									 .strokeColor(Color.RED)
+									 .strokeColor(Color.parseColor(barrierColor))
 									 .strokeWidth(4);
 		googleMap.addPolygon(barrierSquare);
 		
 		//Make the barrier diagonals
 		
 		barrierDiag1 = barrierDiag1.add(topLeft, bottomRight)
-								   .color(Color.RED)
+								   .color(Color.parseColor(barrierColor))
 								   .width(4);
 		googleMap.addPolyline(barrierDiag1);
 		
 		barrierDiag2 = barrierDiag2.add(bottomLeft, topRight)
-								   .color(Color.RED)
+								   .color(Color.parseColor(tableColor))
 								   .width(4);
 		googleMap.addPolyline(barrierDiag2);
 		
